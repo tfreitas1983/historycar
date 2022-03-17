@@ -1,11 +1,7 @@
 import React from 'react';
 
-import { StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import Cliente from '../pages/Cliente/index';
-import Veiculos from '../pages/Cliente/veiculos';
-import PesquisarVeiculos from '../pages/Cliente/pesquisaveiculo';
-import Cacador from '../pages/Cliente/cacador';
+import {Text, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import MenuCliente from '../../components/menu';
 
 const styles = StyleSheet.create({
   container: {
@@ -85,17 +81,17 @@ const styles = StyleSheet.create({
 });
 
 
-const Drawer = createDrawerNavigator();
 
 
 
 
-const MenuCliente = () => (
-  <Drawer.Navigator>
-      <Drawer.Screen name="Meus veículos" component={Veiculos} />
-      <Drawer.Screen name="Pesquisar veículos" component={PesquisarVeiculos} />
-      <Drawer.Screen name="Caçador de veículos" component={Cacador} />
-    </Drawer.Navigator>
+const CadastrarVeiculos = () => (
+    <>
+   
+ <Text> Cadastrar veículos </Text>
+ 
+
+ </>
 );
 
-export default MenuCliente;
+export default CadastrarVeiculos;

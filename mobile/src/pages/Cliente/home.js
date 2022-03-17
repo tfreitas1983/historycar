@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import Esqueci from '../Esqueci';
-import Cliente from '.';
+import MenuCliente from '../../components/menu';
 
 const styles = StyleSheet.create({
   container: {
@@ -83,34 +81,12 @@ const styles = StyleSheet.create({
 });
 
 
-const Drawer = createDrawerNavigator();
-
-
-
 
 const HomeCliente = () => (
-  <Drawer.Navigator>
-      <Drawer.Screen name="Feed" component={Esqueci} />
-      <Drawer.Screen name="Article" component={Cliente} />
-    </Drawer.Navigator>
+  <>
+  <MenuCliente />
+  <Text>Home do cliente</Text>
+  </>
 );
 
 export default HomeCliente;
-
-/*
-
-import React from 'react';
-import { Text, View } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-
-
-
-export const RootNavigator = () => {
-  return (
-    <Drawer.Navigator drawerContent={() => <DrawerContent />}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
-    </Drawer.Navigator>
-  );
-};
-
-*/
