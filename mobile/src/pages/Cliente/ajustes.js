@@ -108,23 +108,16 @@ const styles = StyleSheet.create({
 
 
 
-const Veiculos = ({ navigation }) => (
+const Ajustes = ({ navigation }) => (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <ScrollView>
-            
-            <View style={styles.toogle}>
-                <Text style={styles.titulo}  onPress={() => navigation.navigate('Detalhes')}>Jeep Compass KXV-9U30</Text>
-                <Text style={styles.titulo} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
-            </View>
-            <View style={styles.inativo}>
-                <Text style={styles.titulo}  onPress={() => navigation.navigate('Detalhes')}>Hyundai Tucson KDY-5374</Text>
-                <Text style={styles.titulo} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
-            </View>
-            <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo veículo</Text>
+            <Text style={styles.titulo}> Meus dados </Text>
+           
+            <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Salvar</Text>
         </ScrollView>
         </LinearGradient>
     </View>
 );
 
-export default Veiculos;
+export default Ajustes;

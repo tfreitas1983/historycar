@@ -16,7 +16,10 @@ import Veiculos from './pages/Cliente/veiculos';
 import CadastrarVeiculos from './pages/Cliente/cadastrarveiculo';
 import PesquisarVeiculos from './pages/Cliente/pesquisaveiculo';
 import Cacador from './pages/Cliente/cacador';
+import Despachante from './pages/Cliente/despachante';
 import Detalhes from './pages/Cliente/detalhes';
+import Ajustes from './pages/Cliente/ajustes'; 
+import Suporte from './pages/Cliente/suporte';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -65,8 +68,6 @@ export default function Routes() {
                 headerTitleAlign: 'center',
                 }}
             />
-
-            
             
             <Stack.Screen
                 name="CadastrarParceiro"
@@ -166,6 +167,39 @@ export default function Routes() {
             />
 
             <Stack.Screen
+                name="Despachante"
+                component={Despachante}
+                options={{
+                title: 'Despachantes',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+
+            <Stack.Screen
+                name="Ajustes"
+                component={Ajustes}
+                options={{
+                title: 'Ajustes',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+
+            <Stack.Screen
+                name="Suporte"
+                component={Suporte}
+                options={{
+                title: 'Suporte ao cliente',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+
+            <Stack.Screen
                 name="Detalhes"
                 component={Detalhes}
                 options={{
@@ -175,6 +209,8 @@ export default function Routes() {
                 headerTitleAlign: 'center',
                 }}
             />
+
+
         
         </Stack.Navigator>
         </NavigationContainer>

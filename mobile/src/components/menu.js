@@ -1,11 +1,16 @@
 import React from 'react';
 
-import { StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import { StyleSheet, Dimensions, Text, ScrollView} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Feather from 'react-native-vector-icons/Feather';
 import Cliente from '../pages/Cliente/index';
 import Veiculos from '../pages/Cliente/veiculos';
 import PesquisarVeiculos from '../pages/Cliente/pesquisaveiculo';
 import Cacador from '../pages/Cliente/cacador';
+import Ajustes from '../pages/Cliente/ajustes';
+import Suporte from '../pages/Cliente/suporte';
+import Despachante from '../pages/Cliente/despachante';
 
 const styles = StyleSheet.create({
   container: {
@@ -91,10 +96,62 @@ const Drawer = createDrawerNavigator();
 
 
 const MenuCliente = () => (
-  <Drawer.Navigator>
-      <Drawer.Screen name="Meus veículos" component={Veiculos} />
-      <Drawer.Screen name="Pesquisar veículos" component={PesquisarVeiculos} />
-      <Drawer.Screen name="Caçador de veículos" component={Cacador} />
+  <Drawer.Navigator
+  screenOptions={{
+    drawerStyle: {
+      backgroundColor: '#313131'
+    },
+    headerStyle: {
+      backgroundColor: '#ffad26'      
+    },
+    headerTintColor: '#fffddd',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  }}
+  >
+      <Drawer.Screen 
+       name="Meus veículos" 
+       component={Veiculos}       
+       options={{drawerLabel: ( ({focused}) => <Text style={{fontSize: 18, color: focused ? '#fff' : '#fff' }}> Meus veículos</Text> ),
+       drawerIcon:(({focused}) => <Entypo color = {focused ? '#313131' : '#fff'} name='home' color={'#fff'}size={20} />) }} 
+      />
+      <Drawer.Screen 
+      name="Pesquisar veículos" 
+      component={PesquisarVeiculos}
+      options={{drawerLabel: (({focused}) => <Text style={{fontSize: 16, color: focused ? '#fff' : '#fff' }}> Pesquisar veículos</Text> ),
+      drawerIcon:(({focused}) => <Entypo color = {focused ? '#313131' : '#fff'} name='magnifying-glass' color={'#fff'}size={20} />) }}
+      />
+      <Drawer.Screen 
+      name="Caçador de veículos" 
+      component={Cacador} 
+      options={{drawerLabel: (({focused}) => <Text style={{fontSize: 16, color: focused ? '#fff' : '#fff' }}> Caçador de veículos</Text> ),
+      drawerIcon:(({focused}) => <Entypo color = {focused ? '#313131' : '#fff'} name='v-card' color={'#fff'}size={20} />) }}
+      />
+      <Drawer.Screen 
+      name="Despachante"
+      component={Despachante} 
+      options={{drawerLabel: (({focused}) => <Text style={{fontSize: 16, color: focused ? '#fff' : '#fff' }}> Despachante</Text> ),
+      drawerIcon:(({focused}) => <Entypo color = {focused ? '#313131' : '#fff'} name='briefcase' color={'#fff'}size={20} />) }}
+      />
+      <Drawer.Screen 
+      name="Ajustes" 
+      component={Ajustes} 
+      options={{drawerLabel: (({focused}) => <Text style={{fontSize: 16, color: focused ? '#fff' : '#fff' }}> Ajustes</Text> ),
+      drawerIcon:(({focused}) => <Feather color = {focused ? '#313131' : '#fff'} name='settings' color={'#fff'}size={20} />) }}
+      />
+      <Drawer.Screen 
+      name="Suporte" 
+      component={Suporte} 
+      options={{drawerLabel: (({focused}) => <Text style={{fontSize: 16, color: focused ? '#fff' : '#fff' }}> Suporte</Text> ),
+      drawerIcon:(({focused}) => <Entypo color = {focused ? '#313131' : '#fff'} name='mail' color={'#fff'}size={20} />) }}
+      />
+      <Drawer.Screen 
+      name="Sair" 
+      component={Cliente} 
+      options={{drawerLabel: (({focused}) => <Text style={{fontSize: 16, color: focused ? '#fff' : '#fff' }}> Sair</Text> ),
+      drawerIcon:(({focused}) => <Entypo color = {focused ? '#313131' : '#fff'} name='log-out' color={'#fff'}size={20} />) }}
+      />
     </Drawer.Navigator>
 );
 

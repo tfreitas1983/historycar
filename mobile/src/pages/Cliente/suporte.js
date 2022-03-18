@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   toogle: {      
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignSelf: 'flex-start',
     fontFamily: 'Open Sans',
     color: '#fafafa',
@@ -65,9 +65,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',       
     marginTop: 10,
     padding:8,
-    borderWidth: 2,
-    borderRadius: 10,
-    borderColor: '#f2f2f2',
     width: Dimensions.get('window').width,
   },
   inativo: {      
@@ -105,26 +102,22 @@ const styles = StyleSheet.create({
 
 
 
-
-
-
-const Veiculos = ({ navigation }) => (
+const Suporte = ({ navigation }) => (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <ScrollView>
+            <Text style={styles.titulo}> Suporte </Text>
+            <Text style={styles.opcoes}> Assunto </Text>
+            <Text style={styles.resumo}> Descreva sua solicitação </Text>
             
             <View style={styles.toogle}>
-                <Text style={styles.titulo}  onPress={() => navigation.navigate('Detalhes')}>Jeep Compass KXV-9U30</Text>
-                <Text style={styles.titulo} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
+            <Text> <Entypo name='upload' size={30} /> </Text>
+            <Text style={styles.titulo}> Upload de arquivo</Text>
             </View>
-            <View style={styles.inativo}>
-                <Text style={styles.titulo}  onPress={() => navigation.navigate('Detalhes')}>Hyundai Tucson KDY-5374</Text>
-                <Text style={styles.titulo} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
-            </View>
-            <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo veículo</Text>
+            <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Enviar </Text>
         </ScrollView>
         </LinearGradient>
     </View>
 );
 
-export default Veiculos;
+export default Suporte;
