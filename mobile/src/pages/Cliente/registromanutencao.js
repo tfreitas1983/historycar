@@ -4,6 +4,7 @@ import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-n
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 
+
 const styles = StyleSheet.create({
   container: {
     fontFamily: 'Open Sans',
@@ -23,7 +24,17 @@ const styles = StyleSheet.create({
   titulo: {
     fontWeight: 'bold',
     marginTop: 5,
-    marginBottom:5,
+    marginBottom:15,
+    color:'#fff',
+    fontSize: 20,
+    textAlign: 'center',
+    borderWidth: 3,
+    borderColor: 'transparent',
+    borderBottomColor: '#f2f2f2',
+    width: Dimensions.get('window').width
+  },
+  item: {
+    fontWeight: 'bold',
     color:'#fff',
     fontSize: 20,
     textAlign: 'center',
@@ -51,10 +62,27 @@ const styles = StyleSheet.create({
     borderColor: '#f2f2f2',
     fontSize: 40,
     marginTop: 20,
+    marginBottom: 80,
     padding: 5,
     textAlign: 'center'
   },
   toogle: {      
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignSelf: 'flex-start',
+    fontFamily: 'Open Sans',
+    color: '#fafafa',
+    fontSize: 25,
+    fontWeight: 'bold',       
+    marginTop: 10,
+    padding:8,
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: '#f2f2f2',
+    width: Dimensions.get('window').width,
+  },
+  upload: {      
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -65,23 +93,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',       
     marginTop: 10,
     padding:8,
-    width: Dimensions.get('window').width,
-  },
-  inativo: {      
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignSelf: 'flex-start',
-    fontFamily: 'Open Sans',
-    backgroundColor: '#aaaaaa',
-    color: '#b2b2b2',
-    fontSize: 25,
-    fontWeight: 'bold',       
-    marginTop: 10,
-    padding:8,
-    borderWidth: 2,
-    borderRadius: 10,
-    borderColor: '#909090',
     width: Dimensions.get('window').width,
   },
   resumo: {
@@ -101,23 +112,49 @@ const styles = StyleSheet.create({
 });
 
 
-
-const Suporte = ({ navigation }) => (
+const Registro = ({ navigation }) => (
     <View>
+         
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+        
         <ScrollView>
-            <Text style={styles.titulo}> Envie sua dúvida ou solicitação </Text>
-            <Text style={styles.opcoes}> Assunto </Text>
-            <Text style={styles.resumo}> Descreva sua solicitação </Text>
-            
+       
+            <Text style={styles.titulo}>Chevrolet Celta VHC 1.4</Text>
+           
             <View style={styles.toogle}>
-            <Text> <Entypo name='upload' size={30} /> </Text>
-            <Text style={styles.titulo}> Upload de arquivo</Text>
+                <Text style={styles.item}>Rotina</Text>
+                <Text style={styles.item}>|</Text>
+                <Text style={styles.item}>Recall</Text>
             </View>
-            <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Enviar </Text>
+            <Text style={styles.opcoes}>Data</Text>
+            <Text style={styles.opcoes}>Km atual</Text>
+            <Text style={styles.resumo}>Descrição da manutenção</Text>
+            <Text style={styles.opcoes}>Oficina</Text>
+            <Text style={styles.opcoes}>CEP</Text>
+            <Text style={styles.opcoes}>Endereço</Text>
+            <Text style={styles.opcoes}>Número</Text>
+            <Text style={styles.opcoes}>Complemento</Text>
+            <Text style={styles.opcoes}>Bairro</Text>
+            <Text style={styles.opcoes}>Cidade</Text>
+            <Text style={styles.opcoes}>UF</Text>
+            <Text style={styles.opcoes}>Mecânico Responsável</Text>
+            <Text style={styles.opcoes}>Data de garantia</Text>
+            <View style={styles.upload}>
+                <Text> <Entypo name='camera' size={30} /> </Text>
+                <Text style={styles.item}> Foto painel</Text>
+            </View>
+            <View style={styles.upload}>
+                <Text> <Entypo name='camera' size={30} /> </Text>
+                <Text style={styles.item}> Foto serviço</Text>
+            </View>
+            <View style={styles.upload}>
+                <Text> <Entypo name='camera' size={30} /> </Text>
+                <Text style={styles.item}> Foto nota fiscal</Text>
+            </View>
+           <Text onPress={() => navigation.navigate('Manutencao')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Salvar </Text>
         </ScrollView>
         </LinearGradient>
     </View>
 );
 
-export default Suporte;
+export default Registro;

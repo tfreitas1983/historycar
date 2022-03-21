@@ -92,9 +92,6 @@ const styles = StyleSheet.create({
 
 const Drawer = createDrawerNavigator();
 
-
-
-
 const MenuCliente = () => (
   <Drawer.Navigator
   screenOptions={{

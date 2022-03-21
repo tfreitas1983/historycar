@@ -3,6 +3,7 @@ import React from 'react';
 import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Toggle from '../../components/toggle';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom:5,
     color:'#fff',
-    fontSize: 15,
+    fontSize: 30,
     textAlign: 'left',
   },
   opcoes: {
@@ -40,6 +41,19 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: 'center',
     width: Dimensions.get('window').width
+  },
+  datas: {
+    fontFamily: 'Open Sans',
+    color: '#b2b2b2',
+    backgroundColor: '#f2f2f2',
+    borderWidth: 5,
+    borderRadius: 10,
+    borderColor: '#f2f2f2',
+    fontSize: 20,
+    marginTop: 20,
+    padding: 5,
+    textAlign: 'center',
+    width: Dimensions.get('window').width * 0.45
   },
   entrar:{
     fontFamily: 'Open Sans',
@@ -71,8 +85,18 @@ const styles = StyleSheet.create({
   toogle: {      
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignSelf: 'flex-start',
+    fontFamily: 'Open Sans',
+    color: '#fafafa',
+    fontSize: 25,
+    fontWeight: 'bold',       
+    marginTop: 10
+  },
+  periodo: {      
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     fontFamily: 'Open Sans',
     color: '#fafafa',
     fontSize: 25,
@@ -100,26 +124,36 @@ const styles = StyleSheet.create({
 
 
 
-const CadastrarVeiculos = ({ navigation }) => (
+const SeguroRecall = ({ navigation }) => (
   <View>
   <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
   <ScrollView>
-      <Text style={styles.opcoes}> RENAVAM</Text>
+      <View style={styles.toogle}>
+        <Text style={styles.titulo}> Recall</Text>
+        <Toggle />
+      </View>
       
-      <Text style={styles.buscar}> <Entypo name="level-down" size={30} /> Buscar</Text>
-      <Text  style={styles.titulo}>Se o veículo já estiver cadastrado no aplicativo, você terá o histórico.</Text>
-      <Text  style={styles.titulo}> Caso contrário você pode cadastrá-lo abaixo</Text>
-      <Text style={styles.opcoes}> Carros e Caminhonetes</Text>
-      <Text style={styles.opcoes}> Chevrolet</Text>
-      <Text style={styles.opcoes}> Celta VHC 1.4</Text>
-      <Text style={styles.opcoes}> 2008 Gasolina</Text>
-      <Text style={styles.opcoes}> Placa</Text>
-      <Text style={styles.opcoes}> Km atual</Text>
-      <Text style={styles.opcoes}> Data aquisição</Text>
-      <Text style={styles.entrar} onPress={() => navigation.navigate('Seguro')} > Salvar</Text>
+      
+      <Text style={styles.opcoes}> 05/02/2022</Text>
+      <Text style={styles.opcoes}> AB San Diego Barra</Text>
+      <Text style={styles.opcoes}> Air bag passageiro</Text>
+
+      <View style={styles.toogle}>
+        <Text style={styles.titulo}> Seguro</Text>
+        <Toggle />
+      </View>
+
+      <Text style={styles.opcoes}> Porto Seguro </Text>
+      <Text style={styles.titulo}> Vigência </Text>
+      <View style={styles.periodo}>
+        <Text style={styles.datas}> 01/10/2021</Text>
+        <Text style={styles.datas}> 30/09/2022</Text>
+      </View>
+      
+      <Text style={styles.entrar} onPress={() => navigation.navigate('Veiculos')} > Salvar</Text>
   </ScrollView>
   </LinearGradient>
 </View>
 );
 
-export default CadastrarVeiculos;
+export default SeguroRecall;

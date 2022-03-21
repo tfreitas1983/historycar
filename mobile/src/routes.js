@@ -20,6 +20,12 @@ import Despachante from './pages/Cliente/despachante';
 import Detalhes from './pages/Cliente/detalhes';
 import Ajustes from './pages/Cliente/ajustes'; 
 import Suporte from './pages/Cliente/suporte';
+import SeguroRecall from './pages/Cliente/segurorecall';
+import Manutencao from './pages/Cliente/manutencao';
+import Registro from './pages/Cliente/registromanutencao';
+import Venda from './pages/Cliente/venda';
+import Seguro from './pages/Cliente/seguro';
+import SeguroLista from './pages/Cliente/segurolista';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -134,7 +140,7 @@ export default function Routes() {
             />
 
             <Stack.Screen
-                name="Cadastrar Veiculos"
+                name="CadastrarVeiculos"
                 component={CadastrarVeiculos}
                 options={{
                 title: 'Cadastrar veículos',
@@ -145,7 +151,7 @@ export default function Routes() {
             />
 
             <Stack.Screen
-                name="Pesquisar Veiculos"
+                name="PesquisarVeiculos"
                 component={PesquisarVeiculos}
                 options={{
                 title: 'Pesquisar veículos',
@@ -156,7 +162,7 @@ export default function Routes() {
             />
 
             <Stack.Screen
-                name="Cacador Veiculos"
+                name="Cacador"
                 component={Cacador}
                 options={{
                 title: 'Caçador de veículos',
@@ -204,6 +210,72 @@ export default function Routes() {
                 component={Detalhes}
                 options={{
                 title: 'Detalhes do veículo',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+
+            <Stack.Screen
+                name="SeguroRecall"
+                component={SeguroRecall}
+                options={{
+                title: 'Recall e seguro do veículo',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+            
+            <Stack.Screen
+                name="Manutencao"
+                component={Manutencao}
+                options={{
+                title: 'Registro de manutenções do veículo',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+            
+            <Stack.Screen
+                name="Registro"
+                component={Registro}
+                options={{
+                title: 'Registro de manutenção do veículo',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+            
+            <Stack.Screen
+                name="Seguro"
+                component={Seguro}
+                options={{
+                title:' Nova vigência do seguro ',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+            
+            <Stack.Screen
+                name="SeguroLista"
+                component={SeguroLista}
+                options={{
+                title:' Lista de seguros ',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+            
+            <Stack.Screen
+                name="Venda"
+                component={Venda}
+                options={{
+                title: 'Registro de venda do veículo',
                 headerStyle: { backgroundColor: '#ffad26' },
                 headerTintColor: '#fff',
                 headerTitleAlign: 'center',
