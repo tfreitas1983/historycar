@@ -26,6 +26,11 @@ import Registro from './pages/Cliente/registromanutencao';
 import Venda from './pages/Cliente/venda';
 import Seguro from './pages/Cliente/seguro';
 import SeguroLista from './pages/Cliente/segurolista';
+import Transferencia from './pages/Cliente/transferencia';
+import Solicitacao from './pages/Cliente/solicitacao';
+import CacadorLista from './pages/Cliente/cacadorlista';
+import DespachanteLista from './pages/Cliente/despachantelista';
+import DespachanteDetalhes from './pages/Cliente/despachantedetalhes';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -281,6 +286,64 @@ export default function Routes() {
                 headerTitleAlign: 'center',
                 }}
             />
+            
+            <Stack.Screen
+                name="Transferencia"
+                component={Transferencia}
+                options={{
+                title: 'Registro de transferência do veículo',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+          
+            
+            <Stack.Screen
+                name="Solicitacao"
+                component={Solicitacao}
+                options={{
+                title: 'Solicitação de transferência',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />  
+
+            <Stack.Screen
+                name="CacadorLista"
+                component={CacadorLista}
+                options={{
+                title: 'Resultados da pesquisa',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />  
+
+            <Stack.Screen
+                name="DespachanteLista"
+                component={DespachanteLista}
+                options={{
+                title: 'Resultados da pesquisa',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            /> 
+
+            <Stack.Screen
+                name="DespachanteDetalhes"
+                component={DespachanteDetalhes}
+                options={{
+                title: 'Informações sobre o despachante',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+
+
 
 
         

@@ -27,14 +27,6 @@ const styles = StyleSheet.create({
     color:'#fff',
     fontSize: 20,
     textAlign: 'center',
-  },  
-  mensagem: {
-    fontWeight: 'bold',
-    marginTop: 5,
-    marginBottom:5,
-    color:'#fff',
-    fontSize: 18,
-    textAlign: 'left',
   },
   opcoes: {
     fontFamily: 'Open Sans',
@@ -57,20 +49,6 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderRadius: 10,
     borderColor: '#f2f2f2',
-    fontSize: 30,
-    marginTop: 20,
-    marginBottom: 150,
-    padding: 5,
-    textAlign: 'center'
-  },  
-  buscar:{
-    fontFamily: 'Open Sans',
-    textAlign: 'center',
-    color: '#f2f2f2',
-    backgroundColor: 'transparent',
-    borderWidth: 5,
-    borderRadius: 10,
-    borderColor: '#f2f2f2',
     fontSize: 40,
     marginTop: 20,
     padding: 5,
@@ -79,13 +57,32 @@ const styles = StyleSheet.create({
   toogle: {      
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignSelf: 'flex-start',
     fontFamily: 'Open Sans',
     color: '#fafafa',
     fontSize: 25,
     fontWeight: 'bold',       
-    marginTop: 10
+    marginTop: 10,
+    padding:8,
+    width: Dimensions.get('window').width,
+  },
+  inativo: {      
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'flex-start',
+    fontFamily: 'Open Sans',
+    backgroundColor: '#aaaaaa',
+    color: '#b2b2b2',
+    fontSize: 25,
+    fontWeight: 'bold',       
+    marginTop: 10,
+    padding:8,
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: '#909090',
+    width: Dimensions.get('window').width,
   },
   resumo: {
     fontFamily: 'Open Sans',
@@ -105,33 +102,17 @@ const styles = StyleSheet.create({
 
 
 
-
-
-
-const PesquisarVeiculos = ({ navigation }) => (
+const Solicitacao = ({ navigation }) => (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <ScrollView>
+            <Text style={styles.titulo}> Sua solicitação foi enviada com sucesso! </Text>
+            <Text style={styles.titulo}> Aguarde a comunicação pela nossa equipe. </Text>
             
-            <Text style={styles.opcoes}> RENAVAM</Text>
-      
-            <Text style={styles.buscar}> <Entypo name="level-down" size={30} /> Buscar</Text>
-            <Text style={styles.opcoes}> Carros e caminhonetes</Text>
-            <Text style={styles.opcoes}> Chevrolet</Text>
-            <Text style={styles.opcoes}> Celta</Text>
-            <Text style={styles.opcoes}> Celta VHC 1.0</Text>
-            <Text style={styles.opcoes}> 2008 Gasolina</Text>
-            <Text style={styles.opcoes}> KXV-0983</Text>
-            <Text style={styles.opcoes}> Chassi</Text>
-            <Text style={styles.titulo}> Dados do antigo proprietário</Text>
-            <Text style={styles.opcoes}> Juvenal XXXXX XXXva</Text>
-            <Text style={styles.opcoes}> 046.xxx.xxx-09</Text>
-            <Text style={styles.titulo}> Venda não comunicada! </Text>
-            <Text style={styles.mensagem}> Para a transferência de proprietário clique no botão abaixo e envie a foto do CRV do veículo.</Text>
-            <Text onPress={() => navigation.navigate('Transferencia')} style={styles.entrar}> Adicionar à minha lista</Text>
+            <Text onPress={() => navigation.navigate('HomeCliente')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Home </Text>
         </ScrollView>
         </LinearGradient>
     </View>
 );
 
-export default PesquisarVeiculos;
+export default Solicitacao;

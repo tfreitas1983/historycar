@@ -1,8 +1,10 @@
 import React from 'react';
 
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import LinearGradient from 'react-native-linear-gradient';
+
+import Toggle from '../../components/toggle'
 
 const styles = StyleSheet.create({
   container: {
@@ -27,14 +29,16 @@ const styles = StyleSheet.create({
     color:'#fff',
     fontSize: 20,
     textAlign: 'center',
+    marginBottom: 5
   },  
-  mensagem: {
+  item: {
     fontWeight: 'bold',
     marginTop: 5,
     marginBottom:5,
     color:'#fff',
-    fontSize: 18,
+    fontSize: 20,
     textAlign: 'left',
+    marginBottom: 5
   },
   opcoes: {
     fontFamily: 'Open Sans',
@@ -57,26 +61,12 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderRadius: 10,
     borderColor: '#f2f2f2',
-    fontSize: 30,
-    marginTop: 20,
-    marginBottom: 150,
-    padding: 5,
-    textAlign: 'center'
-  },  
-  buscar:{
-    fontFamily: 'Open Sans',
-    textAlign: 'center',
-    color: '#f2f2f2',
-    backgroundColor: 'transparent',
-    borderWidth: 5,
-    borderRadius: 10,
-    borderColor: '#f2f2f2',
     fontSize: 40,
     marginTop: 20,
     padding: 5,
     textAlign: 'center'
   },
-  toogle: {      
+  toggle: {      
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -105,33 +95,30 @@ const styles = StyleSheet.create({
 
 
 
-
-
-
-const PesquisarVeiculos = ({ navigation }) => (
-    <View>
+const DespachanteDetalhes = ({ navigation }) => (
+    <View>            
+        
+        
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-        <ScrollView>
-            
-            <Text style={styles.opcoes}> RENAVAM</Text>
-      
-            <Text style={styles.buscar}> <Entypo name="level-down" size={30} /> Buscar</Text>
-            <Text style={styles.opcoes}> Carros e caminhonetes</Text>
-            <Text style={styles.opcoes}> Chevrolet</Text>
-            <Text style={styles.opcoes}> Celta</Text>
-            <Text style={styles.opcoes}> Celta VHC 1.0</Text>
-            <Text style={styles.opcoes}> 2008 Gasolina</Text>
-            <Text style={styles.opcoes}> KXV-0983</Text>
-            <Text style={styles.opcoes}> Chassi</Text>
-            <Text style={styles.titulo}> Dados do antigo proprietário</Text>
-            <Text style={styles.opcoes}> Juvenal XXXXX XXXva</Text>
-            <Text style={styles.opcoes}> 046.xxx.xxx-09</Text>
-            <Text style={styles.titulo}> Venda não comunicada! </Text>
-            <Text style={styles.mensagem}> Para a transferência de proprietário clique no botão abaixo e envie a foto do CRV do veículo.</Text>
-            <Text onPress={() => navigation.navigate('Transferencia')} style={styles.entrar}> Adicionar à minha lista</Text>
-        </ScrollView>
+            <ScrollView >
+                <Text style={styles.titulo}> Serviços atendidos:</Text>
+                <Text style={styles.item}> Conhecimento em mecânica: Não </Text>
+                <Text style={styles.item}> Conhecimento em funilaria: Não  </Text>            
+                <Text style={styles.item}> Realiza vistoria: Não  </Text> 
+                <Text style={styles.item}> Pré compra: Não  </Text>
+                <Text style={styles.item}> Equipamentos: Não   </Text>   
+                <Text style={styles.titulo}> Resumo a respeito do meu trabalho </Text>
+                <Text style={styles.resumo}> 
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
+                </Text>
+                <Text style={styles.item}> Consulta presencial R$ 300,00 </Text>
+                <Text style={styles.item}> Consulta remota R$ 50,00</Text>
+                
+                <Text style={styles.entrar} onPress={() => navigation.navigate('HomeCliente')} > <Entypo name="level-down" size={30} color="#d2d2d2" /> Home </Text>
+                <Text  style={{margin: 30}}> </Text>
+            </ScrollView>
         </LinearGradient>
-    </View>
+  </View>
 );
 
-export default PesquisarVeiculos;
+export default DespachanteDetalhes;

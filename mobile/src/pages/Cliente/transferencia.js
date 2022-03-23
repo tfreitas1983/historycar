@@ -4,6 +4,7 @@ import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-n
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 
+
 const styles = StyleSheet.create({
   container: {
     fontFamily: 'Open Sans',
@@ -23,18 +24,20 @@ const styles = StyleSheet.create({
   titulo: {
     fontWeight: 'bold',
     marginTop: 5,
-    marginBottom:5,
+    marginBottom:15,
     color:'#fff',
     fontSize: 20,
     textAlign: 'center',
-  },  
-  mensagem: {
+    borderWidth: 3,
+    borderColor: 'transparent',
+    borderBottomColor: '#f2f2f2',
+    width: Dimensions.get('window').width
+  },
+  item: {
     fontWeight: 'bold',
-    marginTop: 5,
-    marginBottom:5,
     color:'#fff',
-    fontSize: 18,
-    textAlign: 'left',
+    fontSize: 20,
+    textAlign: 'center',
   },
   opcoes: {
     fontFamily: 'Open Sans',
@@ -57,35 +60,40 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderRadius: 10,
     borderColor: '#f2f2f2',
-    fontSize: 30,
-    marginTop: 20,
-    marginBottom: 150,
-    padding: 5,
-    textAlign: 'center'
-  },  
-  buscar:{
-    fontFamily: 'Open Sans',
-    textAlign: 'center',
-    color: '#f2f2f2',
-    backgroundColor: 'transparent',
-    borderWidth: 5,
-    borderRadius: 10,
-    borderColor: '#f2f2f2',
     fontSize: 40,
     marginTop: 20,
+    marginBottom: 80,
     padding: 5,
     textAlign: 'center'
   },
   toogle: {      
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignSelf: 'flex-start',
     fontFamily: 'Open Sans',
     color: '#fafafa',
     fontSize: 25,
     fontWeight: 'bold',       
-    marginTop: 10
+    marginTop: 10,
+    padding:8,
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: '#f2f2f2',
+    width: Dimensions.get('window').width,
+  },
+  upload: {      
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignSelf: 'flex-start',
+    fontFamily: 'Open Sans',
+    color: '#fafafa',
+    fontSize: 25,
+    fontWeight: 'bold',       
+    marginTop: 10,
+    padding:8,
+    width: Dimensions.get('window').width,
   },
   resumo: {
     fontFamily: 'Open Sans',
@@ -104,34 +112,26 @@ const styles = StyleSheet.create({
 });
 
 
-
-
-
-
-const PesquisarVeiculos = ({ navigation }) => (
+const Transferencia = ({ navigation }) => (
     <View>
+         
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+        
         <ScrollView>
+       
+            <Text style={styles.titulo}>Chevrolet Celta VHC 1.0</Text>          
+           
+            <Text style={styles.resumo}>Informe os dados sobre a compra do veículo</Text>
             
-            <Text style={styles.opcoes}> RENAVAM</Text>
-      
-            <Text style={styles.buscar}> <Entypo name="level-down" size={30} /> Buscar</Text>
-            <Text style={styles.opcoes}> Carros e caminhonetes</Text>
-            <Text style={styles.opcoes}> Chevrolet</Text>
-            <Text style={styles.opcoes}> Celta</Text>
-            <Text style={styles.opcoes}> Celta VHC 1.0</Text>
-            <Text style={styles.opcoes}> 2008 Gasolina</Text>
-            <Text style={styles.opcoes}> KXV-0983</Text>
-            <Text style={styles.opcoes}> Chassi</Text>
-            <Text style={styles.titulo}> Dados do antigo proprietário</Text>
-            <Text style={styles.opcoes}> Juvenal XXXXX XXXva</Text>
-            <Text style={styles.opcoes}> 046.xxx.xxx-09</Text>
-            <Text style={styles.titulo}> Venda não comunicada! </Text>
-            <Text style={styles.mensagem}> Para a transferência de proprietário clique no botão abaixo e envie a foto do CRV do veículo.</Text>
-            <Text onPress={() => navigation.navigate('Transferencia')} style={styles.entrar}> Adicionar à minha lista</Text>
+            <View style={styles.upload}>
+                <Text> <Entypo name='camera' size={30} /> </Text>
+                <Text style={styles.item}> Foto CRV</Text>
+            </View>
+            
+           <Text onPress={() => navigation.navigate('Solicitacao')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Solicitar </Text>
         </ScrollView>
         </LinearGradient>
     </View>
 );
 
-export default PesquisarVeiculos;
+export default Transferencia;

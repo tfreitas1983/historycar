@@ -88,8 +88,14 @@ const styles = StyleSheet.create({
 const Cacador = ({ navigation }) => (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+          <ScrollView>
             <Text style={styles.titulo}> Deseja procurar um caçador de veículos? </Text>
-            <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> Pesquisar</Text>
+            <Text style={styles.titulo}> Selecione os filtros: </Text>
+            <Text style={styles.opcoes}> SP </Text>
+            <Text style={styles.opcoes}> Iguape </Text>
+            <Text style={styles.opcoes}> Masculino </Text>
+            <Text onPress={() => navigation.navigate('CacadorLista')} style={styles.entrar}> Pesquisar</Text>
+          </ScrollView>
         </LinearGradient>
     </View>
 );

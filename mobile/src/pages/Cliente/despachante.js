@@ -112,9 +112,17 @@ const Despachante = ({ navigation }) => (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <ScrollView>
+            
+            <ScrollView>
             <Text style={styles.titulo}> Deseja procurar um despachante? </Text>
+            <Text style={styles.titulo}> Selecione os filtros: </Text>
+            <Text style={styles.opcoes}> SP </Text>
+            <Text style={styles.opcoes}> Iguape </Text>
+            <Text style={styles.opcoes}> Masculino </Text>
+            <Text onPress={() => navigation.navigate('DespachanteLista')} style={styles.entrar}> Pesquisar</Text>
+          </ScrollView>
            
-            <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo veículo</Text>
+          
         </ScrollView>
         </LinearGradient>
     </View>
