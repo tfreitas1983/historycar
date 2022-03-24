@@ -17,6 +17,17 @@ const styles = StyleSheet.create({
     color:'#fff',
     fontSize: 15,
     textAlign: 'left',
+  },   
+  link: {
+    fontWeight: 'bold',
+    fontFamily: 'Open Sans',
+    marginTop: 5,
+    color:'#fff',
+    fontSize: 15,
+    textAlign: 'left',
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderBottomColor: '#fff'
   },
   ordenar: {
     fontWeight: 'bold',
@@ -86,6 +97,7 @@ const CacadorLista = ({ navigation }) => (
                     <Text style={styles.titulo}> Consulta Dúvidas a partir de R$ 300,00 </Text>
                     <Text style={styles.titulo}> Consulta Remota  a partir de R$ 50,00 </Text>
                     <Text style={styles.titulo}> 11 99009-9900 </Text>
+                    <Text style={styles.link} onPress={() => navigation.navigate('DespachanteDetalhes')}> + detalhes </Text>
                 </View>
             </View>
 
@@ -100,6 +112,7 @@ const CacadorLista = ({ navigation }) => (
                     <Text style={styles.titulo}> Consulta Dúvidas a partir de R$ 300,00 </Text>
                     <Text style={styles.titulo}> Consulta Remota  a partir de R$ 50,00 </Text>
                     <Text style={styles.titulo}> 11 99009-9900 </Text>
+                    <Text style={styles.link} onPress={() => navigation.navigate('DespachanteDetalhes')}> + detalhes </Text>
                 </View>
             </View>
             
@@ -114,6 +127,7 @@ const CacadorLista = ({ navigation }) => (
                     <Text style={styles.titulo}> Consulta Dúvidas a partir de R$ 300,00 </Text>
                     <Text style={styles.titulo}> Consulta Remota  a partir de R$ 50,00 </Text>
                     <Text style={styles.titulo}> 11 99009-9900 </Text>
+                    <Text style={styles.link} onPress={() => navigation.navigate('DespachanteDetalhes')}> + detalhes </Text>
                 </View>
             </View>
                 

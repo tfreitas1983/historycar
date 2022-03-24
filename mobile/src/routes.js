@@ -31,6 +31,7 @@ import Solicitacao from './pages/Cliente/solicitacao';
 import CacadorLista from './pages/Cliente/cacadorlista';
 import DespachanteLista from './pages/Cliente/despachantelista';
 import DespachanteDetalhes from './pages/Cliente/despachantedetalhes';
+import CacadorDetalhes from './pages/Cliente/cacadordetalhes';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -337,6 +338,17 @@ export default function Routes() {
                 component={DespachanteDetalhes}
                 options={{
                 title: 'Informações sobre o despachante',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            /> 
+
+            <Stack.Screen
+                name="CacadorDetalhes"
+                component={CacadorDetalhes}
+                options={{
+                title: 'Informações sobre o caçador',
                 headerStyle: { backgroundColor: '#ffad26' },
                 headerTintColor: '#fff',
                 headerTitleAlign: 'center',
