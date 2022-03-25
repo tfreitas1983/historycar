@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require ('path')
+const fs = require("fs")
 
 const app = express();
 
@@ -16,11 +18,23 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+})
+
+app.use("/files", express.static(path.resolve(__dirname, 'controllers' , 'uploads')))
+
 const db = require("./models");
 const Role = db.role;
 
-
-/*db.sequelize.sync({force: true}).then(() => {
+/*
+db.sequelize.sync({force: true}).then(() => {
   console.log('Apaga e sincroniza da base de dados');
   initial();
 });  */

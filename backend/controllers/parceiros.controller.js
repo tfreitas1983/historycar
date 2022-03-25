@@ -1,7 +1,10 @@
 const db = require("../models");
 const Parceiro = db.parceiro;
-const Files = db.files
+const Image = db.image;
 const Op = db.Sequelize.Op;
+const fs = require('fs');
+const path = require ('path')
+
 
 exports.cadastrar = (req, res) => {
     if (!req.body.nome) {
@@ -131,53 +134,52 @@ exports.editar = (req, res) => {
 };
 
 exports.cadastrarImagem = (req, res) => {
-  const { originalname: original, filename: foto, size, location: url = "" } = req.file
-  if (!foto) {
+  
+  if (!req.file.originalname) {
       res.status(400).send({ message: "A imagem deve ser enviada"})
       return
   }
  
-  const file = new Files ({
-     original,
-     foto,
-     size, 
-     url
-  })
-  file    
-      .save(file)
-      .then(data => {
-          res.send(data)
-      })
-      .catch(err => {
-          res.status(500).send({
-              message: err.message || "Um erro ocorreu ao criar a imagem"
-          })
-      })
+
+  Image.create({
+		type: req.file.mimetype,
+		name: req.file.filename,
+		url: path.resolve(__dirname +   '/uploads/' + req.file.filename)
+	}).then(image => {
+		try{
+			fs.writeFileSync(__dirname,  + '/uploads/' + image.name, image.url);		
+			
+			// exit node.js app
+			res.json({'msg': 'File uploaded successfully!'});
+		}catch(e){
+			console.log(e);
+			res.json({'err': e});
+		}
+	})
 }
 
 exports.buscarImagem = (req, res) => {
   const id = req.params.id
 
-  Files.findById(id)   
-      .then(data => {
-          res.send(data)
-      })
-      .catch(err => {
-          res.status(500).send({
-              message: err.message || "Um erro ocorreu ao buscar a imagem"
-          })
-      })
+  return Image.findByPk(id)
+    .then(data => {
+     res.send(data)
+    })
+    .catch((err) => {
+      console.log(">> Erro ao buscar a foto do parceiro: ", err);
+    });  
 }
 
 exports.buscarImagens = (req, res) => {   
 
-  Files.find()   
-      .then(data => {
-          res.send(data)
-      })
-      .catch(err => {
-          res.status(500).send({
-              message: err.message || "Um erro ocorreu ao buscar as imagens"
-          })
-      })
+  Image.findAll()  
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Ocorreu algum erro ao carregar os fotos dos parceiros."
+    });
+      });
 }

@@ -29,6 +29,7 @@ db.role = require("./role.model.js")(sequelize, Sequelize);
 db.cliente = require("./clientes.model.js")(sequelize, Sequelize);
 db.parceiro = require("./parceiros.model.js")(sequelize, Sequelize);
 db.parceiros_precos = require("./parceirosprecos.model.js")(sequelize, Sequelize);
+db.image = require("./image.model.js")(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

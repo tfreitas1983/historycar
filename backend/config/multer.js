@@ -5,8 +5,7 @@ const path = require ('path')
 module.exports = {
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-           cb(null, path.resolve(__dirname));
-            // cb(null, path.resolve(__dirname, '..','..','..', 'var', 'www','chamadosrj.ddns.net','html', 'static','media')); produção
+           cb(null, path.resolve(__dirname, '..', 'controllers',  'uploads'));            
           }, 
         filename: (req, file, cb) => {
             crypto.randomBytes (16, (err, res) => {
@@ -25,10 +24,7 @@ module.exports = {
             'image/png',
             'image/tiff',
             'image/gif',
-            'image/svg',
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+            'image/svg']
         if(allowMimes.includes(file.mimetype)) {
             cb(null, true)
         } else {

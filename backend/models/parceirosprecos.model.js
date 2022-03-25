@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
         presencialinicio: Sequelize.DATE,
         presencialfim: Sequelize.DATE,
         situacao: Sequelize.BOOLEAN
-    }, { timestamps: false });
+    });
   
     return Parceiros_Precos;
 };
