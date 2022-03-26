@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             autoIncrement: true,
             allowNull: false
-          },
+        },
         remoto: Sequelize.FLOAT,
         remotoinicio: Sequelize.DATE,
         remotofim: Sequelize.DATE,

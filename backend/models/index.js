@@ -27,10 +27,19 @@ db.sequelize = sequelize;
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.role = require("./role.model.js")(sequelize, Sequelize);
 db.cliente = require("./clientes.model.js")(sequelize, Sequelize);
+db.clientes_transferencia = require("./clientestransferencia.model.js")(sequelize, Sequelize);
 db.parceiro = require("./parceiros.model.js")(sequelize, Sequelize);
 db.parceiros_precos = require("./parceirosprecos.model.js")(sequelize, Sequelize);
 db.image = require("./image.model.js")(sequelize, Sequelize);
+db.seguradora = require("./seguradoras.model.js")(sequelize, Sequelize);
+db.veiculo = require("./veiculo.model.js")(sequelize, Sequelize);
+db.veiculos_clientes = require("./veiculosclientes.model.js")(sequelize, Sequelize);
+db.veiculos_placas = require("./veiculosplacas.model.js")(sequelize, Sequelize);
+db.veiculos_manutencoes = require("./veiculosmanutencoes.model.js")(sequelize, Sequelize);
+db.veiculos_recalls = require("./veiculosrecalls.model.js")(sequelize, Sequelize);
+db.veiculos_seguros = require("./veiculosseguros.model.js")(sequelize, Sequelize);
 
+//Relação usuários e regras N:M
 db.role.belongsToMany(db.user, {
   through: "user_roles",
   foreignKey: "roleId",
@@ -43,17 +52,58 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId"
 });
 
-
+//Relação usuários e clientes 1:1
 db.user.hasOne(db.cliente);
 db.cliente.belongsTo(db.user);
 
+//Relação usuários e parceiros 1:1
 db.user.hasOne(db.parceiro);
 db.parceiro.belongsTo(db.user);
 
-db.parceiro.hasMany(db.parceiros_precos, {
-  foreignKey: 'parceiroId'
-});
+//Relação parceiros e parceiros_precos 1:N
+db.parceiro.hasMany(db.parceiros_precos, {  foreignKey: 'parceiroId' });
 db.parceiros_precos.belongsTo(db.parceiro);
+
+//Relação clientes e transferência 1:N
+db.cliente.hasMany(db.clientes_transferencia, {  foreignKey: 'clienteId' });
+db.clientes_transferencia.belongsTo(db.cliente);
+
+//Relação veículo e transferência 1:N
+db.veiculo.hasMany(db.clientes_transferencia, {  foreignKey: 'veiculoId' });
+db.clientes_transferencia.belongsTo(db.veiculo);
+
+//Relação veículos e clientes N:M
+db.veiculo.belongsToMany(db.cliente, {
+  through: db.veiculos_clientes,
+  foreignKey: "veiculoId",
+  otherKey: "clienteId"
+});
+
+db.cliente.belongsToMany(db.veiculo, {
+  through: db.veiculos_clientes,
+  foreignKey: "clienteId",
+  otherKey: "veiculoId"
+});
+
+//Relação veículos e placas 1:N
+db.veiculo.hasMany(db.veiculos_placas, { foreignKey: 'veiculoId' });
+db.veiculos_placas.belongsTo(db.veiculo);
+
+//Relação veículos e manutenções 1:N
+db.veiculo.hasMany(db.veiculos_manutencoes, {  foreignKey: 'veiculoId' });
+db.veiculos_manutencoes.belongsTo(db.veiculo);
+
+//Relação veículos e recalls 1:N
+db.veiculo.hasMany(db.veiculos_recalls, { foreignKey: 'veiculoId' });
+db.veiculos_recalls.belongsTo(db.veiculo);
+
+//Relação veículos e seguros 1:N
+db.veiculo.hasMany(db.veiculos_seguros, {  foreignKey: 'veiculoId' });
+db.veiculos_seguros.belongsTo(db.veiculo);
+
+//Relação seguradora e veículo 1:1
+db.seguradora.hasOne(db.veiculos_seguros);
+db.veiculos_seguros.belongsTo(db.seguradora);
 
 
 db.ROLES = ["user", "admin", "moderator"];

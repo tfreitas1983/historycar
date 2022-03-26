@@ -37,7 +37,7 @@ const Role = db.role;
 db.sequelize.sync({force: true}).then(() => {
   console.log('Apaga e sincroniza da base de dados');
   initial();
-});  */
+}); */
 
 
 function initial() {
