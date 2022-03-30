@@ -14,7 +14,6 @@ module.exports = app => {
     router.get("/files", parceiros.buscarImagens)
     router.get("/files/:id", parceiros.buscarImagem)
     router.get("/:id", parceiros.findOne);
-
     router.post("/", parceiros.cadastrar)
     
     router.put("/:id", parceiros.editar)

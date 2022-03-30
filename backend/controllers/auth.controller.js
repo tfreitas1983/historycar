@@ -135,8 +135,8 @@ exports.editar = (req, res) => {
 }
 
 exports.change = (req, res) => {
-  const email = {email: req.body.email}
-  const password = {password: bcrypt.hashSync(req.body.password, 8) }
+  const email = req.body.email
+  const password =  bcrypt.hashSync(req.body.password, 8) 
 
   User.update( {password: password}, {where: {email: email}} )
   .then(data => {

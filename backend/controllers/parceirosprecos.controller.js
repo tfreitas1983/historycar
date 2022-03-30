@@ -4,7 +4,7 @@ const ParceirosPrecos = db.parceiros_precos;
 
 
 exports.findAll = (req, res) => { 
-    ParceirosPrecos.findAll()    
+    ParceirosPrecos.findAll({ include: "parceiros" })    
       .then(data => {
         res.send(data);
       })

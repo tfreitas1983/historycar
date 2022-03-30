@@ -71,6 +71,15 @@ require('./routes/user.routes')(app);
 require('./routes/clientes.routes')(app);
 require('./routes/parceiros.routes')(app);
 require('./routes/parceirosprecos.routes')(app);
+require('./routes/ceps.routes')(app);
+require('./routes/seguradoras.routes')(app);
+require('./routes/veiculos.routes')(app);
+require('./routes/veiculosseguros.routes')(app);
+require('./routes/veiculosplacas.routes')(app);
+require('./routes/veiculosrecalls.routes')(app);
+require('./routes/veiculosmanutencoes.routes')(app);
+require('./routes/clientestransferencias.routes')(app);
+require('./routes/veiculosclientes.routes')(app);
 
 
 // set port, listen for requests

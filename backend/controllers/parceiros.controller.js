@@ -54,7 +54,30 @@ exports.cadastrar = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    Parceiro.findAll({ include: ["user", "parceiros_precos"]})  
+
+  const cidade = req.query.cidade
+  const uf = req.query.uf
+  const sexo = req.query.sexo
+  var query = {}
+
+  if (sexo && !uf && !cidade) {
+    query = { where: {sexo:sexo} }
+  }
+
+  if (sexo && uf && !cidade) {
+    query = { where: {sexo:sexo, uf: uf} }
+  }
+
+  if (sexo && uf && cidade) {
+    query = { where: {sexo:sexo, uf: uf, cidade: cidade} }
+  }
+
+  if (!sexo && uf && cidade) {
+    query = { where: {uf: uf, cidade: cidade} }
+  }
+
+
+  Parceiro.findAll({ include: ["user", "parceiros_precos"]}, query )  
     .then(data => {
       res.send(data);
     })
@@ -65,6 +88,7 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
 
 
 
@@ -79,6 +103,7 @@ exports.findOne = (req, res) => {
       console.log(">> Erro ao buscar o parceiro: ", err);
     });   
 };
+
 
 
 
