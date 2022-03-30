@@ -58,26 +58,26 @@ exports.findAll = (req, res) => {
   const cidade = req.query.cidade
   const uf = req.query.uf
   const sexo = req.query.sexo
-  var query = {}
+  var query = null
 
   if (sexo && !uf && !cidade) {
-    query = { where: {sexo:sexo} }
+    query = { where: {sexo:sexo},  include: ["user", "parceiros_precos"]  }
   }
 
   if (sexo && uf && !cidade) {
-    query = { where: {sexo:sexo, uf: uf} }
+    query = { where: {sexo:sexo, uf: uf},  include: ["user", "parceiros_precos"]  }
   }
 
   if (sexo && uf && cidade) {
-    query = { where: {sexo:sexo, uf: uf, cidade: cidade} }
+    query = { where: {sexo:sexo, uf: uf, cidade: cidade},  include: ["user", "parceiros_precos"]  }
   }
 
   if (!sexo && uf && cidade) {
-    query = { where: {uf: uf, cidade: cidade} }
+    query = { where: {uf: uf, cidade: cidade},  include: ["user", "parceiros_precos"]  }
   }
 
 
-  Parceiro.findAll({ include: ["user", "parceiros_precos"]}, query )  
+  Parceiro.findAll(query)  
     .then(data => {
       res.send(data);
     })

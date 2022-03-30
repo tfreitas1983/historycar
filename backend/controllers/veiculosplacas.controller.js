@@ -29,7 +29,15 @@ exports.cadastrar = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    VeiculosPlacas.findAll({ include: "veiculo"})  
+  const placa = req.query.placa
+
+  var query = {}
+
+  if (placa) {
+    query = {where: {placa: placa}}
+  }
+
+    VeiculosPlacas.findAll({ include: "veiculo"}, query)  
     .then(data => {
       res.send(data);
     })
