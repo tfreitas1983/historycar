@@ -34,10 +34,15 @@ exports.findAll = (req, res) => {
   var query = {}
 
   if (placa) {
-    query = {where: {placa: placa}}
+    query = {where: {placa: placa}, include: "veiculo"}
   }
 
-    VeiculosPlacas.findAll({ include: "veiculo"}, query)  
+  if (!placa) {
+    query = { include: "veiculo"}
+  }
+
+
+    VeiculosPlacas.findAll(query)  
     .then(data => {
       res.send(data);
     })

@@ -76,6 +76,10 @@ exports.findAll = (req, res) => {
     query = { where: {uf: uf, cidade: cidade},  include: ["user", "parceiros_precos"]  }
   }
 
+  if (!sexo && !uf && !cidade) {    
+    query =  { include: ["user", "parceiros_precos"]  }
+  }
+
 
   Parceiro.findAll(query)  
     .then(data => {
