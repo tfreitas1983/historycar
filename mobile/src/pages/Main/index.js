@@ -3,6 +3,7 @@ import { Text, Image, StyleSheet, Dimensions, StatusBar, View} from 'react-nativ
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 
+
 const styles = StyleSheet.create({
   container: {
     fontFamily: 'Open Sans',

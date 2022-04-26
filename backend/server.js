@@ -3,8 +3,14 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require ('path')
 const fs = require("fs")
-
 const app = express();
+
+const sgMail = require('@sendgrid/mail')
+
+
+//Configurações de e-mail
+
+
 
 var corsOptions = {
   origin: ["http://localhost:3002","http://10.1.1.26:3002"]
@@ -82,8 +88,31 @@ require('./routes/clientestransferencias.routes')(app);
 require('./routes/veiculosclientes.routes')(app);
 
 
+
+
+
 // set port, listen for requests
 const PORT = process.env.PORT || 5099;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+require('dotenv').config()
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+const msg = {
+  to: 'tfreitas1983@gmail.com', // Change to your recipient
+  from: 'autohistorysuporte@gmail.com', // Change to your verified sender
+  subject: 'Sending with SendGrid is Fun',
+  text: 'and easy to do anywhere, even with Node.js',
+  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+}
+sgMail
+  .send(msg)
+  .then(() => {
+    console.log('Email sent')
+  })
+  .catch((error) => {
+    console.error(error)
+  })

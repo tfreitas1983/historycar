@@ -22,7 +22,15 @@ module.exports = (sequelize, Sequelize) => {
       responsavel: { type: Sequelize.STRING },
       fotokm: { type: Sequelize.STRING },
       fotonf: { type: Sequelize.STRING },
+      fotonf2: { type: Sequelize.STRING },
+      fotonf3: { type: Sequelize.STRING },
+      fotonf4: { type: Sequelize.STRING },
+      fotonf5: { type: Sequelize.STRING },
       fotoservico: { type: Sequelize.STRING },
+      fotoservico2: { type: Sequelize.STRING },
+      fotoservico3: { type: Sequelize.STRING },
+      fotoservico4: { type: Sequelize.STRING },
+      fotoservico5: { type: Sequelize.STRING },
       situacao: { type: Sequelize.BOOLEAN },
     });
   

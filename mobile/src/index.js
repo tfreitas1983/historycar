@@ -1,12 +1,13 @@
 import React from 'react';
 import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import 'react-native-gesture-handler'
-//import '~/config/ReactotronConfig';
+import './config/ReactotronConfig';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+import { store, persistor } from './store';
+import App from './App';
 
-//import { Provider } from 'react-redux';
-//import store from './store';
 
-import Routes from './routes';
 
 const theme = {
   ...DefaultTheme,
@@ -17,10 +18,14 @@ const theme = {
   },
 };
 
-const App = () => (
-  <PaperProvider  theme={theme}>
-      <Routes />
-  </PaperProvider>
+const Index = () => (
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <PaperProvider  theme={theme}>
+        <App />
+      </PaperProvider>
+    </PersistGate>
+  </Provider>
 );
 
-export default App;
+export default Index;

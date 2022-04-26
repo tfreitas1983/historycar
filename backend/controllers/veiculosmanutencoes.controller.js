@@ -23,7 +23,15 @@ exports.cadastrar = (req, res) => {
         responsavel: req.body.responsavel,
         fotokm: req.body.fotokm,
         fotonf: req.body.fotonf,
+        fotonf2: req.body.fotonf,
+        fotonf3: req.body.fotonf,
+        fotonf4: req.body.fotonf,
+        fotonf5: req.body.fotonf,
         fotoservico: req.body.fotoservico,
+        fotoservico2: req.body.fotoservico,
+        fotoservico3: req.body.fotoservico,
+        fotoservico4: req.body.fotoservico,
+        fotoservico5: req.body.fotoservico,
         cep: req.body.cep,
         endereco: req.body.endereco,
         numero: req.body.numero,
@@ -95,7 +103,15 @@ exports.editar = (req, res) => {
         responsavel: req.body.responsavel,
         fotokm: req.body.fotokm,
         fotonf: req.body.fotonf,
+        fotonf2: req.body.fotonf,
+        fotonf3: req.body.fotonf,
+        fotonf4: req.body.fotonf,
+        fotonf5: req.body.fotonf,
         fotoservico: req.body.fotoservico,
+        fotoservico2: req.body.fotoservico,
+        fotoservico3: req.body.fotoservico,
+        fotoservico4: req.body.fotoservico,
+        fotoservico5: req.body.fotoservico,
         cep: req.body.cep,
         endereco: req.body.endereco,
         numero: req.body.numero,
@@ -155,7 +171,7 @@ exports.buscarImagem = (req, res) => {
        res.send(data)
       })
       .catch((err) => {
-        console.log(">> Erro ao buscar a foto do parceiro: ", err);
+        console.log(">> Erro ao buscar a foto: ", err);
       });  
   }
   
@@ -168,7 +184,7 @@ exports.buscarImagem = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Ocorreu algum erro ao carregar os fotos dos parceiros."
+          err.message || "Ocorreu algum erro ao carregar as fotos."
       });
         });
 }

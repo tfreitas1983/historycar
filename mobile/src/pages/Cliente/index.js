@@ -1,8 +1,13 @@
-import React from 'react';
-
-import { Text, View, StyleSheet, Dimensions, StatusBar} from 'react-native';
+import React, {useRef, useState} from 'react';
+import { Text, View, StyleSheet, Dimensions, StatusBar, Alert} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
+import { useDispatch, useSelector } from "react-redux";
+import {signInRequest} from '../../store/modules/auth/actions';
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -68,21 +73,68 @@ const styles = StyleSheet.create({
   },
 });
 
-const Cliente = ({ navigation }) => (
+
+export default function Cliente  ({ navigation }) {
+  const passwordRef = useRef();
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const signed = useSelector(state => state.auth.signed);
+  
+  function handleSubmit () {
+
+    if (email || password === '') {
+      Alert.alert('Digite um e-mail e/ou senha válidos')
+      return
+    }
+    
+    dispatch(signInRequest(email, password));
+
+    if (signed === true) {
+      navigation.navigate('HomeCliente')
+    } else {
+      return
+    }
+   
+  }
+
+  return (
     <View>            
         <StatusBar barStyle="light-content" backgroundColor="#ffad26" />
         
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-    
+          
             <Text style={styles.titulo}>Entre com seu e-mail e senha abaixo:</Text>   
-    
-            <Text style={styles.opcoes}> <Entypo name="email" size={30} color="#a2a2a2" /> E-mail </Text>
-            <Text style={styles.opcoes}> <Entypo name="lock" size={30} color="#b2b2b2" /> Senha </Text>
-            <Text style={styles.entrar}  onPress={() => navigation.navigate('HomeCliente')}> <Entypo name="level-down" size={30} color="#d2d2d2" /> Entrar </Text>
+            
+            <Input 
+              keyboardType="email-address"
+              autoCorrect={false}
+              autoCapitalize="none"
+              style={{marginTop: 30, color: '#fff'}} 
+              icon="mail-outline" 
+              placeholder="Digite seu e-mail"
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current.focus()}
+              value={email}
+              onChangeText={setEmail} />
+
+            <Input 
+            style={{marginTop: 30, color: '#fff'}} 
+            icon="lock" 
+            secureTextEntry
+            placeholder="Digite a sua senha"
+            ref={passwordRef}
+            returnKeyType="send"
+            value={password}
+            onChangeText={setPassword}
+            onSubmitEditing={() => handleSubmit()}
+              />
+            
+            <Button  onPress={() => handleSubmit()}>  Entrar </Button>
+           
             <Text style={styles.cadastrar}  onPress={() => navigation.navigate('Cadastrar')}> <Entypo name="add-user" size={45} color="#000" /> Cadastrar-me</Text>
             <Text style={styles.forgot} onPress={() => navigation.navigate('Esqueci')}> Esqueci minha senha</Text>
         </LinearGradient>
   </View>
-);
-
-export default Cliente;
+  )}
