@@ -81,19 +81,22 @@ export default function Cliente  ({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const signed = useSelector(state => state.auth.signed);
+  const tipo = useSelector(state => state.auth.tipo);
+
   
   function handleSubmit () {
 
-    if (email || password === '') {
+    if (email === '' || password === '') {
       Alert.alert('Digite um e-mail e/ou senha válidos')
       return
     }
     
     dispatch(signInRequest(email, password));
 
-    if (signed === true) {
+    if (signed === true && tipo === 2) {
       navigation.navigate('HomeCliente')
     } else {
+      Alert.alert('Suas credenciais são inválidas ou seu acesso é de parceiro')
       return
     }
    

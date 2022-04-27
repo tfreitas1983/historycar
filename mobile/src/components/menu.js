@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StyleSheet, Dimensions, Text, ScrollView} from 'react-native';
+import { StyleSheet, Dimensions, Text} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
@@ -11,6 +11,8 @@ import Cacador from '../pages/Cliente/cacador';
 import Ajustes from '../pages/Cliente/ajustes';
 import Suporte from '../pages/Cliente/suporte';
 import Despachante from '../pages/Cliente/despachante';
+import { useDispatch, useSelector  } from "react-redux";
+import {signOut} from '../store/modules/auth/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -90,9 +92,19 @@ const styles = StyleSheet.create({
 });
 
 
+export default function MenuCliente  ({ navigation }) {
+
+  const dispatch = useDispatch();
+  const signed = useSelector(state => state.auth.signed);
+
+
+
 const Drawer = createDrawerNavigator();
 
-const MenuCliente = () => (
+
+
+  return (
+
   <Drawer.Navigator
   screenOptions={{
     drawerStyle: {
@@ -150,6 +162,4 @@ const MenuCliente = () => (
       drawerIcon:(({focused}) => <Entypo color = {focused ? '#313131' : '#fff'} name='log-out' color={'#fff'}size={20} />) }}
       />
     </Drawer.Navigator>
-);
-
-export default MenuCliente;
+  )}

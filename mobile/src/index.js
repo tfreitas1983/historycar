@@ -21,9 +21,13 @@ const theme = {
 const Index = () => (
   <Provider store={store}>
     <PersistGate persistor={persistor}>
+    
       <PaperProvider  theme={theme}>
-        <App />
+     
+        <App/>
+       
       </PaperProvider>
+     
     </PersistGate>
   </Provider>
 );
