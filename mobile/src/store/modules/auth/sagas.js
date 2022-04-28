@@ -9,11 +9,11 @@ export function* signIn({ payload }) {
         
         const response = yield call(api.post, 'signin', { email, password });
 
-        const { accessToken, tipo } = response.data;
+        const { accessToken, tipo, situacao } = response.data;
         
         api.defaults.headers.Authorization = `Barear ${accessToken}`;
 
-        yield put(AuthActions.signInSucess(accessToken, email, tipo));
+        yield put(AuthActions.signInSucess(accessToken, email, tipo, situacao));
        
 
        // history.push('/dashboard');

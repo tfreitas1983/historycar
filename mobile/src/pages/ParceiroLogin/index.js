@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {signInRequest} from '../../store/modules/auth/actions';
 
 
-
 const styles = StyleSheet.create({
   container: {
     fontFamily: 'Open Sans',
@@ -82,7 +81,8 @@ export default function ParceiroLogin  ({ navigation }) {
   const [password, setPassword] = useState('');
   const signed = useSelector(state => state.auth.signed);
   const tipo = useSelector(state => state.auth.tipo);
-  
+  const situacao = useSelector(state => state.auth.situacao);
+
   function handleSubmit () {
 
     if (email ==='' ||password === '') {
@@ -92,7 +92,11 @@ export default function ParceiroLogin  ({ navigation }) {
     
     dispatch(signInRequest(email, password));
 
-    if (signed === true && tipo === 1) {
+    if (situacao === 0) {
+      Alert.alert('Seu login está inativo')
+    }
+
+    if (signed === true && tipo === 1 && situacao === true) {
       navigation.navigate('TemplateParceiro')
     } else {
       Alert.alert('Suas credenciais são inválidas ou seu acesso é de cliente')

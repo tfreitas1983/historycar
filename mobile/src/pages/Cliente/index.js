@@ -82,6 +82,7 @@ export default function Cliente  ({ navigation }) {
   const [password, setPassword] = useState('');
   const signed = useSelector(state => state.auth.signed);
   const tipo = useSelector(state => state.auth.tipo);
+  const situacao = useSelector(state => state.auth.situacao);
 
   
   function handleSubmit () {
@@ -93,7 +94,11 @@ export default function Cliente  ({ navigation }) {
     
     dispatch(signInRequest(email, password));
 
-    if (signed === true && tipo === 2) {
+    if (situacao === 0) {
+      Alert.alert('Seu login está inativo')
+    }
+
+    if (signed === true && tipo === 2 && situacao === true) {
       navigation.navigate('HomeCliente')
     } else {
       Alert.alert('Suas credenciais são inválidas ou seu acesso é de parceiro')

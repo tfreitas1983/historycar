@@ -32,6 +32,7 @@ import CacadorLista from './pages/Cliente/cacadorlista';
 import DespachanteLista from './pages/Cliente/despachantelista';
 import DespachanteDetalhes from './pages/Cliente/despachantedetalhes';
 import CacadorDetalhes from './pages/Cliente/cacadordetalhes';
+import Sair from './components/sair';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -355,7 +356,16 @@ export default function Routes() {
                 }}
             />
 
-
+            <Stack.Screen
+                name="Sair"
+                component={Sair}
+                options={{
+                title: 'Sair',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
 
 
         

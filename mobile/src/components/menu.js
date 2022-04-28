@@ -11,6 +11,7 @@ import Cacador from '../pages/Cliente/cacador';
 import Ajustes from '../pages/Cliente/ajustes';
 import Suporte from '../pages/Cliente/suporte';
 import Despachante from '../pages/Cliente/despachante';
+import Sair from './sair';
 import { useDispatch, useSelector  } from "react-redux";
 import {signOut} from '../store/modules/auth/actions';
 
@@ -157,7 +158,7 @@ const Drawer = createDrawerNavigator();
       />
       <Drawer.Screen 
       name="Sair" 
-      component={Cliente} 
+      component={Sair} 
       options={{drawerLabel: (({focused}) => <Text style={{fontSize: 16, color: focused ? '#fff' : '#fff' }}> Sair</Text> ),
       drawerIcon:(({focused}) => <Entypo color = {focused ? '#313131' : '#fff'} name='log-out' color={'#fff'}size={20} />) }}
       />
