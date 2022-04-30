@@ -110,42 +110,59 @@ export default function Veiculos  ({ navigation }) {
   const userId = useSelector(state => state.auth.id);
   
   const [veiculos, setVeiculos] = useState([]);
+ // const [vinculo, setVinculo] = useState([]);
   const [cliente, setCliente] = useState('');
-  const clienteId = cliente.map(item => {return item.clienteId}).pop()
-  
-  
+  let clienteId = null
 
   useEffect( () => { 
     axios.get(`http://10.0.2.2:5099/api/clientes?user=${userId}`)
-         .then(response => {            
-             setCliente(response.data.map(item => ({clienteId: item.id}))); 
+         .then(async  response => {            
+             setCliente(response.data.map(item => ({clienteId: item.id})));               
+             await  pegaVeiculos();
          }); 
-        
-  
-    axios.get('http://10.0.2.2:5099/api/veiculosclientes?cliente='+clienteId)
+  }, []); 
+   
+    
+
+    function pegaVeiculos () {
+      if (cliente) { 
+        clienteId = cliente.map(item => {return item.clienteId}).pop();
+      }      
+      
+      axios.get('http://10.0.2.2:5099/api/veiculosclientes?cliente='+clienteId)
          .then(response => {            
-             setVeiculos(response.data.map(item => ({...item.veiculo}))); 
-         }); 
-    }, []); 
+             setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
+            // setVinculo(response.data.map(dados => ({id: dados.id, situacao: dados.situacao})));
+             console.log('veiculo', veiculos)
+         });  
+    }
 
     let lista = null
-    
+    let inativos = null
+
+
     if (veiculos) {
        lista = veiculos.map((item, index) => {
-           if (item.situacao === true) {
+          if (item.situacao === true) {
           return (
             <View style={styles.toogle} onPress={() => navigation.navigate('Detalhes')}>
-              <Text style={styles.titulo} key={index} onPress={() => navigation.navigate('Detalhes')}>  {item.modelodescricao} </Text> 
+              <Text style={styles.titulo} key={index} onPress={() => navigation.navigate('Detalhes')}>  {item.veiculo.modelodescricao} </Text> 
               <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
             </View>
           )} else{
             return (
-              <Text style={styles.inativo} key={index} onPress={() => navigation.navigate('Detalhes')}>  {item.modelodescricao} </Text> 
+              <View>
+                <Text style={styles.titulo}>Veículos com baixa</Text>
+                <View style={styles.toogle} onPress={() => navigation.navigate('Detalhes')}>
+                  <Text style={styles.titulo} key={index} onPress={() => navigation.navigate('Detalhes')}>  {item.veiculo.modelodescricao} </Text> 
+                  <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
+                </View>
+              </View>
               )
           }
         })}       
-    
-    console.log(cliente.map(item => {return item.clienteId}).pop())
+
+      
   
   return (
     <View>
@@ -153,6 +170,7 @@ export default function Veiculos  ({ navigation }) {
         <ScrollView>           
             
               {lista}
+              {inativos}
 
             <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo veículo</Text>
         </ScrollView>

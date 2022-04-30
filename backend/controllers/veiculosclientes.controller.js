@@ -47,7 +47,7 @@ exports.findAll = (req, res) => {
   var query = {}
 
   if (cliente) {
-    query = {where: {clienteId: cliente}, include: "veiculo" }
+    query = {where: {clienteId: cliente}, include: ["veiculo"], order: [['situacao', 'DESC']]}
   }
 
   if (!cliente) {
