@@ -1,8 +1,9 @@
-import React from 'react';
-
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { useDispatch, useSelector } from "react-redux";
+import axios from 'axios';
 
 const styles = StyleSheet.create({
   container: {
@@ -103,28 +104,58 @@ const styles = StyleSheet.create({
   },
 });
 
+export default function Veiculos  ({ navigation }) {
 
+  //const dispatch = useDispatch();
+  const userId = useSelector(state => state.auth.id);
+  
+  const [veiculos, setVeiculos] = useState([]);
+  const [cliente, setCliente] = useState('');
+  const clienteId = cliente.map(item => {return item.clienteId}).pop()
+  
+  
 
+  useEffect( () => { 
+    axios.get(`http://10.0.2.2:5099/api/clientes?user=${userId}`)
+         .then(response => {            
+             setCliente(response.data.map(item => ({clienteId: item.id}))); 
+         }); 
+        
+  
+    axios.get('http://10.0.2.2:5099/api/veiculosclientes?cliente='+clienteId)
+         .then(response => {            
+             setVeiculos(response.data.map(item => ({...item.veiculo}))); 
+         }); 
+    }, []); 
 
-
-
-const Veiculos = ({ navigation }) => (
+    let lista = null
+    
+    if (veiculos) {
+       lista = veiculos.map((item, index) => {
+           if (item.situacao === true) {
+          return (
+            <View style={styles.toogle} onPress={() => navigation.navigate('Detalhes')}>
+              <Text style={styles.titulo} key={index} onPress={() => navigation.navigate('Detalhes')}>  {item.modelodescricao} </Text> 
+              <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
+            </View>
+          )} else{
+            return (
+              <Text style={styles.inativo} key={index} onPress={() => navigation.navigate('Detalhes')}>  {item.modelodescricao} </Text> 
+              )
+          }
+        })}       
+    
+    console.log(cliente.map(item => {return item.clienteId}).pop())
+  
+  return (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-        <ScrollView>
+        <ScrollView>           
             
-            <View style={styles.toogle}>
-                <Text style={styles.titulo}  onPress={() => navigation.navigate('Detalhes')}>Jeep Compass KXV-9U30</Text>
-                <Text style={styles.titulo} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
-            </View>
-            <View style={styles.inativo}>
-                <Text style={styles.titulo}  onPress={() => navigation.navigate('Detalhes')}>Hyundai Tucson KDY-5374</Text>
-                <Text style={styles.titulo} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
-            </View>
+              {lista}
+
             <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo veículo</Text>
         </ScrollView>
         </LinearGradient>
     </View>
-);
-
-export default Veiculos;
+)}

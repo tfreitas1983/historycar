@@ -73,17 +73,24 @@ db.veiculo.hasMany(db.clientes_transferencia, {  foreignKey: 'veiculoId' });
 db.clientes_transferencia.belongsTo(db.veiculo);
 
 //Relação veículos e clientes N:M
-db.veiculo.belongsToMany(db.cliente, {
-  through: db.veiculos_clientes,
-  foreignKey: "veiculoId",
-  otherKey: "clienteId"
-});
 
 db.cliente.belongsToMany(db.veiculo, {
   through: db.veiculos_clientes,
   foreignKey: "clienteId",
-  otherKey: "veiculoId"
+  as: "veiculo"
 });
+
+db.veiculo.belongsToMany(db.cliente, {
+  through: db.veiculos_clientes,
+  foreignKey: "veiculoId",
+  as: "cliente"
+});
+
+db.cliente.hasMany(db.veiculos_clientes, {as: 'veiculos_clientes'});
+db.veiculos_clientes.belongsTo(db.cliente, {as:'cliente', foreignKey: 'clienteId'});
+db.veiculo.hasMany(db.veiculos_clientes, {as: 'veiculos_clientes'});
+db.veiculos_clientes.belongsTo(db.veiculo,{as: 'veiculo', foreignKey: 'veiculoId'});
+
 
 //Relação veículos e placas 1:N
 db.veiculo.hasMany(db.veiculos_placas, { foreignKey: 'veiculoId' });

@@ -41,7 +41,18 @@ exports.cadastrar = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  Cliente.findAll({ include: ["user"]})  
+  const user = req.query.userId
+
+  var query = {}
+
+  if (user) {
+    query = {where: {userId: user}, include: "user" }
+  }
+
+  if (!user) {
+    query = { include: "user"}
+  }
+  Cliente.findAll(query)  
     .then(data => {
       res.send(data);
     })

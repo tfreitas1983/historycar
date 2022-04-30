@@ -12,8 +12,6 @@ import Ajustes from '../pages/Cliente/ajustes';
 import Suporte from '../pages/Cliente/suporte';
 import Despachante from '../pages/Cliente/despachante';
 import Sair from './sair';
-import { useDispatch, useSelector  } from "react-redux";
-import {signOut} from '../store/modules/auth/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -93,16 +91,9 @@ const styles = StyleSheet.create({
 });
 
 
-export default function MenuCliente  ({ navigation }) {
-
-  const dispatch = useDispatch();
-  const signed = useSelector(state => state.auth.signed);
-
-
+export default function MenuCliente  () {
 
 const Drawer = createDrawerNavigator();
-
-
 
   return (
 

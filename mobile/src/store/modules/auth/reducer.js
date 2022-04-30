@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     accessToken: null,
     tipo: null,
     situacao: null,
+    id: null,
     signed: false,
     loading: false,
 };
@@ -18,6 +19,7 @@ export default function auth(state = INITIAL_STATE, action) {
             case '@auth/SIGN_IN_SUCESS': {
                 draft.accessToken = action.payload.accessToken;
                 draft.tipo = action.payload.tipo;
+                draft.id = action.payload.id,
                 draft.situacao = action.payload.situacao;
                 draft.signed = true;
                 draft.loading = false;
