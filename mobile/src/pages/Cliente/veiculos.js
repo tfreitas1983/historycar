@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
+import {pegaVeiculo} from '../../store/modules/veiculos/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -106,63 +107,63 @@ const styles = StyleSheet.create({
 
 export default function Veiculos  ({ navigation }) {
 
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const userId = useSelector(state => state.auth.id);
   
   const [veiculos, setVeiculos] = useState([]);
- // const [vinculo, setVinculo] = useState([]);
   const [cliente, setCliente] = useState('');
-  let clienteId = null
+  
 
-  useEffect( () => { 
-    axios.get(`http://10.0.2.2:5099/api/clientes?user=${userId}`)
-         .then(async  response => {            
-             setCliente(response.data.map(item => ({clienteId: item.id})));               
-             await  pegaVeiculos();
-         }); 
-  }, []); 
-   
-    
-
-    function pegaVeiculos () {
-      if (cliente) { 
-        clienteId = cliente.map(item => {return item.clienteId}).pop();
-      }      
-      
-      axios.get('http://10.0.2.2:5099/api/veiculosclientes?cliente='+clienteId)
-         .then(response => {            
-             setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
-            // setVinculo(response.data.map(dados => ({id: dados.id, situacao: dados.situacao})));
-             console.log('veiculo', veiculos)
-         });  
-    }
-
-    let lista = null
-    let inativos = null
+   useEffect( () => { 
+     console.log('userId', userId)
+      axios.get(`http://10.0.2.2:5099/api/clientes?user=${userId}`)
+      .then( response => {             
+        setCliente( response.data.map(item =>  {return item.id}).pop());               
+        pegaVeiculos();
+        console.log('cliente', cliente)
+      });             
+  }, []);      
 
 
-    if (veiculos) {
-       lista = veiculos.map((item, index) => {
-          if (item.situacao === true) {
+  async function pegaVeiculos () {
+  
+   let resp = await axios.get('http://10.0.2.2:5099/api/veiculosclientes?cliente='+cliente)
+        .then(response => {            
+           setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
+            console.log('veiculos', response.data)
+        });  
+  }
+
+  let lista = null;
+  let inativos = null;
+
+  if (veiculos) {
+      lista = veiculos.map((item, index) => {
+        if (item.situacao === true) {
+        return (
+          <View style={styles.toogle} >
+            <Text style={styles.titulo} key={index} onPress={() => Detalhes(item.id)}>  {item.veiculo.modelodescricao} </Text> 
+            <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
+          </View>
+        )} else{
           return (
-            <View style={styles.toogle} onPress={() => navigation.navigate('Detalhes')}>
-              <Text style={styles.titulo} key={index} onPress={() => navigation.navigate('Detalhes')}>  {item.veiculo.modelodescricao} </Text> 
-              <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
-            </View>
-          )} else{
-            return (
-              <View>
-                <Text style={styles.titulo}>Veículos com baixa</Text>
-                <View style={styles.toogle} onPress={() => navigation.navigate('Detalhes')}>
-                  <Text style={styles.titulo} key={index} onPress={() => navigation.navigate('Detalhes')}>  {item.veiculo.modelodescricao} </Text> 
-                  <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
-                </View>
+            <View>
+              <Text style={styles.titulo}>Veículos com baixa</Text>
+              <View style={styles.inativo}>
+                <Text style={styles.titulo} key={index} onPress={() => Detalhes(item.id)}>  {item.veiculo.modelodescricao} </Text> 
+                <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
               </View>
-              )
-          }
-        })}       
+            </View>
+            )
+        }
+      })}   
 
-      
+        
+    function Detalhes (id) {
+     dispatch(pegaVeiculo(id));
+     navigation.navigate('Detalhes')
+    }
+    
   
   return (
     <View>

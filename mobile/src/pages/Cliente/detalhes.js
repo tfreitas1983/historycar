@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
-import {View, Text, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useDispatch, useSelector } from "react-redux";
+import axios from 'axios';
 
 const styles = StyleSheet.create({
   container: {
@@ -82,47 +84,95 @@ const styles = StyleSheet.create({
   },
 });
 
+export default function Detalhes ({navigation}){
+  //const dispatch = useDispatch();
+  const id = useSelector(state => state.veiculo.id);
+  const [dados, setDados] = useState('');
 
 
+  useEffect( () => { 
+    async function VeiculosClientes () {
+      try{
+      let resp = await axios.get(`http://10.0.2.2:5099/api/veiculosclientes/${id}`) 
+        .then( response  =>  {               
+           setDados(response.data)//.map(item => ({ veiculo: item.veiculo} ))); 
+        })
+        resp = await resp//map(item => ({...item})) 
+      }
+      catch (e){
+        console.error(e);
+      }    
+     
+    }   
+    VeiculosClientes();   
+    
+  }, [])
 
+  console.log('dados', dados);
+  
+  
+  if (dados.length > 0 || dados) {
 
-
-const Detalhes = ({navigation}) => (
+   if( dados && (dados !== "" || dados !== null)) {  
+    
+      return(
+        <View>
+            <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+            <ScrollView>   
+              
+                <Text style={styles.titulo}> {dados.veiculo.modelodescricao} </Text>
+                <View style={styles.toogle}>
+                    <Text style={styles.item}> Valor FIPE </Text>
+                    <Text style={styles.item}>R$ 124.000,00 </Text>
+                </View>
+                <View style={styles.toogle}>
+                    <Text style={styles.item}> Última Km registrada </Text>
+                    <Text style={styles.item}> {dados.kmaquisicao} </Text>
+                </View>
+                <View style={styles.toogle}>
+                    <Text style={styles.item}> Recall </Text>
+                    <Text style={styles.item}> Não </Text>
+                </View>
+                <View style={styles.toogle}>
+                    <Text style={styles.item}> Última manutenção </Text>
+                    <Text style={styles.item}> 15/09/2021 </Text>
+                </View>
+                <View style={styles.toogle}>
+                    <Text style={styles.item}> Segurado </Text>
+                    <Text style={styles.item}> Sim </Text>
+                </View>
+                <View style={styles.toogle}>
+                    <Text style={styles.item}> Renavam </Text>
+                    <Text style={styles.item}> {dados.veiculo.renavam} </Text>
+                </View>
+                <Text  onPress={() => navigation.navigate('Manutencao')} style={styles.entrar}> <Entypo name="tools" size={30} /> Registrar Manutenção</Text>
+                <Text  onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <MaterialCommunityIcons name="shield-car" size={37} /> Novo Seguro</Text>
+                <Text  onPress={() => navigation.navigate('Venda')} style={styles.entrar}>  <Entypo name="swap" size={30} /> Comunicar Venda</Text>
+            </ScrollView>
+            </LinearGradient>
+        </View>
+      )
+    
+  } else {
+    return (
     <View>
-        <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-        <ScrollView>   
-          
-            <Text style={styles.titulo}> Jeep Compass 2018 Diesel </Text>
-            <View style={styles.toogle}>
-                <Text style={styles.item}> Valor FIPE </Text>
-                <Text style={styles.item}>R$ 124.000,00 </Text>
-            </View>
-            <View style={styles.toogle}>
-                <Text style={styles.item}> Última Km registrada </Text>
-                <Text style={styles.item}> 98.455 </Text>
-            </View>
-            <View style={styles.toogle}>
-                <Text style={styles.item}> Recall </Text>
-                <Text style={styles.item}> Não </Text>
-            </View>
-            <View style={styles.toogle}>
-                <Text style={styles.item}> Última manutenção </Text>
-                <Text style={styles.item}> 15/09/2021 </Text>
-            </View>
-            <View style={styles.toogle}>
-                <Text style={styles.item}> Segurado </Text>
-                <Text style={styles.item}> Sim </Text>
-            </View>
-            <View style={styles.toogle}>
-                <Text style={styles.item}> Renavam </Text>
-                <Text style={styles.item}> 11005151000 </Text>
-            </View>
-            <Text  onPress={() => navigation.navigate('Manutencao')} style={styles.entrar}> <Entypo name="tools" size={30} /> Registrar Manutenção</Text>
-            <Text  onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <MaterialCommunityIcons name="shield-car" size={37} /> Novo Seguro</Text>
-            <Text  onPress={() => navigation.navigate('Venda')} style={styles.entrar}>  <Entypo name="swap" size={30} /> Comunicar Venda</Text>
-        </ScrollView>
-        </LinearGradient>
+    <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+    <ScrollView>       
+        <Text style={styles.titulo}> Não há dados para este veículo </Text>
+    </ScrollView>
+    </LinearGradient>
     </View>
-);
-
-export default Detalhes;
+    )
+  }
+  } else {
+    return (
+    <View>
+    <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+    <ScrollView>       
+        <Text style={styles.container}> Não há dados para este veículo </Text>
+    </ScrollView>
+    </LinearGradient>
+    </View>
+    )
+  }
+}

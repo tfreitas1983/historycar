@@ -9,7 +9,7 @@ export default reducers => {
         {
             key: 'root',
             storage: AsyncStorage,
-            //whitelist: ['auth', 'user'],
+            whitelist: ['auth', 'veiculo'],
         },
         reducers
     );
