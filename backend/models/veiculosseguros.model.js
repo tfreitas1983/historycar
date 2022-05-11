@@ -8,6 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         },       
         vigenciainicio: { type: Sequelize.DATE },
         vigenciafim: { type: Sequelize.DATE },
+        valor: { type: Sequelize.FLOAT },
         situacao: { type: Sequelize.BOOLEAN },
     });
   

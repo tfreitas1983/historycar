@@ -33,6 +33,7 @@ import DespachanteLista from './pages/Cliente/despachantelista';
 import DespachanteDetalhes from './pages/Cliente/despachantedetalhes';
 import CacadorDetalhes from './pages/Cliente/cacadordetalhes';
 import Sair from './components/sair';
+import SeguroDetalhe from './pages/Cliente/segurodetalhe';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -272,6 +273,17 @@ export default function Routes() {
                 component={SeguroLista}
                 options={{
                 title:' Lista de seguros ',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+
+            <Stack.Screen
+                name="SeguroDetalhe"
+                component={SeguroDetalhe}
+                options={{
+                title:' Seguro do veículo ',
                 headerStyle: { backgroundColor: '#ffad26' },
                 headerTintColor: '#fff',
                 headerTitleAlign: 'center',

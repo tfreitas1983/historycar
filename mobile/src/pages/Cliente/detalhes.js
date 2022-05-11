@@ -4,7 +4,7 @@ import {View, Text, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import axios from 'axios';
 
 const styles = StyleSheet.create({
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Detalhes ({navigation}){
-  //const dispatch = useDispatch();
+  
   const id = useSelector(state => state.veiculo.id);
   const [dados, setDados] = useState('');
 

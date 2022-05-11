@@ -13,6 +13,7 @@ exports.cadastrar = (req, res) => {
       const dados = {
         vigenciainicio: req.body.vigenciainicio,
         vigenciafim: req.body.vigenciafim,
+        valor: req.body.valor,
         seguradoraId: req.body.seguradoraId,
         veiculoId: req.body.veiculoId,
         situacao: req.body.situacao
@@ -31,7 +32,18 @@ exports.cadastrar = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    VeiculosSeguros.findAll({ include: ["veiculo", "seguradora"]})  
+  const veiculo = req.query.veiculo
+
+  var query = {}
+
+  if (veiculo) {
+    query = {where: {veiculoId: veiculo}, include: ["veiculo","seguradora"], order: [['situacao', 'DESC']]}
+  }
+
+  if (!veiculo) {
+    query = { include: [ "veiculo", "seguradora" ]}
+  }
+    VeiculosSeguros.findAll(query)  
     .then(data => {
       res.send(data);
     })
@@ -71,6 +83,7 @@ exports.editar = (req, res) => {
   VeiculosSeguros.update({
     vigenciainicio: req.body.vigenciainicio,
     vigenciafim: req.body.vigenciafim,
+    valor: req.body.valor,
     seguradoraId: req.body.seguradoraId,
     veiculoId: req.body.veiculoId,
     situacao: req.body.situacao
