@@ -1,8 +1,11 @@
-import React from 'react';
-
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { useSelector } from "react-redux";
+import axios from 'axios';
+import moment from 'moment'
+import {Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
+import MyDate from '../../components/datepicker';
 
 const styles = StyleSheet.create({
   container: {
@@ -127,7 +130,17 @@ const styles = StyleSheet.create({
 });
 
 
-const Seguro = ({ navigation }) => (
+export default function Seguro  ({ navigation }) {
+
+  const id = useSelector(state => state.veiculo.id);
+  const [dados, setDados] = useState('');
+  const [datainicio, setInicio] = useState('');
+  const [datafim, setFim] = useState('');
+  const [open, setOpen] = useState(false)
+  console.log('inicio', datainicio)
+
+ 
+return(
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <ScrollView>
@@ -135,13 +148,13 @@ const Seguro = ({ navigation }) => (
             <Text style={styles.opcoes}> Porto Seguro </Text>
             <Text style={styles.titulo}> Vigência </Text>
             <View style={styles.periodo}>
-                <Text style={styles.datas}> 01/10/2021</Text>
-                <Text style={styles.datas}> 30/09/2022</Text>
+              
+              <MyDate onSetDate={date => { setInicio(date); }} />              
+              
             </View>
             <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Salvar</Text>
         </ScrollView>
         </LinearGradient>
     </View>
 );
-
-export default Seguro;
+}

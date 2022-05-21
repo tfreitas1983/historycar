@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useSelector } from "react-redux";
 import axios from 'axios';
 import moment from 'moment'
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 
