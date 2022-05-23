@@ -138,24 +138,24 @@ const styles = StyleSheet.create({
     }
 
     return (
-        <View style={styles.toogle}>
-            <Text style={styles.titulo} onPress={() => setOpen(true)}>Início </Text> 
+        <View>
+           
             <DatePicker
                 modal
+                maximumDate={new Date()}
                 open={open}
                 date={date}
                 mode="date"
+                title='Escolha a data'
                 onDateChange={setDate}
                 locale='pt-br'
                 onConfirm={(date) => {
                     const newDate = date
-                setOpen(false)
-                setDate(date)
-                onSetDate(newDate);
+                    setOpen(false)
+                    setDate(date)
+                    onSetDate(newDate);
                 }}
-                onCancel={() => {
-                setOpen(false)
-                }}
+                onCancel={ () => {  setOpen(false)  }}
             />
             {mostrar}
         </View>
