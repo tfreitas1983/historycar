@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import { useSelector } from "react-redux";
 import axios from 'axios';
-import {Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView, Alert} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MyDate from '../../components/datepicker';
 import SelectDropdown from 'react-native-select-dropdown'
 import Input from '../../components/Input'
+import { moedaMask } from '../../components/masks';
 
 const styles = StyleSheet.create({
   container: {
@@ -151,6 +152,7 @@ export default function Seguro  ({ navigation }) {
   const [idSelecionada, setIdSelecionada] = useState('');
   const [datainicio, setInicio] = useState('');
   const [datafim, setFim] = useState('');
+  const [valormoeda, setValorMoeda] = useState('');
   const [valor, setValor] = useState('');
   
   useEffect( () => { 
@@ -196,9 +198,22 @@ export default function Seguro  ({ navigation }) {
     )
   }
 
+
+
+
   handleSubmit = () => {
 
+    if (valormoeda) {
+      setValor( parseInt(valormoeda.replace('R$ ','').replace(',','')) )
+      console.log('valor', valor)
+    Alert.alert('Valor',valor)
+    } 
+
+    
+
   }
+
+  
   
     return(
       <View>
@@ -243,8 +258,8 @@ export default function Seguro  ({ navigation }) {
              placeholder="R$"             
              returnKeyType="next"
              onSubmitEditing={() => handleSubmit()}
-             value={'R$ ' + valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.').toFixed(2)}
-             onChangeText={setValor} 
+             value={'R$ ' + moedaMask(valormoeda)}
+             onChangeText={setValorMoeda} 
              />
               <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Salvar</Text>
           </ScrollView>
