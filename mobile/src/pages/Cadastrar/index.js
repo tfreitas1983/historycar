@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import user from '../../store/modules/user/reducer';
+import { celMask, cepMask, cpfMask } from '../../components/masks';
 
 const styles = StyleSheet.create({
   container: {
@@ -140,7 +141,7 @@ export default function Cadastrar  ({ navigation }) {
               placeholder="Nome ou Razão Social"
               returnKeyType="next"
               onSubmitEditing={() => cpfRef.current.focus()}
-              value={nome}
+              value={nome.toUpperCase()}
               ref={nomeRef}
               onChangeText={setNome} />
 
@@ -153,7 +154,7 @@ export default function Cadastrar  ({ navigation }) {
               ref={cpfRef}
               returnKeyType="next"
               onSubmitEditing={() => apelidoRef.current.focus()}
-              value={cpf}
+              value={cpfMask(cpf)}
               onChangeText={setCpf} />
 
             <Input     
@@ -165,7 +166,7 @@ export default function Cadastrar  ({ navigation }) {
               ref={apelidoRef}
               returnKeyType="next"
               onSubmitEditing={() => celularRef.current.focus()}
-              value={apelido}
+              value={apelido.toUpperCase()}
               onChangeText={setApelido} />
 
             <Input               
@@ -177,7 +178,7 @@ export default function Cadastrar  ({ navigation }) {
               ref={celularRef}
               returnKeyType="next"
               onSubmitEditing={() => cepRef.current.focus()}
-              value={celular}
+              value={celMask(celular)}
               onChangeText={setCelular} />
 
             <Input       
@@ -189,7 +190,7 @@ export default function Cadastrar  ({ navigation }) {
               ref={cepRef}
               returnKeyType="next"
               onSubmitEditing={() => enderecoRef.current.focus()}
-              value={cep}
+              value={cepMask(cep)}
               onChangeText={setCep} />
             
             <Input 
@@ -201,7 +202,7 @@ export default function Cadastrar  ({ navigation }) {
               returnKeyType="next"
               onSubmitEditing={() => complementoRef.current.focus()}
               ref={enderecoRef}
-              value={endereco}
+              value={endereco.toUpperCase()}
               onChangeText={setEndereco} />
 
             <Input 
@@ -213,7 +214,7 @@ export default function Cadastrar  ({ navigation }) {
               returnKeyType="next"
               onSubmitEditing={() => numeroRef.current.focus()}
               ref={complementoRef}
-              value={complemento}
+              value={complemento.toUpperCase()}
               onChangeText={setComplemento} />
               
             <Input 
@@ -225,7 +226,7 @@ export default function Cadastrar  ({ navigation }) {
               returnKeyType="next"
               onSubmitEditing={() => bairroRef.current.focus()}
               ref={numeroRef}
-              value={numero}
+              value={numero.toUpperCase()}
               onChangeText={setNumero} />
 
               
@@ -238,7 +239,7 @@ export default function Cadastrar  ({ navigation }) {
               returnKeyType="next"
               onSubmitEditing={() => cidadeRef.current.focus()}
               ref={bairroRef}
-              value={bairro}
+              value={bairro.toUpperCase()}
               onChangeText={setBairro} />
 
             
@@ -251,7 +252,7 @@ export default function Cadastrar  ({ navigation }) {
               returnKeyType="next"
               onSubmitEditing={() => ufRef.current.focus()}
               ref={cidadeRef}
-              value={cidade}
+              value={cidade.toUpperCase()}
               onChangeText={setCidade} />
 
             
@@ -264,7 +265,7 @@ export default function Cadastrar  ({ navigation }) {
               returnKeyType="next"
               onSubmitEditing={() => handleSubmit()}
               ref={ufRef}
-              value={uf}
+              value={uf.toUpperCase()}
               onChangeText={setUf} />        
             
 

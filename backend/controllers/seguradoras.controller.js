@@ -28,7 +28,7 @@ exports.cadastrar = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    Seguradora.findAll()  
+    Seguradora.findAll({where: {situacao: true},order: [['descricao']]})  
     .then(data => {
       res.send(data);
     })

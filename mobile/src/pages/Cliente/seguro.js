@@ -6,6 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MyDate from '../../components/datepicker';
 import SelectDropdown from 'react-native-select-dropdown'
+import Input from '../../components/Input'
 
 const styles = StyleSheet.create({
   container: {
@@ -150,6 +151,7 @@ export default function Seguro  ({ navigation }) {
   const [idSelecionada, setIdSelecionada] = useState('');
   const [datainicio, setInicio] = useState('');
   const [datafim, setFim] = useState('');
+  const [valor, setValor] = useState('');
   
   useEffect( () => { 
     async function Seguradoras () {
@@ -168,22 +170,36 @@ export default function Seguro  ({ navigation }) {
     
   }, [])
 
-  console.log('dados', dados)
-
-  console.log('selecionada', selecionada)
+  
   if (selecionada !== '') {
     dados.filter(item => {
       if (item.descricao === selecionada) {
-        setIdSelecionada(item.id)
+        setIdSelecionada(item.id);
+        setSelecionada('')
       } else {
         return null
       }
     })
   }
 
-  console.log('id', idSelecionada)
- 
-  if (dados) {
+  
+  if (!dados) { 
+    return (
+    <View>
+      <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+        <ScrollView>
+              
+          <Text style={styles.titulo}> Não há dados disponíveis </Text>
+        </ScrollView>
+      </LinearGradient>
+    </View>
+    )
+  }
+
+  handleSubmit = () => {
+
+  }
+  
     return(
       <View>
           <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
@@ -193,7 +209,8 @@ export default function Seguro  ({ navigation }) {
   
               <SelectDropdown
                 data={dados.map(item => {return item.descricao})}
-                defaultButtonText="Selecione"
+                defaultButtonText="Selecione a seguradora"
+                buttonStyle={styles.bordado}
                 onSelect={(selectedItem, index) => {
                  console.log(selectedItem, index)
                   setSelecionada(selectedItem)
@@ -217,27 +234,22 @@ export default function Seguro  ({ navigation }) {
               <MyDate onSetDate={date => { setInicio(date); }} /> 
               <Text style={styles.titulo}> Fim </Text>               
               <MyDate onSetDate={date => { setFim(date); }} />              
-                
-             
+              <Text style={styles.titulo}> Valor </Text>  
+             <Input 
+             keyboardType="number-pad"    
+             autoCorrect={false}
+             autoCapitalize="none"
+             style={{marginTop: 10, color: '#fff'}} 
+             placeholder="R$"             
+             returnKeyType="next"
+             onSubmitEditing={() => handleSubmit()}
+             value={'R$ ' + valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.').toFixed(2)}
+             onChangeText={setValor} 
+             />
               <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Salvar</Text>
           </ScrollView>
           </LinearGradient>
       </View>
-    );
-  } else {
-    return (
-    <View>
-      <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-        <ScrollView>
-              
-          <Text style={styles.titulo}> Não há dados disponíveis </Text>
-        </ScrollView>
-      </LinearGradient>
-    </View>
     )
+  } 
 
-  }
- 
-  
-
-}
