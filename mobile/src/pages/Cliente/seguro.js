@@ -9,6 +9,8 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Input from '../../components/Input'
 import { moedaMask } from '../../components/masks';
 
+import SeguroDataService from '../../services/segurosveiculos'
+
 const styles = StyleSheet.create({
   container: {
     fontFamily: 'Open Sans',
@@ -144,6 +146,8 @@ const styles = StyleSheet.create({
 });
 
 
+
+
 export default function Seguro  ({ navigation }) {
 
   const id = useSelector(state => state.veiculo.id);
@@ -201,15 +205,36 @@ export default function Seguro  ({ navigation }) {
 
 
 
-  handleSubmit = () => {
+  async function handleSubmit  ()  {
 
-    if (valormoeda) {
-      setValor( parseInt(valormoeda.replace('R$ ','').replace(',','')) )
-      console.log('valor', valor)
-    Alert.alert('Valor',valor)
+    if (valormoeda !== '') {
+      var number  = parseFloat(valormoeda.replace('R$ ','').replace(',','').slice(0, -2))
+      var cents = parseFloat(valormoeda.slice(-2))
+      //Alert.alert('Number',number)
+      //Alert.alert('Intl',Intl.NumberFormat('pt-BR').format(number))
+      setValor(number+(cents/100)) 
     } 
 
+
+    var data = {
+      veiculoId: id,
+      seguradoraId: idSelecionada,
+      valor: valor,
+      vigenciainicio: datainicio, 
+      vigenciafim: datafim,
+      situacao: 1
+    }
+
     
+    
+    await SeguroDataService.cadastrar(data)
+    .then( response  =>  {               
+      console.log('response',response.data); 
+      navigation.navigate('SeguroLista')
+    })
+    .catch(e => {
+      console.error(e)
+    })
 
   }
 
@@ -261,7 +286,7 @@ export default function Seguro  ({ navigation }) {
              value={'R$ ' + moedaMask(valormoeda)}
              onChangeText={setValorMoeda} 
              />
-              <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Salvar</Text>
+              <Text onPress={() => handleSubmit()} style={styles.entrar}> <Entypo name="level-down" size={30} /> Salvar</Text>
           </ScrollView>
           </LinearGradient>
       </View>
