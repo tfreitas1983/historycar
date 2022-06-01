@@ -26,13 +26,13 @@ exports.signup = (req, res) => {
         }
       }).then(roles => {
         user.setRoles(roles).then(() => {
-          res.send({ message: "Usuário registrado com sucesso!" });
+          res.send({ id: user.id, message: "Usuário registrado com sucesso!" });
         });
       });
     } else {
       // user role = 1
       user.setRoles([1]).then(() => {
-        res.send({ message: "Usuário registrado com sucesso!" });
+        res.send({ id: user.id, message: "Usuário registrado com sucesso!" });
       });
     }
     })

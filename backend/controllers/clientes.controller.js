@@ -25,6 +25,7 @@ exports.cadastrar = (req, res) => {
         bairro: req.body.bairro,
         cidade: req.body.cidade,
         uf: req.body.uf,
+        userId: req.body.userId,
         situacao: req.body.situacao
       };
       

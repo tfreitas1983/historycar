@@ -4,12 +4,15 @@ import http from './api'
  //const API_URL = "http://chamadosrj.ddns.net:8089/api/auth/";
  const API_URL = "http://10.1.1.26:5099/api/auth/";
 
- const register = (email, password) => {
+ const register = (email, password, tipo, situacao) => {
   return axios.post(API_URL + "signup", {
     email,
     password,
+    tipo,
+    situacao
   });
 };
+
 const login = (email, password) => {
   return axios
     .post(API_URL + "signin", {
@@ -26,6 +29,8 @@ const login = (email, password) => {
 const logout = () => {
   localStorage.removeItem("user");
 };
+
+
 export default {
   register,
   login,
