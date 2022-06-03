@@ -4,13 +4,48 @@ const cors = require("cors");
 const path = require ('path')
 const fs = require("fs")
 const app = express();
+var nodemailer = require("nodemailer");
 
-const sgMail = require('@sendgrid/mail')
+//const sgMail = require('@sendgrid/mail')
+
 
 
 //Configurações de e-mail
 
 
+var remetente = nodemailer.createTransport({
+
+
+service: "Hotmail",
+auth:{ user: 'autohistorysuporte@hotmail.com', pass: 'cdrj1286' }
+
+});
+
+var emailASerEnviado = {
+
+from: 'autohistorysuporte@hotmail.com',
+
+to: 'tfreitas1983@gmail.com',
+
+subject: 'Enviando Email com Node.js',
+
+text: 'Estou te enviando este email com node.js',
+
+};
+
+/* remetente.sendMail(emailASerEnviado, function(error){
+
+if (error) {
+
+console.log(error);
+
+} else {
+
+console.log('Email enviado com sucesso!');
+
+}
+
+}); */
 
 var corsOptions = {
   origin: ["http://localhost:3002","http://10.1.1.26:3002"]
@@ -96,23 +131,3 @@ const PORT = process.env.PORT || 5099;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
-
-require('dotenv').config()
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-
-const msg = {
-  to: 'tfreitas1983@gmail.com', // Change to your recipient
-  from: 'autohistorysuporte@gmail.com', // Change to your verified sender
-  subject: 'Sending with SendGrid is Fun',
-  text: 'and easy to do anywhere, even with Node.js',
-  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-}
-sgMail
-  .send(msg)
-  .then(() => {
-    console.log('Email sent')
-  })
-  .catch((error) => {
-    console.error(error)
-  })

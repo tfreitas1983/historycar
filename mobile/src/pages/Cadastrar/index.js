@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import { Text, View, StyleSheet, Dimensions, ScrollView, StatusBar, KeyboardAvoidingView} from 'react-native';
+import { Text, View, StyleSheet, Dimensions, ScrollView, StatusBar, KeyboardAvoidingView, Alert} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch, useSelector } from "react-redux";
@@ -159,7 +159,7 @@ export default function Cadastrar  ({ navigation }) {
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
   const [uf, setUf] = useState('');
-  const [id, setId] = useState('');
+  //const [userId, setUserId] = useState('');
   const dados = ["Feminino", "Masculino"];
 
 
@@ -520,6 +520,8 @@ export default function Cadastrar  ({ navigation }) {
   }
 
   let cabecalho = null;
+  let userId = null;
+
   if (tipo === '') {
     cabecalho = <>
       <View style={styles.centro}>
@@ -532,18 +534,31 @@ export default function Cadastrar  ({ navigation }) {
   
 
   async function handleSubmit () {
-
+    escolhido = null;   
+    console.log('primeiro', userId)
     await Auth.register(email, password, 2, 1)
-    .then( response  =>  {               
+    .then( response  =>  {  
+      userId = response.data.id;      
       console.log('response',response.data); 
-      setId(response.data.map(item => {return item.id} ))
-      console.log('ID', id)   
     })
     .catch(e => {
       console.error(e)
     })
 
-    escolhido = null
+    if (userId === '') {
+     
+      console.log('vazio', userId)   
+      Alert.alert('Nenhum Id')     
+    } else {
+      salvaCliente();
+    }
+           
+  }
+
+  async function salvaCliente () {
+
+    console.log('entrou')
+    
     if (tipo === 'fisica') {
       escolhido = 1
     }
@@ -552,35 +567,54 @@ export default function Cadastrar  ({ navigation }) {
       escolhido = 2
     }
 
-    var data = {
-      nome: nome,
-      tipo: escolhido,
-      apelido: apelido,
-      sexo: sexo,
-      cpf: cpf,
-      cnpj: cnpj,
-      celular: celular,
-      cep: cep,
-      endereco: endereco,
-      numero: numero,
-      complemento: complemento,
-      bairro: bairro,
-      cidade: cidade,
-      uf: uf,
-      situacao: 1,
-      userId: id
+    //Precisa criar o usuário e pegar o id para salvar o cliente
+    
+    console.log('ID2', userId);
+
+    if (!userId) {
+      Alert.alert('Nenhum ID foi retornado');  
+    } else {
+       
+      var data = {
+        nome: nome,
+        tipo: escolhido,
+        apelido: apelido,
+        sexo: sexo,
+        cpf: cpf,
+        cnpj: cnpj,
+        celular: celular,
+        cep: cep,
+        endereco: endereco,
+        numero: numero,
+        complemento: complemento,
+        bairro: bairro,
+        cidade: cidade,
+        uf: uf,
+        situacao: 1,
+        userId: userId
+      }
+
+
+      console.log('data', data)
+      await CadastroClienteDataService.cadastrar(data)
+      .then( response  =>  {               
+        console.log('cliente',response.data); 
+        Alert.alert('Cliente cadastrado')
+        navigation.navigate('Cliente')
+      })
+      .catch(e => {
+        console.error(e)
+      })
+
     }
-//Precisa criar o usuário e pegar o id para salvar o cliente
-    await CadastroClienteDataService.cadastrar(data)
-    .then( response  =>  {               
-      console.log('response',response.data); 
-      navigation.navigate('Main')
-    })
-    .catch(e => {
-      console.error(e)
-    })
-   
+
+    
+
   }
+
+ 
+
+  
 
   return (
     <View>            
