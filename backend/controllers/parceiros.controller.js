@@ -37,6 +37,7 @@ exports.cadastrar = (req, res) => {
         precompra: req.body.precompra,
         resumo: req.body.resumo,
         reputacao: req.body.reputacao,
+        userId: req.body.userId,
         foto: req.body.foto,
         situacao: req.body.situacao
       };

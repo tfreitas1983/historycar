@@ -210,8 +210,6 @@ export default function Seguro  ({ navigation }) {
     if (valormoeda !== '') {
       var number  = parseFloat(valormoeda.replace('R$ ','').replace(',','').slice(0, -2))
       var cents = parseFloat(valormoeda.slice(-2))
-      //Alert.alert('Number',number)
-      //Alert.alert('Intl',Intl.NumberFormat('pt-BR').format(number))
       setValor(number+(cents/100)) 
     } 
 

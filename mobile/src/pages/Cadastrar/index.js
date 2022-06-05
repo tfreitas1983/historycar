@@ -2,7 +2,6 @@ import React, {useRef, useState} from 'react';
 import { Text, View, StyleSheet, Dimensions, ScrollView, StatusBar, KeyboardAvoidingView, Alert} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
-import { useDispatch, useSelector } from "react-redux";
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import SelectDropdown from 'react-native-select-dropdown'
@@ -124,10 +123,8 @@ const styles = StyleSheet.create({
 
 export default function Cadastrar  ({ navigation }) { 
 
-  const passwordRef = useRef();
-  const tipoRef = useRef();
-  const nomeRef = useRef();
-  const razaoRef = useRef();
+  const passwordRef = useRef();  
+  const nomeRef = useRef();  
   const cpfRef = useRef();
   const cnpjRef = useRef();
   const apelidoRef = useRef();
@@ -140,8 +137,6 @@ export default function Cadastrar  ({ navigation }) {
   const cidadeRef = useRef();
   const ufRef = useRef();
 
-
-  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -159,7 +154,7 @@ export default function Cadastrar  ({ navigation }) {
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
   const [uf, setUf] = useState('');
-  //const [userId, setUserId] = useState('');
+
   const dados = ["Feminino", "Masculino"];
 
 
@@ -535,29 +530,24 @@ export default function Cadastrar  ({ navigation }) {
 
   async function handleSubmit () {
     escolhido = null;   
-    console.log('primeiro', userId)
-    await Auth.register(email, password, 2, 1)
+    
+    await Auth.register(email, password, 2, 1) // 2 = cliente / 1 = ativo
     .then( response  =>  {  
-      userId = response.data.id;      
-      console.log('response',response.data); 
+      userId = response.data.id;         
     })
     .catch(e => {
       console.error(e)
     })
 
     if (userId === '') {
-     
-      console.log('vazio', userId)   
       Alert.alert('Nenhum Id')     
     } else {
       salvaCliente();
-    }
-           
+    }           
   }
 
   async function salvaCliente () {
 
-    console.log('entrou')
     
     if (tipo === 'fisica') {
       escolhido = 1
@@ -566,10 +556,6 @@ export default function Cadastrar  ({ navigation }) {
     if (tipo === 'juridica') {
       escolhido = 2
     }
-
-    //Precisa criar o usuário e pegar o id para salvar o cliente
-    
-    console.log('ID2', userId);
 
     if (!userId) {
       Alert.alert('Nenhum ID foi retornado');  
@@ -594,26 +580,16 @@ export default function Cadastrar  ({ navigation }) {
         userId: userId
       }
 
-
-      console.log('data', data)
       await CadastroClienteDataService.cadastrar(data)
-      .then( response  =>  {               
-        console.log('cliente',response.data); 
+      .then( response  =>  {            
         Alert.alert('Cliente cadastrado')
         navigation.navigate('Cliente')
       })
       .catch(e => {
         console.error(e)
       })
-
     }
-
-    
-
   }
-
- 
-
   
 
   return (
@@ -629,7 +605,7 @@ export default function Cadastrar  ({ navigation }) {
 
             {mostrar}
 
-            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> Cadastrar </Button>
+            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Cadastrar </Button>
            
           </ScrollView>
           </KeyboardAvoidingView>
