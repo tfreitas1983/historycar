@@ -7,7 +7,8 @@ import Button from '../../components/Button';
 import SelectDropdown from 'react-native-select-dropdown'
 import { celMask, cepMask, cpfMask, cnpjMask } from '../../components/masks';
 import CadastroClienteDataService from '../../services/cadastrocliente'
-import Auth from '../../services/auth.service'
+import Auth from '../../services/auth.service';
+import axios from 'axios';
 
 const styles = StyleSheet.create({
   container: {
@@ -239,7 +240,7 @@ export default function Cadastrar  ({ navigation }) {
               placeholder="Apelido"
               ref={apelidoRef}
               returnKeyType="next"
-              onSubmitEditing={() => celularRef.current.focus()}
+              onSubmitEditing={() => celularRef.current.focus()}              
               value={apelido.toUpperCase()}
               onChangeText={setApelido} />
 
@@ -263,7 +264,7 @@ export default function Cadastrar  ({ navigation }) {
               placeholder="CEP"
               ref={cepRef}
               returnKeyType="next"
-              onSubmitEditing={() => enderecoRef.current.focus()}
+              onSubmitEditing={() => pegaCEP()}
               value={cepMask(cep)}
               onChangeText={setCep} />
             
@@ -274,7 +275,7 @@ export default function Cadastrar  ({ navigation }) {
               style={{marginTop: 10, color: '#fff'}} 
               placeholder="Endereço"
               returnKeyType="next"
-              onSubmitEditing={() => complementoRef.current.focus()}
+              onSubmitEditing={() => numeroRef.current.focus()}
               ref={enderecoRef}
               value={endereco.toUpperCase()}
               onChangeText={setEndereco} />
@@ -284,24 +285,24 @@ export default function Cadastrar  ({ navigation }) {
               autoCorrect={false}
               autoCapitalize="none"
               style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Complemento"
+              placeholder="Número"
               returnKeyType="next"
-              onSubmitEditing={() => numeroRef.current.focus()}
-              ref={complementoRef}
-              value={complemento.toUpperCase()}
-              onChangeText={setComplemento} />
-              
+              onSubmitEditing={() => complementoRef.current.focus()}
+              ref={numeroRef}
+              value={numero.toUpperCase()}
+              onChangeText={setNumero} />
+
             <Input 
               keyboardType="default"
               autoCorrect={false}
               autoCapitalize="none"
               style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Número"
+              placeholder="Complemento"
               returnKeyType="next"
               onSubmitEditing={() => bairroRef.current.focus()}
-              ref={numeroRef}
-              value={numero.toUpperCase()}
-              onChangeText={setNumero} />
+              ref={complementoRef}
+              value={complemento.toUpperCase()}
+              onChangeText={setComplemento} />
 
               
             <Input 
@@ -342,7 +343,7 @@ export default function Cadastrar  ({ navigation }) {
               value={uf.toUpperCase()}
               onChangeText={setUf} />        
             
-
+            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Cadastrar </Button>
  
     </>
   }
@@ -430,7 +431,7 @@ export default function Cadastrar  ({ navigation }) {
               placeholder="CEP"
               ref={cepRef}
               returnKeyType="next"
-              onSubmitEditing={() => enderecoRef.current.focus()}
+              onSubmitEditing={() => pegaCEP()}
               value={cepMask(cep)}
               onChangeText={setCep} />
             
@@ -441,22 +442,10 @@ export default function Cadastrar  ({ navigation }) {
               style={{marginTop: 10, color: '#fff'}} 
               placeholder="Endereço"
               returnKeyType="next"
-              onSubmitEditing={() => complementoRef.current.focus()}
+              onSubmitEditing={() => numeroRef.current.focus()}
               ref={enderecoRef}
               value={endereco.toUpperCase()}
               onChangeText={setEndereco} />
-
-            <Input 
-              keyboardType="default"
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Complemento"
-              returnKeyType="next"
-              onSubmitEditing={() => numeroRef.current.focus()}
-              ref={complementoRef}
-              value={complemento.toUpperCase()}
-              onChangeText={setComplemento} />
               
             <Input 
               keyboardType="default"
@@ -465,10 +454,24 @@ export default function Cadastrar  ({ navigation }) {
               style={{marginTop: 10, color: '#fff'}} 
               placeholder="Número"
               returnKeyType="next"
-              onSubmitEditing={() => bairroRef.current.focus()}
+              onSubmitEditing={() => complementoRef.current.focus()}
               ref={numeroRef}
               value={numero.toUpperCase()}
               onChangeText={setNumero} />
+
+              
+
+            <Input 
+              keyboardType="default"
+              autoCorrect={false}
+              autoCapitalize="none"
+              style={{marginTop: 10, color: '#fff'}} 
+              placeholder="Complemento"
+              returnKeyType="next"
+              onSubmitEditing={() => bairroRef.current.focus()}
+              ref={complementoRef}
+              value={complemento.toUpperCase()}
+              onChangeText={setComplemento} />
 
               
             <Input 
@@ -509,13 +512,15 @@ export default function Cadastrar  ({ navigation }) {
               value={uf.toUpperCase()}
               onChangeText={setUf} />        
             
-
+            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Cadastrar </Button>
  
     </>
   }
 
   let cabecalho = null;
   let userId = null;
+  let cepnum = null;
+  let viacep = '';
 
   if (tipo === '') {
     cabecalho = <>
@@ -526,7 +531,39 @@ export default function Cadastrar  ({ navigation }) {
     </>
   }
 
-  
+  async function pegaCEP () {
+
+    if (cep.length == 9) {
+      cepnum = cep.replace('.', '').replace('-', ''); 
+    }
+
+    await axios.get(`https://viacep.com.br/ws/${cepnum}/json/`)
+    .then(response => {
+      viacep = response.data; 
+
+      if (viacep && !viacep.erro) {
+       
+        setEndereco(viacep.logradouro);
+        setBairro(viacep.bairro);
+        setCidade(viacep.localidade);
+        setUf(viacep.uf);
+      } 
+
+     if (viacep.erro){
+       Alert.alert('CEP não encontrado')
+       cepnum = '';
+       setEndereco('');
+       setBairro('');
+       setCidade('');
+       setUf('');
+     }
+
+      enderecoRef.current.focus()
+    })
+    .catch(e => {
+      console.error(e)
+    })
+  }
 
   async function handleSubmit () {
     escolhido = null;   
@@ -569,7 +606,7 @@ export default function Cadastrar  ({ navigation }) {
         cpf: cpf,
         cnpj: cnpj,
         celular: celular,
-        cep: cep,
+        cep: parseInt(cep.replace('.', '').replace('-', '')),
         endereco: endereco,
         numero: numero,
         complemento: complemento,
@@ -579,6 +616,7 @@ export default function Cadastrar  ({ navigation }) {
         situacao: 1,
         userId: userId
       }
+      
 
       await CadastroClienteDataService.cadastrar(data)
       .then( response  =>  {            
@@ -589,8 +627,7 @@ export default function Cadastrar  ({ navigation }) {
         console.error(e)
       })
     }
-  }
-  
+  }  
 
   return (
     <View>            
@@ -604,8 +641,6 @@ export default function Cadastrar  ({ navigation }) {
            {cabecalho}
 
             {mostrar}
-
-            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Cadastrar </Button>
            
           </ScrollView>
           </KeyboardAvoidingView>

@@ -11,6 +11,7 @@ import Auth from '../../services/auth.service'
 import CadastroParceiroDataService from '../../services/cadastroparceiro';
 import ParceiroPrecoDataService from '../../services/parceiropreco';
 import moment from 'moment';
+import axios from 'axios';
 
 
 const styles = StyleSheet.create({
@@ -194,7 +195,9 @@ export default function CadastrarParceiro  ({ navigation }) {
   let cabecalho = null;
   let userId = null;
   let parceiroId = null;
-  let atividades = null;
+  let atividades = null;  
+  let cepnum = null;
+  let viacep = '';
 
   function avancar () {   
     setAvancado(1);  
@@ -314,7 +317,7 @@ export default function CadastrarParceiro  ({ navigation }) {
         placeholder="CEP"
         ref={cepRef}
         returnKeyType="next"
-        onSubmitEditing={() => enderecoRef.current.focus()}
+        onSubmitEditing={() => pegaCEP()}
         value={cepMask(cep)}
         onChangeText={setCep} />
       
@@ -325,23 +328,11 @@ export default function CadastrarParceiro  ({ navigation }) {
         style={{marginTop: 10, color: '#fff'}} 
         placeholder="Endereço"
         returnKeyType="next"
-        onSubmitEditing={() => complementoRef.current.focus()}
+        onSubmitEditing={() => numeroRef.current.focus()}
         ref={enderecoRef}
         value={endereco.toUpperCase()}
         onChangeText={setEndereco} />
-  
-      <Input 
-        keyboardType="default"
-        autoCorrect={false}
-        autoCapitalize="none"
-        style={{marginTop: 10, color: '#fff'}} 
-        placeholder="Complemento"
-        returnKeyType="next"
-        onSubmitEditing={() => numeroRef.current.focus()}
-        ref={complementoRef}
-        value={complemento.toUpperCase()}
-        onChangeText={setComplemento} />
-        
+              
       <Input 
         keyboardType="default"
         autoCorrect={false}
@@ -349,11 +340,22 @@ export default function CadastrarParceiro  ({ navigation }) {
         style={{marginTop: 10, color: '#fff'}} 
         placeholder="Número"
         returnKeyType="next"
-        onSubmitEditing={() => bairroRef.current.focus()}
+        onSubmitEditing={() => complementoRef.current.focus()}
         ref={numeroRef}
         value={numero.toUpperCase()}
         onChangeText={setNumero} />
-  
+
+      <Input 
+        keyboardType="default"
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Complemento"
+        returnKeyType="next"
+        onSubmitEditing={() => bairroRef.current.focus()}
+        ref={complementoRef}
+        value={complemento.toUpperCase()}
+        onChangeText={setComplemento} />
         
       <Input 
         keyboardType="default"
@@ -482,7 +484,7 @@ export default function CadastrarParceiro  ({ navigation }) {
         placeholder="CEP"
         ref={cepRef}
         returnKeyType="next"
-        onSubmitEditing={() => enderecoRef.current.focus()}
+        onSubmitEditing={() => pegaCEP()}
         value={cepMask(cep)}
         onChangeText={setCep} />
       
@@ -493,22 +495,10 @@ export default function CadastrarParceiro  ({ navigation }) {
         style={{marginTop: 10, color: '#fff'}} 
         placeholder="Endereço"
         returnKeyType="next"
-        onSubmitEditing={() => complementoRef.current.focus()}
+        onSubmitEditing={() => numeroRef.current.focus()}
         ref={enderecoRef}
         value={endereco.toUpperCase()}
         onChangeText={setEndereco} />
-  
-      <Input 
-        keyboardType="default"
-        autoCorrect={false}
-        autoCapitalize="none"
-        style={{marginTop: 10, color: '#fff'}} 
-        placeholder="Complemento"
-        returnKeyType="next"
-        onSubmitEditing={() => numeroRef.current.focus()}
-        ref={complementoRef}
-        value={complemento.toUpperCase()}
-        onChangeText={setComplemento} />
         
       <Input 
         keyboardType="default"
@@ -517,12 +507,23 @@ export default function CadastrarParceiro  ({ navigation }) {
         style={{marginTop: 10, color: '#fff'}} 
         placeholder="Número"
         returnKeyType="next"
-        onSubmitEditing={() => bairroRef.current.focus()}
+        onSubmitEditing={() => complementoRef.current.focus()}
         ref={numeroRef}
         value={numero.toUpperCase()}
         onChangeText={setNumero} />
   
-        
+      <Input 
+        keyboardType="default"
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Complemento"
+        returnKeyType="next"
+        onSubmitEditing={() => bairroRef.current.focus()}
+        ref={complementoRef}
+        value={complemento.toUpperCase()}
+        onChangeText={setComplemento} />
+
       <Input 
         keyboardType="default"
         autoCorrect={false}
@@ -662,11 +663,40 @@ export default function CadastrarParceiro  ({ navigation }) {
 
     console.log(idSelecionada)
   }
-
   
+  async function pegaCEP () {
 
- 
-  
+    if (cep.length == 9) {
+      cepnum = cep.replace('.', '').replace('-', ''); 
+    }
+
+    await axios.get(`https://viacep.com.br/ws/${cepnum}/json/`)
+    .then(response => {
+      viacep = response.data; 
+
+      if (viacep && !viacep.erro) {
+       
+         setEndereco(viacep.logradouro);
+         setBairro(viacep.bairro);
+         setCidade(viacep.localidade);
+         setUf(viacep.uf);
+       } 
+
+      if (viacep.erro === true){
+        Alert.alert('CEP não encontrado')        
+        cepnum = '';
+        setEndereco('');
+        setBairro('');
+        setCidade('');
+        setUf('');
+      }
+
+      enderecoRef.current.focus()
+    })
+    .catch(e => {
+      console.error(e)
+    })
+  }
   
   async function handleSubmit () {
     escolhido = null;   
@@ -712,7 +742,7 @@ export default function CadastrarParceiro  ({ navigation }) {
         cpf: cpf,
         cnpj: cnpj,
         celular: celular,
-        cep: cep,
+        cep: parseInt(cep.replace('.', '').replace('-', '')),
         endereco: endereco,
         numero: numero,
         complemento: complemento,
