@@ -822,8 +822,6 @@ export default function CadastrarParceiro  ({ navigation }) {
             {atividades}  
             {cabecalho}
             {mostrar}
-                    
-            
            
           </ScrollView>
           </KeyboardAvoidingView>

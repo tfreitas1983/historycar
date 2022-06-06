@@ -17,7 +17,7 @@ var remetente = nodemailer.createTransport({
 
 
 service: "Hotmail",
-auth:{ user: 'autohistorysuporte@hotmail.com', pass: 'cdrj1286' }
+auth:{ user: 'autohistorysuporte@hotmail.com', pass: '' }
 
 });
 
