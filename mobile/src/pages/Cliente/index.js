@@ -121,6 +121,7 @@ export default function Cliente  ({ navigation }) {
               autoCapitalize="none"
               style={{marginTop: 30, color: '#fff'}} 
               icon="mail-outline" 
+              autoFocus={true}
               placeholder="Digite seu e-mail"
               returnKeyType="next"
               onSubmitEditing={() => passwordRef.current.focus()}

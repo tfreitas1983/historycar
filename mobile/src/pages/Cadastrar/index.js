@@ -167,6 +167,7 @@ export default function Cadastrar  ({ navigation }) {
               keyboardType="email-address"
               autoCorrect={false}
               autoCapitalize="none"
+              autoFocus={true}
               style={{marginTop: 10, color: '#fff'}} 
               icon="mail-outline" 
               placeholder="Digite seu e-mail"

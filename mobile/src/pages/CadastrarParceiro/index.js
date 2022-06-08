@@ -176,7 +176,7 @@ export default function CadastrarParceiro  ({ navigation }) {
   const dados = ["Feminino", "Masculino"];
   const ramos = ["Caçador de veículos", "Despachante", "Ambos"];
 
-  const [ramo, setRamo] = useState('');  
+  
   const [selecionada, setSelecionada] = useState('');
   const [idSelecionada, setIdSelecionada] = useState('');
   const [isMecanicaOn, setIsMecanicaOn] = useState('');
@@ -185,8 +185,6 @@ export default function CadastrarParceiro  ({ navigation }) {
   const [isPreCompraOn, setIsPreCompraOn] = useState('');
   const [isEquipamentosOn, setIsEquipamentosOn] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [presencial, setPresencial] = useState('');
-  const [remota, setRemota] = useState('');
   const [avancado, setAvancado] = useState('');
   const [remotomoeda, setRemotoMoeda] = useState('');
   const [presencialmoeda, setPresencialMoeda] = useState('');
@@ -592,7 +590,7 @@ export default function CadastrarParceiro  ({ navigation }) {
         }}
       />
 
-<Text style={styles.toggle}> Conhecimento em mecânica <Switch value={isMecanicaOn} onValueChange={setIsMecanicaOn} /> </Text> 
+
       
      
       <TextInput 
@@ -608,18 +606,21 @@ export default function CadastrarParceiro  ({ navigation }) {
       autoCorrect={false}
       value={descricao} 
       onChangeText={setDescricao} 
-      //mode="outlined"     
+      autoFocus={true}
       multiline={true}
       numberOfLines={5}
       placeholder='Resumo do meu trabalho' 
       placeholderTextColor="#f2f2f2"                 
       /> 
 
+      <Text style={styles.toggle}> Conhecimento em mecânica <Switch value={isMecanicaOn} onValueChange={setIsMecanicaOn} /> </Text> 
       <Text style={styles.toggle}> Conhecimento em funilaria  <Switch value={isFunilariaOn} onValueChange={setIsFunilariaOn} /> </Text> 
       <Text style={styles.toggle}> Realiza vistoria   <Switch value={isVistoriaOn} onValueChange={setIsVistoriaOn} /> </Text> 
       <Text style={styles.toggle}> Pré compra   <Switch value={isPreCompraOn} onValueChange={setIsPreCompraOn} /> </Text> 
       <Text style={styles.toggle}> Equipamentos   <Switch value={isEquipamentosOn} onValueChange={setIsEquipamentosOn} /> </Text> 
 
+
+      <Text style={styles.titulo}> Consulta Presencial </Text>
       <Input 
         style={{marginTop: 10}}
         value={'R$ ' + moedaMask(presencialmoeda)}
@@ -630,6 +631,8 @@ export default function CadastrarParceiro  ({ navigation }) {
         placeholder='Consulta presencial R$'
         returnKeyType="next"
         onSubmitEditing={() => remotaRef.current.focus()} /> 
+
+      <Text style={styles.titulo}> Consulta Remota </Text>
       <Input 
       style={{marginTop: 10}}
       value={'R$ ' + moedaMask(remotomoeda)}
