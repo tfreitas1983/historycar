@@ -144,7 +144,8 @@ export default function CadastrarParceiro  ({ navigation }) {
     try{
       await  VeiculoDataService.buscarRenavam(renavam)
       .then( response  =>  {               
-        setDados(response.data.map(item => ({ ...item}) )); 
+        setDados(response.data)//.map(item => ({ ...item}) )); 
+        
      })
     }
     catch (e){
@@ -155,15 +156,24 @@ export default function CadastrarParceiro  ({ navigation }) {
   async function handleSubmit () {
   }
   
-
+ console.log('dados', dados)
 
   return (
     <View>
       <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
       <ScrollView>
-          <Text style={styles.opcoes}> RENAVAM</Text>
+      <Input       
+        keyboardType="number-pad"         
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="RENAVAM"
+        returnKeyType="next"
+        onSubmitEditing={() => buscar()}
+        value={renavam}
+        onChangeText={setRenavam} />
           
-          <Button style={styles.buscar} onPress={() => buscar()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
+          <Button style={styles.buscar} onPress={() => buscar()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Buscar </Button>
           <Text  style={styles.titulo}>Se o veículo já estiver cadastrado no aplicativo, você terá o histórico.</Text>
           <Text  style={styles.titulo}> Caso contrário você pode cadastrá-lo abaixo</Text>
           <Text style={styles.opcoes}> Chevrolet</Text>
