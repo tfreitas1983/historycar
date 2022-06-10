@@ -4602,7 +4602,7 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash.debounce@^4.0.8:
+lodash.debounce@*, lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
@@ -5615,7 +5615,7 @@ prompts@^2.0.1, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@*, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -5704,6 +5704,16 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.0.0.tgz#026f6c4a27dbe33bf4a35655b9e1327c4e55e3f5"
   integrity sha512-yUcBYdBBbo3QiPsgYDcfQcIkGZHfxOaoE6HLSnr1sPzMhdyxusbfKOSUbSd/ocGi32dxcj366PsTj+5oggeKKw==
 
+react-native-autocomplete-dropdown@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-autocomplete-dropdown/-/react-native-autocomplete-dropdown-2.0.6.tgz#6a48b1b9e41c9301740191dc4258238f1fdb3b6b"
+  integrity sha512-rij0nVTmgZwmGuEWi39MOj5lLdqsprh6MBVgInSUj674zQ9YxhXbs451JURonBSKACAj07W5cziwGcPSbthwrQ==
+  dependencies:
+    lodash.debounce "*"
+    prop-types "*"
+    react-native-size-matters "^0.3.0"
+    react-native-vector-icons ">=7.0.0"
+
 react-native-codegen@^0.0.8:
   version "0.0.8"
   resolved "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.0.8.tgz"
@@ -5743,11 +5753,6 @@ react-native-linear-gradient@^2.5.6:
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
   integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
-
-react-native-option-select@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/react-native-option-select/-/react-native-option-select-1.0.4.tgz#cb6b8e14271747e256cc000eab873ab8c7d3d03f"
-  integrity sha1-y2uOFCcXR+JWzAAOq4c6uMfT0D8=
 
 react-native-paper@^4.11.2:
   version "4.11.2"
@@ -5796,12 +5801,17 @@ react-native-select-dropdown@^1.13.0:
   resolved "https://registry.yarnpkg.com/react-native-select-dropdown/-/react-native-select-dropdown-1.13.0.tgz#599566f8b44d979a13528319f340beb6117bbff6"
   integrity sha512-UGXWbuEqsG6B6O+tle77yJH3+DXfmh4cpit0v8az824y0rZLUWuRzlfeLYlaeZ80mqIF6Xtvx/pBtIsG1OdaLg==
 
+react-native-size-matters@^0.3.0:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-size-matters/-/react-native-size-matters-0.3.1.tgz#24d0cfc335a2c730f6d58bd7b43ea5a41be4b49f"
+  integrity sha512-mKOfBLIBFBcs9br1rlZDvxD5+mAl8Gfr5CounwJtxI6Z82rGrMO+Kgl9EIg3RMVf3G855a85YVqHJL2f5EDRlw==
+
 react-native-timeline-flatlist@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/react-native-timeline-flatlist/-/react-native-timeline-flatlist-0.8.0.tgz#7965a1ccd52b72791ddc3a0c976fe34701fa1ed7"
   integrity sha512-IVfCOxYx7Js84CaUJmtuxq2eyLvoQ1nRO5GG0mri14NH2NbMUwL9VhX19/yI8LpU2bnarlo7kjR6GLUP3DM/iQ==
 
-react-native-vector-icons@^9.1.0:
+react-native-vector-icons@>=7.0.0, react-native-vector-icons@^9.1.0:
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-9.1.0.tgz#52eaa205f5954d567b7048eb93d58ac854a2c59e"
   integrity sha512-2AHZ/h9d/+rC0odz+OwbGNlc1Lik/pHhSixn4HfC8RtQ8CxfSBZ6gg7bTLcZhdSvZN+ZEGi30Fj+ZnOSQy+smg==
