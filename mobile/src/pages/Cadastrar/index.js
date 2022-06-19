@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     borderColor: '#f2f2f2',
+    
     width: Dimensions.get('window').width,
   }
 });
@@ -190,7 +191,7 @@ export default function Cadastrar  ({ navigation }) {
 
             <SelectDropdown
               data={dados.map(item => {return item})}
-              defaultButtonText="Selecione o sexo"
+              defaultButtonText="Selecione o sexo"              
               buttonStyle={styles.bordado}
               onSelect={(selectedItem, index) => {
                 console.log(selectedItem, index)
