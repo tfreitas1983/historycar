@@ -105,10 +105,27 @@ const styles = StyleSheet.create({
 
 export default function CadastrarVeiculos  ({ navigation }) {
 
+  useEffect( () => { 
+    async function PegaMarcas () {
+      try{
+      let api = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas`) 
+        .then( response  =>  {               
+           setFabricantes(response.data); 
+        })
+        api = await api;
+      }
+      catch (e){
+        console.error(e);
+      }     
+    }   
+    PegaMarcas();   
+    
+  }, [])
 
-  const [anos, setAnos] = useState([]);
+
+ // const [anos, setAnos] = useState([]);
   const [dados, setDados] = useState([]);
-
+  const [fabricantes, setFabricantes] = useState([]);
   const [loading, setLoading] = useState(false)
   const [loading2, setLoading2] = useState(false)
   const [loading3, setLoading3] = useState(false)
@@ -124,43 +141,50 @@ export default function CadastrarVeiculos  ({ navigation }) {
   const gnvRef = useRef('');
 
   const [renavam, setRenavam] = useState('');
+  const [fabricante, setFabricante] = useState([]);
   const [modelo, setModelo] = useState([]);
-  const [idModelo, setIdModelo] = useState('');
+  const [modeloSelecionado, setModeloSelecionado] = useState('');
+  const [marca, setMarca] = useState([]);
+  const [idModeloapi, setIdModeloApi] = useState('');
   const [ano, setAno] = useState([]);
+  const [combustivel, setCombustivel] = useState('');
+  const [anocombustivel, setAnoCombustivel] = useState([]);
   const [idAno, setIdAno] = useState('');
+  const [anoSelecionado,setAnoSelecionado] = useState('');
   const [aquisicao, setAquisicao] = useState('');
   const [placa, setPlaca] = useState('');
   const [km, setKm] = useState('');
   const [chassi, setChassi] = useState('');
   const [gnv, setGnv] = useState('');
   let idMarca = null;  
+  let idModelo = null;
+  let idano = null;
   let modelos = {};
+  let anos = [];
+  let anoscombustivel = [];
 
   const marcas = [{"id": "1", "title": "Acura"}, {"id": "2", "title": "Agrale"}, {"id": "3", "title": "Alfa Romeo"}, {"id": "4", "title": "AM Gen"}, {"id": "5", "title": "Asia Motors"}, {"id": "189", "title": "ASTON MARTIN"}, {"id": "6", "title": "Audi"}, {"id": "207", "title": "Baby"}, {"id": "7", "title": "BMW"}, {"id": "8", "title": "BRM"}, {"id": "123", "title": "Bugre"}, {"id": "238", "title": "BYD"}, {"id": "236", "title": "CAB Motors"}, {"id": "10", "title": "Cadillac"}, {"id": "161", "title": "Caoa Chery"}, {"id": "11", "title": "CBT Jipe"}, {"id": "136", "title": "CHANA"}, {"id": "182", "title": "CHANGAN"}, {"id": "12", "title": "Chrysler"}, {"id": "13", "title": "Citroën"}, {"id": "14", "title": "Cross Lander"}, {"id": "15", "title": "Daewoo"}, {"id": "16", "title": "Daihatsu"}, {"id": "17", "title": "Dodge"}, {"id": "147", "title": "EFFA"}, {"id": "18", "title": "Engesa"}, {"id": "19", "title": "Envemo"}, {"id": "20", "title": "Ferrari"}, {"id": "21", "title": "Fiat"}, {"id": "149", "title": "Fibravan"}, {"id": "22", "title": "Ford"}, {"id": "190", "title": "FOTON"}, {"id": "170", "title": "Fyber"}, {"id": "199", "title": "GEELY"}, {"id": "23", "title": "GM - Chevrolet"}, {"id": "153", "title": "GREAT WALL"}, {"id": "24", "title": "Gurgel"}, {"id": "152", "title": "HAFEI"}, {"id": "214", "title": "HITECH ELECTRIC"}, {"id": "25", "title": "Honda"}, {"id": "26", "title": "Hyundai"}, {"id": "27", "title": "Isuzu"}, {"id": "208", "title": "IVECO"}, {"id": "177", "title": "JAC"}, {"id": "28", "title": "Jaguar"}, {"id": "29", "title": "Jeep"}, {"id": "154", "title": "JINBEI"}, {"id": "30", "title": "JPX"}, {"id": "31", "title": "Kia Motors"}, {"id": "32", "title": "Lada"}, {"id": "171", "title": "LAMBORGHINI"}, {"id": "33", "title": "Land Rover"}, {"id": "34", "title": "Lexus"}, {"id": "168", "title": "LIFAN"}, {"id": "127", "title": "LOBINI"}, {"id": "35", "title": "Lotus"}, {"id": "140", "title": "Mahindra"}, {"id": "36", "title": "Maserati"}, {"id": "37", "title": "Matra"}, {"id": "38", "title": "Mazda"}, {"id": "211", "title": "Mclaren"}, {"id": "39", "title": "Mercedes-Benz"}, {"id": "40", "title": "Mercury"}, {"id": "167", "title": "MG"}, {"id": "156", "title": "MINI"}, {"id": "41", "title": "Mitsubishi"}, {"id": "42", "title": "Miura"}, {"id": "43", "title": "Nissan"}, {"id": "44", "title": "Peugeot"}, {"id": "45", "title": "Plymouth"}, {"id": "46", "title": "Pontiac"}, {"id": "47", "title": "Porsche"}, {"id": "185", "title": "RAM"}, {"id": "186", "title": "RELY"}, {"id": "48", "title": "Renault"}, {"id": "195", "title": "Rolls-Royce"}, {"id": "49", "title": "Rover"}, {"id": "50", "title": "Saab"}, {"id": "51", "title": "Saturn"}, {"id": "52", "title": "Seat"}, {"id": "183", "title": "SHINERAY"}, {"id": "157", "title": "smart"}, {"id": "125", "title": "SSANGYONG"}, {"id": "54", "title": "Subaru"}, {"id": "55", "title": "Suzuki"}, {"id": "165", "title": "TAC"}, {"id": "56", "title": "Toyota"}, {"id": "57", "title": "Troller"}, {"id": "58", "title": "Volvo"}, {"id": "59", "title": "VW - VolksWagen"}, {"id": "163", "title": "Wake"}, {"id": "120", "title": "Walk"}];
   
   async function PegaModelos (item) {
     idMarca = null;
-    if (item.id) {
-      
+    if (item.id) {      
       console.log('item', item);
-      //setIdMarca(item.id);
-      //console.log('idmarca', idMarca);
       modelos = null;
       setLoading(true)
-    } else {
-      //setIdMarca(null);
+    } else {      
       idMarca = null;
       modelos = null;
       console.log('else');
     }
 
     setTimeout(() => {
-      idMarca = item.id;
-      
+      idMarca = item.id;  
+      setFabricante(item.title);  
     }, 1000);
 
     if (idMarca) {
       console.log('idmarcadentro', idMarca)
+      setMarca(idMarca);
      
       let resp2 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${idMarca}/modelos`) 
       .then( response  =>  {                       
@@ -182,18 +206,15 @@ export default function CadastrarVeiculos  ({ navigation }) {
          console.log('listamodelos', modelo);
          setLoading2(false)
 
-         setAnos(modelo.map(itens =>  {  
-          return {           
-          id: ''+itens.codigo+'',
-          title: itens.nome
-        }}));  
-
-        console.log('anos', anos);
-      } 
          
+      } 
+         // Pegar o ID do modelo na função Pegamodelo e implementar o axios com este ID
+         // para trazer os anos
 
     } else {
       idMarca = item.id;
+      setMarca(idMarca);
+      setFabricante(item.title);
       let resp2 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${idMarca}/modelos`) 
       .then( response  =>  {                       
         modelos = response.data;
@@ -225,13 +246,119 @@ export default function CadastrarVeiculos  ({ navigation }) {
         
       }
     }    
- }
+  }
 
- function PegaModelo (item) {
- }
+  async function PegaModelo(itens) {
+    setIdAno('');
+    idModelo = '';
+    console.log('idmarcamodelo', marca);
+    if (itens.id) {
+      console.log('itensidmodelo', itens);
+     
+      setTimeout(() => {
+        idModelo = itens.id;  
+        setModeloSelecionado(itens.title);     
+        setIdModeloApi(idModelo);
+      }, 500);
 
- function PegaAno (item) {
-}
+      console.log('postimeout', idModelo);
+
+      if (idModelo) {
+        console.log('ifidmodelo', idModelo);
+        setLoading3(true);
+        console.log('idmodelodentro', idModelo);
+        
+     
+      let resp3 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marca}/modelos/${idModelo}/anos`) 
+      .then( response  =>  {                       
+        anos = response.data;
+        console.log('responseanos', response.data);
+      })    
+      .catch(e => {
+      console.error(e);
+      })   
+      resp3 = await resp3;
+      console.log('anos', anos);
+      anoscombustivel = anos.map(itens =>  {  
+        return {           
+        id: ''+itens.codigo+'',
+        title: itens.nome
+      }});  
+
+      console.log('anos', anoscombustivel);
+      setAnoCombustivel(anoscombustivel);
+      setLoading3(false);
+      } else {
+        setLoading3(true);
+        idModelo = itens.id;
+        setModeloSelecionado(itens.title); 
+        setIdModeloApi(idModelo);     
+
+        let resp3 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marca}/modelos/${idModelo}/anos`) 
+      .then( response  =>  {                       
+        anos = response.data;
+        console.log('responseanoselseidmodelo', response.data);
+      })    
+      .catch(e => {
+      console.error(e);
+      })   
+      resp3 = await resp3;
+
+      console.log('anosidmodeloelse', anos);
+      anoscombustivel = anos.map(itens =>  {  
+        return {           
+        id: ''+itens.codigo+'',
+        title: itens.nome
+      }});  
+
+      
+      console.log('anoselseidmodelo', anoscombustivel);
+      setAnoCombustivel(anoscombustivel);
+      setLoading3(false);
+      }
+    }  else {
+      console.log('elsepegamodelo');
+      setLoading3(true);
+      idModelo = itens.id;
+      setModeloSelecionado(itens.title);      
+      setIdModeloApi(idModelo);
+      console.log('idmarcamodeloelse', marca);
+      console.log('idmodeloelse', itens);
+
+      let resp3 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marca}/modelos/${idModelo}/anos`) 
+      .then( response  =>  {                       
+        anos = response.data;
+        console.log('responseanoselse', response.data);
+      })    
+      .catch(e => {
+      console.error(e);
+      })   
+      resp3 = await resp3;
+      console.log('anoselse', anos);
+      anoscombustivel = anos.map(itens =>  {  
+        return {           
+        id: ''+itens.codigo+'',
+        title: itens.nome
+      }});  
+
+      console.log('anoscombustivelelse', anoscombustivel);
+      setAnoCombustivel(anoscombustivel);
+      setLoading3(false);
+    }
+  }
+
+  async function PegaAno (item) {
+    console.log('anoselecionado', item);
+
+    idano = item.id;
+    let comb = item.title.replace(/[0-9]/g, '');
+    let anosubst = item.title.substr(0,4);
+    setCombustivel(comb);
+    setIdAno(idano);
+    setAnoSelecionado(anosubst);
+    console.log('replace', combustivel);
+    console.log('idano', idano);
+ }
  
 
   async function buscar () {
@@ -265,24 +392,49 @@ export default function CadastrarVeiculos  ({ navigation }) {
     idMarca = null;
     modelos = [];
     setModelo([]);
-    setAnos([]);
+    anos = [];
+    anoscombustivel = [];
+    setAnoCombustivel('');
   }, [])
 
   const onClearPress2 = useCallback(() => {
     setSuggestionsList(null)
     setModelo([]);
-    setAnos([]);
+    anos = [];    
+    anoscombustivel = [];
+    setAnoCombustivel('');
   }, [])
 
   const onClearPress3 = useCallback(() => {
-    setSuggestionsList(null)
-    setAnos([]);
+    setSuggestionsList(null);
+    idano = '';
+    setAno('');
+    anoscombustivel = '';
+    setAnoCombustivel('');
   }, [])
 
   const onOpenSuggestionsList = useCallback(isOpened => {}, [])
  
  
   async function handleSubmit () {
+
+    var data = {
+
+      fabricante: fabricante,
+      idfabricante: marca,
+      modelo: modeloSelecionado ,
+      idmodelo: idModeloapi,
+      ano: anoSelecionado,
+      idano: idAno,
+      combustivel: combustivel,
+      gnv: gnv,
+      situacao: 1,
+      placa: placa,
+      km: km,
+
+    }
+
+    console.log('data', data);
   }
   
 
@@ -311,6 +463,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
           </Text>
           
          
+          <Text style={{marginTop:10, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Marcas</Text>
          
           <AutocompleteDropdown
           ref={searchRef}          
@@ -354,14 +507,14 @@ export default function CadastrarVeiculos  ({ navigation }) {
           showChevron={true}
           />
 
-          <Text style={styles.opcoes}> Modelos</Text>
+          <Text style={{marginTop:55, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Modelos</Text>
           <AutocompleteDropdown
           ref={searchRef2}          
           clearOnFocus={false}
           closeOnBlur={true}
           closeOnSubmit={false}
           dataSet={modelo}
-          onSelectItem={ item => PegaModelo(item) }
+          onSelectItem={ itens => PegaModelo(itens) }
           suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
           onClear={onClearPress2}
           loading={loading2}
@@ -397,18 +550,18 @@ export default function CadastrarVeiculos  ({ navigation }) {
           showChevron={true}
           />
 
-        <Text style={styles.opcoes}> Anos</Text>
+          <Text style={{marginTop:55, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Anos</Text>
           <AutocompleteDropdown
           ref={searchRef3}          
           clearOnFocus={false}
           closeOnBlur={true}
           closeOnSubmit={false}
-          dataSet={anos}
-          onSelectItem={ item => PegaModelo(item) }
+          dataSet={anocombustivel}
+          onSelectItem={ item => PegaAno(item) }
           suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
           onClear={onClearPress3}
           loading={loading3}
-          useFilter={true}
+          useFilter={false}
           textInputProps={{
             placeholder: 'Digite 3 ou mais caracteres',
             autoCorrect: false,
@@ -441,6 +594,8 @@ export default function CadastrarVeiculos  ({ navigation }) {
           />
   
 
+
+          <Button style={{marginBottom: 50, marginTop: 50}} onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
          <ScrollView> 
         
 

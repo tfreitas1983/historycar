@@ -18,6 +18,9 @@ exports.cadastrar = (req, res) => {
         modelodescricao: req.body.modelodescricao,
         ano: req.body.ano,
         combustivel: req.body.combustivel,
+        idfabricante: req.body.idfabricante,
+        idmodelo: req.body.idmodelo,
+        idano: req.body.idano,
         gnv: req.body.gnv,
         situacao: req.body.situacao
       };
