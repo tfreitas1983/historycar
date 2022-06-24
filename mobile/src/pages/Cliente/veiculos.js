@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView, ActivityIndicator} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
 import {pegaVeiculo} from '../../store/modules/veiculos/actions';
+import Feather from 'react-native-vector-icons/Feather'
+Feather.loadFont()
 
 const styles = StyleSheet.create({
   container: {
@@ -112,46 +114,82 @@ export default function Veiculos  ({ navigation }) {
   
   const [veiculos, setVeiculos] = useState([]);
   const [cliente, setCliente] = useState('');
+  const [loading, setLoading] = useState('');
   
 
    useEffect( () => { 
-     console.log('userId', userId)
-      axios.get(`http://10.0.2.2:5099/api/clientes?user=${userId}`)
-      .then( response => {             
-        setCliente( response.data.map(item =>  {return item.id}).pop());               
-        pegaVeiculos();
-        console.log('cliente', cliente)
-      });             
+     console.log('userId', userId);  
+      PegaCliente();
+      setLoading(true);
+                
   }, []);      
 
+  async function PegaCliente () {
+    let respcliente = await axios.get(`http://10.0.2.2:5099/api/clientes?userId=${userId}`)
+    .then( response => {       
+      temp = response.data.map(item =>  {return item.id});          
+    })
+    .catch( e => {
+      console.error(e);
+    })     
+    respcliente = await respcliente;   
+    console.log('temp', temp[0]);
+    setCliente( temp[0] );      
+            
+    pegaVeiculos();
+  }
 
   async function pegaVeiculos () {
+    
+    console.log('cliente', cliente)
+
+    if (cliente) {
+      let resp = await axios.get('http://10.0.2.2:5099/api/veiculosclientes?cliente='+cliente)
+      .then(response => {            
+          setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
+          console.log('veiculos', response.data)
+      })
+      .catch(e => {
+        console.error(e);
+      })
   
-   let resp = await axios.get('http://10.0.2.2:5099/api/veiculosclientes?cliente='+cliente)
-        .then(response => {            
-           setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
-            console.log('veiculos', response.data)
-        });  
+      resp = await resp; 
+      setLoading(false)  
+    } else {
+
+    }
+  
   }
 
   let lista = null;
   let inativos = null;
 
-  if (veiculos) {
+  if (loading == true) {
+    lista = <View>
+      <ActivityIndicator size="large" color="#fff" />
+    </View>
+
+  }
+
+  if (veiculos && loading == false) {
       lista = veiculos.map((item, index) => {
         if (item.situacao === true) {
         return (
-          <View style={styles.toogle} >
-            <Text style={styles.titulo} key={index} onPress={() => Detalhes(item.id)}>  {item.veiculo.modelodescricao} </Text> 
-            <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
+          <View>
+            <Text style={styles.titulo}>Veículos ativos</Text>
+            <View style={styles.toogle} >
+              
+              <Text style={styles.titulo} key={index} onPress={() => Detalhes(item.id)}>  {item.veiculo.modelo} - {item.veiculo.ano} </Text> 
+              <Text style={styles.titulo} key={item.id+'a'} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
+            </View>
           </View>
         )} else{
           return (
             <View>
               <Text style={styles.titulo}>Veículos com baixa</Text>
               <View style={styles.inativo}>
-                <Text style={styles.titulo} key={index} onPress={() => Detalhes(item.id)}>  {item.veiculo.modelodescricao} </Text> 
-                <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
+                <Text style={styles.titulo} key={index+'b'} onPress={() => Detalhes(item.id)}>  {item.veiculo.modelo} - {item.veiculo.ano} </Text> 
+                <Text style={styles.titulo} key={item.id+'bx'} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
               </View>
             </View>
             )

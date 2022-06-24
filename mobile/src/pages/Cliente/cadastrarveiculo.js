@@ -5,6 +5,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { dataMask } from '../../components/masks';
 import axios from 'axios';
 import moment from 'moment';
+import { useDispatch, useSelector } from "react-redux";
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -105,6 +106,9 @@ const styles = StyleSheet.create({
 
 export default function CadastrarVeiculos  ({ navigation }) {
 
+  const dispatch = useDispatch();
+  const userId = useSelector(state => state.auth.id);
+
   useEffect( () => { 
     async function PegaMarcas () {
       try{
@@ -118,12 +122,28 @@ export default function CadastrarVeiculos  ({ navigation }) {
         console.error(e);
       }     
     }   
-    PegaMarcas();   
+    PegaMarcas();  
+    PegaCliente(); 
     
   }, [])
 
+  async function PegaCliente () {
+    console.log('userid', userId);
+    let respcliente = await axios.get(`http://10.0.2.2:5099/api/clientes?userId=${userId}`)
+    .then( response => {
+      let temp = response.data.map( item => { return item.id})
+      console.log('temp', temp[0]);
+      setCliente(temp[0])      
+    })    
+    .catch( e =>  {
+      console.error(e);
+    })
 
- // const [anos, setAnos] = useState([]);
+    respcliente = await respcliente;
+    console.log('cliente', cliente);
+  }
+
+  const [cliente, setCliente] = useState('');
   const [dados, setDados] = useState([]);
   const [fabricantes, setFabricantes] = useState([]);
   const [loading, setLoading] = useState(false)
@@ -167,14 +187,12 @@ export default function CadastrarVeiculos  ({ navigation }) {
   
   async function PegaModelos (item) {
     idMarca = null;
-    if (item.id) {      
-      console.log('item', item);
+    if (item.id) { 
       modelos = null;
       setLoading(true)
     } else {      
       idMarca = null;
       modelos = null;
-      console.log('else');
     }
 
     setTimeout(() => {
@@ -183,7 +201,6 @@ export default function CadastrarVeiculos  ({ navigation }) {
     }, 1000);
 
     if (idMarca) {
-      console.log('idmarcadentro', idMarca)
       setMarca(idMarca);
      
       let resp2 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${idMarca}/modelos`) 
@@ -202,14 +219,9 @@ export default function CadastrarVeiculos  ({ navigation }) {
           return {           
           id: ''+itens.codigo+'',
           title: itens.nome
-        }}));  
-         console.log('listamodelos', modelo);
-         setLoading2(false)
-
-         
+        }})); 
+        setLoading2(false);
       } 
-         // Pegar o ID do modelo na função Pegamodelo e implementar o axios com este ID
-         // para trazer os anos
 
     } else {
       idMarca = item.id;
@@ -231,19 +243,14 @@ export default function CadastrarVeiculos  ({ navigation }) {
            return {           
            id: ''+itens.codigo+'',
            title: itens.nome
-         }}));   
-         console.log('listamodeloselse', modelo);
-
+         }})); 
          setLoading2(false);
 
          setAnos(modelo.map(itens =>  {  
           return {           
           id: ''+itens.codigo+'',
           title: itens.nome
-        }}));  
-
-        console.log('anos', anos);
-        
+        }})); 
       }
     }    
   }
@@ -251,43 +258,28 @@ export default function CadastrarVeiculos  ({ navigation }) {
   async function PegaModelo(itens) {
     setIdAno('');
     idModelo = '';
-    console.log('idmarcamodelo', marca);
+
     if (itens.id) {
-      console.log('itensidmodelo', itens);
-     
+
       setTimeout(() => {
         idModelo = itens.id;  
         setModeloSelecionado(itens.title);     
         setIdModeloApi(idModelo);
       }, 500);
 
-      console.log('postimeout', idModelo);
-
       if (idModelo) {
-        console.log('ifidmodelo', idModelo);
         setLoading3(true);
-        console.log('idmodelodentro', idModelo);
-        
      
-      let resp3 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marca}/modelos/${idModelo}/anos`) 
-      .then( response  =>  {                       
-        anos = response.data;
-        console.log('responseanos', response.data);
-      })    
-      .catch(e => {
-      console.error(e);
-      })   
-      resp3 = await resp3;
-      console.log('anos', anos);
-      anoscombustivel = anos.map(itens =>  {  
-        return {           
-        id: ''+itens.codigo+'',
-        title: itens.nome
-      }});  
+        let resp3 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marca}/modelos/${idModelo}/anos`) 
+        .then( response  =>  { anos = response.data; })
+        .catch(e => { console.error(e); })   
+        resp3 = await resp3;
 
-      console.log('anos', anoscombustivel);
-      setAnoCombustivel(anoscombustivel);
-      setLoading3(false);
+        anoscombustivel = anos.map( itens =>  { return { id: ''+itens.codigo+'', title: itens.nome }});  
+     
+        setAnoCombustivel(anoscombustivel);
+        setLoading3(false);
+
       } else {
         setLoading3(true);
         idModelo = itens.id;
@@ -295,69 +287,40 @@ export default function CadastrarVeiculos  ({ navigation }) {
         setIdModeloApi(idModelo);     
 
         let resp3 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marca}/modelos/${idModelo}/anos`) 
-      .then( response  =>  {                       
-        anos = response.data;
-        console.log('responseanoselseidmodelo', response.data);
-      })    
-      .catch(e => {
-      console.error(e);
-      })   
-      resp3 = await resp3;
+        .then( response  =>  { anos = response.data; })    
+        .catch(e => { console.error(e); })   
+        resp3 = await resp3;
 
-      console.log('anosidmodeloelse', anos);
-      anoscombustivel = anos.map(itens =>  {  
-        return {           
-        id: ''+itens.codigo+'',
-        title: itens.nome
-      }});  
-
-      
-      console.log('anoselseidmodelo', anoscombustivel);
-      setAnoCombustivel(anoscombustivel);
-      setLoading3(false);
+        anoscombustivel = anos.map(itens =>  {  return { id: ''+itens.codigo+'', title: itens.nome }});  
+        
+        setAnoCombustivel(anoscombustivel);
+        setLoading3(false);
       }
     }  else {
-      console.log('elsepegamodelo');
       setLoading3(true);
       idModelo = itens.id;
       setModeloSelecionado(itens.title);      
       setIdModeloApi(idModelo);
-      console.log('idmarcamodeloelse', marca);
-      console.log('idmodeloelse', itens);
 
       let resp3 = await axios.get(`https://parallelum.com.br/fipe/api/v1/carros/marcas/${marca}/modelos/${idModelo}/anos`) 
-      .then( response  =>  {                       
-        anos = response.data;
-        console.log('responseanoselse', response.data);
-      })    
-      .catch(e => {
-      console.error(e);
-      })   
+      .then( response  =>  { anos = response.data; })    
+      .catch(e => { console.error(e); })   
       resp3 = await resp3;
-      console.log('anoselse', anos);
-      anoscombustivel = anos.map(itens =>  {  
-        return {           
-        id: ''+itens.codigo+'',
-        title: itens.nome
-      }});  
+      
+      anoscombustivel = anos.map(itens =>  {  return { id: ''+itens.codigo+'', title: itens.nome }}); 
 
-      console.log('anoscombustivelelse', anoscombustivel);
       setAnoCombustivel(anoscombustivel);
       setLoading3(false);
     }
   }
 
   async function PegaAno (item) {
-    console.log('anoselecionado', item);
-
     idano = item.id;
     let comb = item.title.replace(/[0-9]/g, '');
     let anosubst = item.title.substr(0,4);
     setCombustivel(comb);
     setIdAno(idano);
     setAnoSelecionado(anosubst);
-    console.log('replace', combustivel);
-    console.log('idano', idano);
  }
  
 
@@ -376,12 +339,9 @@ export default function CadastrarVeiculos  ({ navigation }) {
   }
 
   function carregaDados () {
-   //.map(item => ({ ...item}) )); 
         if (dados) {
           setMarca(dados.fabricante)
           setModelo(dados.modelo)
-          console.log('dados', dados)
-          console.log('marcarenavam', marca)
         } else {
           Alert.alert('RENAVAM não encontrado! Insira os dados do veículo');
         }
@@ -411,6 +371,8 @@ export default function CadastrarVeiculos  ({ navigation }) {
     setAno('');
     anoscombustivel = '';
     setAnoCombustivel('');
+    setIdAno('');
+    setAnoSelecionado('');
   }, [])
 
   const onOpenSuggestionsList = useCallback(isOpened => {}, [])
@@ -430,7 +392,11 @@ export default function CadastrarVeiculos  ({ navigation }) {
       gnv: gnv,
       situacao: 1,
       placa: placa,
-      km: km,
+      kmaquisicao: km,
+      chassi: chassi,
+      renavam: renavam,
+      dataaquisicao: aquisicao,
+      clienteId: cliente
 
     }
 
