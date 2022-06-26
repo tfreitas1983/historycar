@@ -19,8 +19,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     paddingHorizontal: 10,
-    backgroundColor: '#a2a2a2',
-    height: Dimensions.get('window').height * 0.5
+    backgroundColor: 'transparent',
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width
   },
   linearGradient: {
     alignItems: 'center',
@@ -34,7 +35,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom:5,
     color:'#fff',
-    fontSize: 15,
+    fontSize: 20,
+    padding: 5,
     textAlign: 'left',
   },
   opcoes: {
@@ -86,7 +88,8 @@ const styles = StyleSheet.create({
     color: '#fafafa',
     fontSize: 25,
     fontWeight: 'bold',       
-    marginTop: 10
+    marginTop: 10,
+    alignItems:'center'
   },
   resumo: {
     fontFamily: 'Open Sans',
@@ -101,7 +104,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: Dimensions.get('window').width,
     height: 200
-  },
+  }
 });
 
 export default function CadastrarVeiculos  ({ navigation }) {
@@ -145,6 +148,8 @@ export default function CadastrarVeiculos  ({ navigation }) {
 
   const [cliente, setCliente] = useState('');
   const [dados, setDados] = useState([]);
+  const [buscado, setBuscado] = useState(false);
+  const [avancado, setAvancado] = useState(false);
   const [fabricantes, setFabricantes] = useState([]);
   const [loading, setLoading] = useState(false)
   const [loading2, setLoading2] = useState(false)
@@ -329,7 +334,8 @@ export default function CadastrarVeiculos  ({ navigation }) {
     try{
       await  VeiculoDataService.buscarRenavam(renavam)
       .then( response  =>  {   
-        setDados(response.data)            
+        setDados(response.data);    
+        setBuscado(true);        
         carregaDados();
      })
     }
@@ -406,217 +412,236 @@ export default function CadastrarVeiculos  ({ navigation }) {
 
 
   return (
-    <View>
+    <View style={styles.container}>
       <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-      <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>
-        
-          <Input       
-          keyboardType="number-pad"         
-          autoCorrect={false}
-          autoCapitalize="none"
-          style={{marginTop: 10, color: '#fff'}} 
-          placeholder="RENAVAM"
-          returnKeyType="next"
-          onSubmitEditing={() => buscar()}
-          value={renavam}
-          onChangeText={setRenavam}
-          maxLength={11}
-         />
+        <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>
+          <View>
+            {buscado === true && <>
+            <Text style={styles.titulo}>Renavam</Text>
+            </>}
             
-          <Button style={styles.buscar} onPress={() => buscar()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Buscar </Button>
-          <Text  style={styles.titulo}>Se o veículo já estiver cadastrado no aplicativo,
-           você terá o histórico. Caso contrário você pode cadastrá-lo abaixo
-          </Text>
+            <Input       
+            keyboardType="number-pad"         
+            autoCorrect={false}
+            autoCapitalize="none"
+            style={{marginTop: 10, color: '#fff'}} 
+            placeholder="RENAVAM"
+            returnKeyType="next"
+            onSubmitEditing={() => buscar()}
+            value={renavam}
+            onChangeText={setRenavam}
+            maxLength={11}
+          />
+              
+            
+          </View>
+          {(buscado === false || !dados) &&
+            <Button style={styles.buscar} onPress={() => buscar()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Buscar </Button>
+          }
+          {buscado === false && <View>
+            <Text  style={styles.titulo}>Se o veículo já estiver cadastrado no aplicativo,
+            você terá o histórico. Caso contrário você pode cadastrá-lo abaixo           
+            </Text>
+          </View>
+          }
           
-         
-          <Text style={{marginTop:10, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Marcas</Text>
-         
-          <AutocompleteDropdown
-          ref={searchRef}          
-          clearOnFocus={false}
-          closeOnBlur={true}
-          closeOnSubmit={false}
-          dataSet={marcas}
-          onSelectItem={ item => PegaModelos(item) }
-          suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
-          onClear={onClearPress}
-          loading={loading}
-          useFilter={true}
-          textInputProps={{
-            placeholder: 'Digite 3 ou mais caracteres',
-            autoCorrect: false,
-            autoCapitalize: 'none',
-            placeholderTextColor: '#fff',
-            style: {
-              borderRadius: 15,
+          {buscado === true && !dados && avancado === false && <>
+          
+            <Text style={{marginTop:10, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Marcas</Text>
+          
+            <AutocompleteDropdown
+            ref={searchRef}          
+            clearOnFocus={false}
+            closeOnBlur={true}
+            closeOnSubmit={false}
+            dataSet={marcas}
+            onSelectItem={ item => PegaModelos(item) }
+            suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+            onClear={onClearPress}
+            loading={loading}
+            useFilter={true}
+            textInputProps={{
+              placeholder: 'Digite 3 ou mais caracteres',
+              autoCorrect: false,
+              autoCapitalize: 'none',
+              placeholderTextColor: '#fff',
+              style: {
+                borderRadius: 15,
+                backgroundColor: '#fd8900',
+                color: '#fff',
+                paddingLeft: 18,
+                width: Dimensions.get('window').width*0.6
+              },
+            }}
+            rightButtonsContainerStyle={{
+              right: 8,
+              height: 30,
+              alignSelf: 'center',
+            }}
+            inputContainerStyle={{
               backgroundColor: '#fd8900',
-              color: '#fff',
-              paddingLeft: 18,
-              width: Dimensions.get('window').width*0.6
-            },
-          }}
-          rightButtonsContainerStyle={{
-            right: 8,
-            height: 30,
-            alignSelf: 'center',
-          }}
-          inputContainerStyle={{
-            backgroundColor: '#fd8900',
-            borderRadius: 25,
-          }}
-          suggestionsListContainerStyle={{ backgroundColor: '#fd8900' }}
-          containerStyle={{ flexGrow: 1, flexShrink: 1 }}
-          renderItem={(item, text) => <Text style={{ color: '#fff', padding: 15 }}>{item.title}</Text>}
-          ChevronIconComponent={<Feather name="chevron-down" size={20} color="#fff" />}
-          ClearIconComponent={<Feather name="x-circle" size={20} color="#fff" />}
-          inputHeight={50}
-          showChevron={true}
-          />
+              borderRadius: 25,
+            }}
+            suggestionsListContainerStyle={{ backgroundColor: '#fd8900' }}
+            containerStyle={{ flexGrow: 1, flexShrink: 1 }}
+            renderItem={(item, text) => <Text style={{ color: '#fff', padding: 15 }}>{item.title}</Text>}
+            ChevronIconComponent={<Feather name="chevron-down" size={20} color="#fff" />}
+            ClearIconComponent={<Feather name="x-circle" size={20} color="#fff" />}
+            inputHeight={50}
+            showChevron={true}
+            />
 
-          <Text style={{marginTop:55, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Modelos</Text>
-          <AutocompleteDropdown
-          ref={searchRef2}          
-          clearOnFocus={false}
-          closeOnBlur={true}
-          closeOnSubmit={false}
-          dataSet={modelo}
-          onSelectItem={ itens => PegaModelo(itens) }
-          suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
-          onClear={onClearPress2}
-          loading={loading2}
-          useFilter={true}
-          textInputProps={{
-            placeholder: 'Digite 3 ou mais caracteres',
-            autoCorrect: false,
-            autoCapitalize: 'none',
-            placeholderTextColor: '#fff',
-            style: {
-              borderRadius: 15,
+            <Text style={{marginTop:55, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Modelos</Text>
+            <AutocompleteDropdown
+            ref={searchRef2}          
+            clearOnFocus={false}
+            closeOnBlur={true}
+            closeOnSubmit={false}
+            dataSet={modelo}
+            onSelectItem={ itens => PegaModelo(itens) }
+            suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+            onClear={onClearPress2}
+            loading={loading2}
+            useFilter={true}
+            textInputProps={{
+              placeholder: 'Digite 3 ou mais caracteres',
+              autoCorrect: false,
+              autoCapitalize: 'none',
+              placeholderTextColor: '#fff',
+              style: {
+                borderRadius: 15,
+                backgroundColor: '#fd8900',
+                color: '#fff',
+                paddingLeft: 18,
+                width: Dimensions.get('window').width*0.6
+              },
+            }}
+            rightButtonsContainerStyle={{
+              right: 8,
+              height: 30,
+              alignSelf: 'center',
+            }}
+            inputContainerStyle={{
               backgroundColor: '#fd8900',
-              color: '#fff',
-              paddingLeft: 18,
-              width: Dimensions.get('window').width*0.6
-            },
-          }}
-          rightButtonsContainerStyle={{
-            right: 8,
-            height: 30,
-            alignSelf: 'center',
-          }}
-          inputContainerStyle={{
-            backgroundColor: '#fd8900',
-            borderRadius: 25,
-          }}
-          suggestionsListContainerStyle={{ backgroundColor: '#fd8900' }}
-          containerStyle={{ flexGrow: 1, flexShrink: 1 }}
-          renderItem={(item, text) => <Text style={{ color: '#fff', padding: 15 }}>{item.title}</Text>}
-          ChevronIconComponent={<Feather name="chevron-down" size={20} color="#fff" />}
-          ClearIconComponent={<Feather name="x-circle" size={20} color="#fff" />}
-          inputHeight={50}
-          showChevron={true}
-          />
+              borderRadius: 25,
+            }}
+            suggestionsListContainerStyle={{ backgroundColor: '#fd8900' }}
+            containerStyle={{ flexGrow: 1, flexShrink: 1 }}
+            renderItem={(item, text) => <Text style={{ color: '#fff', padding: 15 }}>{item.title}</Text>}
+            ChevronIconComponent={<Feather name="chevron-down" size={20} color="#fff" />}
+            ClearIconComponent={<Feather name="x-circle" size={20} color="#fff" />}
+            inputHeight={50}
+            showChevron={true}
+            />
 
-          <Text style={{marginTop:55, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Anos</Text>
-          <AutocompleteDropdown
-          ref={searchRef3}          
-          clearOnFocus={false}
-          closeOnBlur={true}
-          closeOnSubmit={false}
-          dataSet={anocombustivel}
-          onSelectItem={ item => PegaAno(item) }
-          suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
-          onClear={onClearPress3}
-          loading={loading3}
-          useFilter={false}
-          textInputProps={{
-            placeholder: 'Digite 3 ou mais caracteres',
-            autoCorrect: false,
-            autoCapitalize: 'none',
-            placeholderTextColor: '#fff',
-            style: {
-              borderRadius: 15,
+            <Text style={{marginTop:55, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Anos</Text>
+            <AutocompleteDropdown
+            ref={searchRef3}          
+            clearOnFocus={false}
+            closeOnBlur={true}
+            closeOnSubmit={false}
+            dataSet={anocombustivel}
+            onSelectItem={ item => PegaAno(item) }
+            suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+            onClear={onClearPress3}
+            loading={loading3}
+            useFilter={false}
+            textInputProps={{
+              placeholder: 'Digite 3 ou mais caracteres',
+              autoCorrect: false,
+              autoCapitalize: 'none',
+              placeholderTextColor: '#fff',
+              style: {
+                borderRadius: 15,
+                backgroundColor: '#fd8900',
+                color: '#fff',
+                paddingLeft: 18,
+                width: Dimensions.get('window').width*0.6
+              },
+            }}
+            rightButtonsContainerStyle={{
+              right: 8,
+              height: 30,
+              alignSelf: 'center',
+            }}
+            inputContainerStyle={{
               backgroundColor: '#fd8900',
-              color: '#fff',
-              paddingLeft: 18,
-              width: Dimensions.get('window').width*0.6
-            },
-          }}
-          rightButtonsContainerStyle={{
-            right: 8,
-            height: 30,
-            alignSelf: 'center',
-          }}
-          inputContainerStyle={{
-            backgroundColor: '#fd8900',
-            borderRadius: 25,
-          }}
-          suggestionsListContainerStyle={{ backgroundColor: '#fd8900' }}
-          containerStyle={{ flexGrow: 1, flexShrink: 1 }}
-          renderItem={(item, text) => <Text style={{ color: '#fff', padding: 15 }}>{item.title}</Text>}
-          ChevronIconComponent={<Feather name="chevron-down" size={20} color="#fff" />}
-          ClearIconComponent={<Feather name="x-circle" size={20} color="#fff" />}
-          inputHeight={50}
-          showChevron={true}
-          />
-  
+              borderRadius: 25,
+            }}
+            suggestionsListContainerStyle={{ backgroundColor: '#fd8900' }}
+            containerStyle={{ flexGrow: 1, flexShrink: 1 }}
+            renderItem={(item, text) => <Text style={{ color: '#fff', padding: 15 }}>{item.title}</Text>}
+            ChevronIconComponent={<Feather name="chevron-down" size={20} color="#fff" />}
+            ClearIconComponent={<Feather name="x-circle" size={20} color="#fff" />}
+            inputHeight={50}
+            showChevron={true}
+            />
 
+            <Button style={{marginBottom: 50}} onPress={() => setAvancado(true)}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Avançar </Button>
+    
+          </>
+          }
+          
+          <ScrollView > 
+            <View style={styles.container}>
+              {avancado === true && buscado === true && <>
+              
+                <Input       
+                keyboardType="default"         
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={{marginTop: 10, color: '#fff'}} 
+                placeholder="Placa"
+                returnKeyType="next"
+                onSubmitEditing={() => kmRef.current.focus()}
+                value={placa.toUpperCase()}
+                onChangeText={setPlaca}
+                style={{marginTop:30}} />
 
-          <Button style={{marginBottom: 50, marginTop: 50}} onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
-         <ScrollView> 
-        
+                <Input       
+                keyboardType="number-pad"         
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={{marginTop: 10, color: '#fff'}} 
+                ref={kmRef}
+                placeholder="KM atual"
+                returnKeyType="next"
+                onSubmitEditing={() => chassiRef.current.focus()}
+                value={km}
+                onChangeText={setKm} />
 
-          <Input       
-          keyboardType="default"         
-          autoCorrect={false}
-          autoCapitalize="none"
-          style={{marginTop: 10, color: '#fff'}} 
-          placeholder="Placa"
-          returnKeyType="next"
-          onSubmitEditing={() => kmRef.current.focus()}
-          value={placa.toUpperCase()}
-          onChangeText={setPlaca}
-          style={{marginTop:30}} />
+                <Input       
+                keyboardType="default"         
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={{marginTop: 10, color: '#fff'}} 
+                ref={chassiRef}
+                placeholder="Chassi"
+                returnKeyType="next"
+                onSubmitEditing={() => aquisicaoRef.current.focus()}
+                value={chassi.toUpperCase()}
+                onChangeText={setChassi} />
 
-          <Input       
-          keyboardType="number-pad"         
-          autoCorrect={false}
-          autoCapitalize="none"
-          style={{marginTop: 10, color: '#fff'}} 
-          ref={kmRef}
-          placeholder="KM atual"
-          returnKeyType="next"
-          onSubmitEditing={() => chassiRef.current.focus()}
-          value={km}
-          onChangeText={setKm} />
+                <Input       
+                keyboardType="number-pad"         
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={{marginTop: 10, color: '#fff'}} 
+                ref={aquisicaoRef}
+                placeholder="Data aquisição"
+                returnKeyType="next"
+                onSubmitEditing={() => gnvRef.current.focus()}
+                value={dataMask(aquisicao)}
+                onChangeText={setAquisicao} />
+                <View style={styles.toggle}>
 
-          <Input       
-          keyboardType="default"         
-          autoCorrect={false}
-          autoCapitalize="none"
-          style={{marginTop: 10, color: '#fff'}} 
-          ref={chassiRef}
-          placeholder="Chassi"
-          returnKeyType="next"
-          onSubmitEditing={() => aquisicaoRef.current.focus()}
-          value={chassi.toUpperCase()}
-          onChangeText={setChassi} />
-
-          <Input       
-          keyboardType="number-pad"         
-          autoCorrect={false}
-          autoCapitalize="none"
-          style={{marginTop: 10, color: '#fff'}} 
-          ref={aquisicaoRef}
-          placeholder="Data aquisição"
-          returnKeyType="next"
-          onSubmitEditing={() => gnvRef.current.focus()}
-          value={dataMask(aquisicao)}
-          onChangeText={setAquisicao} />
-
-          <Text style={styles.toggle}> GNV   <Switch value={gnv} ref={gnvRef} onValueChange={setGnv} /> </Text>
-            
-          <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
-        </ScrollView>
+                  <Text  style={styles.titulo} > GNV   <Switch  value={gnv} ref={gnvRef} onValueChange={setGnv} /> </Text>
+                </View>
+                <Button  onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
+                </>          
+              }
+            </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>
     </View>
