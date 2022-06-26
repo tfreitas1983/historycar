@@ -70,25 +70,21 @@ const styles = StyleSheet.create({
     fontFamily: 'Open Sans',
     textAlign: 'center',
     color: '#f2f2f2',
-    backgroundColor: 'transparent',
     borderWidth: 5,
     borderRadius: 10,
     borderColor: '#f2f2f2',
     fontSize: 40,
-    marginTop: 20,
-    padding: 5,
-    textAlign: 'center'
+    marginTop: 10,
+    width: Dimensions.get('window').width
   },
-  toggle: {      
-    flex: 1,
+  toggle: { 
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignSelf: 'flex-start',
     fontFamily: 'Open Sans',
     color: '#fafafa',
     fontSize: 25,
-    fontWeight: 'bold',       
-    marginTop: 10,
+    fontWeight: 'bold', 
     alignItems:'center'
   },
   resumo: {
@@ -401,7 +397,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
       kmaquisicao: km,
       chassi: chassi,
       renavam: renavam,
-      dataaquisicao: aquisicao,
+      dataaquisicao: aquisicao.replace('/','-').replace('/','-'),
       clienteId: cliente
 
     }
@@ -435,7 +431,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
               
             
           </View>
-          {(buscado === false || !dados) &&
+          {(buscado === false || !dados) && !fabricante &&
             <Button style={styles.buscar} onPress={() => buscar()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Buscar </Button>
           }
           {buscado === false && <View>
@@ -569,7 +565,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
               borderRadius: 25,
             }}
             suggestionsListContainerStyle={{ backgroundColor: '#fd8900' }}
-            containerStyle={{ flexGrow: 1, flexShrink: 1 }}
+            containerStyle={{ flexGrow: 1, flexShrink: 1, marginBottom: 30 }}
             renderItem={(item, text) => <Text style={{ color: '#fff', padding: 15 }}>{item.title}</Text>}
             ChevronIconComponent={<Feather name="chevron-down" size={20} color="#fff" />}
             ClearIconComponent={<Feather name="x-circle" size={20} color="#fff" />}
@@ -577,7 +573,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
             showChevron={true}
             />
 
-            <Button style={{marginBottom: 50}} onPress={() => setAvancado(true)}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Avançar </Button>
+            <Button style={styles.buscar} onPress={() => setAvancado(true)}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Avançar </Button>
     
           </>
           }
