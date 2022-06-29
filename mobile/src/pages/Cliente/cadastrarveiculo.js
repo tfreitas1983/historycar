@@ -1,16 +1,16 @@
 import React, {useRef, useState, useEffect, useCallback}  from 'react';
-import {Text, View, StyleSheet, Dimensions, ScrollView, Alert, Switch, KeyboardAvoidingView } from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView, Alert, Switch, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { dataMask } from '../../components/masks';
 import axios from 'axios';
-import moment from 'moment';
 import { useDispatch, useSelector } from "react-redux";
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import MyDate from '../../components/datepicker';
 import VeiculoDataService from '../../services/veiculo';
-import Feather from 'react-native-vector-icons/Feather'
+import PlacaDataService from '../../services/veiculosplacas';
+import Feather from 'react-native-vector-icons/Feather';
 Feather.loadFont()
 
 const styles = StyleSheet.create({
@@ -143,7 +143,8 @@ export default function CadastrarVeiculos  ({ navigation }) {
   }
 
   const [cliente, setCliente] = useState('');
-  const [dados, setDados] = useState([]);
+  const [dados, setDados] = useState('');
+  const [loadingdados, setLoadingDados] = useState(false);
   const [buscado, setBuscado] = useState(false);
   const [avancado, setAvancado] = useState(false);
   const [fabricantes, setFabricantes] = useState([]);
@@ -151,8 +152,6 @@ export default function CadastrarVeiculos  ({ navigation }) {
   const [loading2, setLoading2] = useState(false)
   const [loading3, setLoading3] = useState(false)
   const [suggestionsList, setSuggestionsList] = useState(null)
-  const [selectedItem, setSelectedItem] = useState(null)
-  const dropdownController = useRef(null)
   const searchRef = useRef(null);
   const searchRef2 = useRef(null);
   const searchRef3 = useRef(null);
@@ -161,7 +160,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
   const aquisicaoRef = useRef('');
   const gnvRef = useRef('');
 
-  const [renavam, setRenavam] = useState('');
+  const [renavam, setRenavam] = useState('332838594');
   const [fabricante, setFabricante] = useState([]);
   const [modelo, setModelo] = useState([]);
   const [modeloSelecionado, setModeloSelecionado] = useState('');
@@ -327,26 +326,78 @@ export default function CadastrarVeiculos  ({ navigation }) {
 
   async function buscar () {
 
-    try{
+   
       await  VeiculoDataService.buscarRenavam(renavam)
-      .then( response  =>  {   
-        setDados(response.data);    
-        setBuscado(true);        
-        carregaDados();
-     })
-    }
-    catch (e){
-     console.error(e);
-    }     
+      .then( response  =>  {  
+        setLoadingDados(true) ;
+        if (response.data) {
+          let tempdados = response.data;
+          console.log('tempdados', tempdados);
+          setDados(tempdados);
+          carregaDados();
+        } else {
+          Alert.alert('RENAVAM não encontrado')
+        }  
+      })
+      .catch (e => {
+      console.error(e);
+      });
+               
+      setBuscado(true);           
+      setLoadingDados(false);
+  
+    
   }
 
-  function carregaDados () {
-        if (dados) {
-          setMarca(dados.fabricante)
-          setModelo(dados.modelo)
+  async function carregaDados () {
+    if (dados) {
+      console.log('dados', dados);
+      setLoadingDados(true);
+      let placatemp = await dados.veiculos_placas.map(item => { return item.placa });
+
+      Alert.alert('Dados')
+      setFabricante(dados.fabricante);
+      setMarca(dados.idfabricante);
+      setModelo(dados.modelo);   
+      setIdModeloApi(dados.idmodelo);
+      setAnoSelecionado(dados.ano);
+      setIdAno(dados.idano);
+      setPlaca(placatemp[0] );
+      setChassi(dados.chassi);
+      setGnv(dados.gnv);
+      setLoadingDados(false);
+    } else {
+      Alert.alert('Efetuando a busca');
+      await  VeiculoDataService.buscarRenavam(renavam)
+      .then( response  =>  {  
+        setLoadingDados(true) ;
+        if (response.data) {
+          let tempdados = response.data;
+          console.log('tempdadoselse', tempdados);
+          setDados(tempdados);
+          
         } else {
-          Alert.alert('RENAVAM não encontrado! Insira os dados do veículo');
-        }
+          Alert.alert('RENAVAM não encontrado')
+        }  
+      })
+      .catch (e => {
+      console.error(e);
+      });
+
+      console.log('dadoselse', dados);
+      let placatemp = await dados.veiculos_placas.map(item => { return item.placa });
+      setFabricante(dados.fabricante);
+      setMarca(dados.idfabricante);
+      setModelo(dados.modelo);   
+      setIdModeloApi(dados.idmodelo);
+      setAnoSelecionado(dados.ano);
+      setIdAno(dados.idano);
+      setPlaca(placatemp[0] );
+      setChassi(dados.chassi);
+      setGnv(dados.gnv);
+      
+      setLoadingDados(false);
+    }
   }
 
   const onClearPress = useCallback(() => {
@@ -382,6 +433,9 @@ export default function CadastrarVeiculos  ({ navigation }) {
  
   async function handleSubmit () {
 
+    
+ 
+
     var data = {
 
       fabricante: fabricante,
@@ -397,12 +451,20 @@ export default function CadastrarVeiculos  ({ navigation }) {
       kmaquisicao: km,
       chassi: chassi,
       renavam: renavam,
-      dataaquisicao: aquisicao.replace('/','-').replace('/','-'),
+      dataaquisicao: aquisicao,
       clienteId: cliente
 
     }
 
     console.log('data', data);
+  }
+
+
+  let mostraloading = null;
+  if (loadingdados === true) {
+    mostraloading = <View>
+    <ActivityIndicator size="large" color="#fff" />
+  </View>
   }
   
 
@@ -412,9 +474,11 @@ export default function CadastrarVeiculos  ({ navigation }) {
       <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>
           <View>
+            {mostraloading}
             {buscado === true && <>
             <Text style={styles.titulo}>Renavam</Text>
-            </>}
+            </>
+            }
             
             <Input       
             keyboardType="number-pad"         
@@ -427,21 +491,24 @@ export default function CadastrarVeiculos  ({ navigation }) {
             value={renavam}
             onChangeText={setRenavam}
             maxLength={11}
-          />
-              
+            />              
             
           </View>
-          {(buscado === false || !dados) && !fabricante &&
+
+          { (buscado === false || !dados) && avancado === false &&
             <Button style={styles.buscar} onPress={() => buscar()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Buscar </Button>
           }
+
           {buscado === false && <View>
             <Text  style={styles.titulo}>Se o veículo já estiver cadastrado no aplicativo,
-            você terá o histórico. Caso contrário você pode cadastrá-lo abaixo           
+            você terá o histórico. Caso contrário você pode cadastrá-lo a seguir           
             </Text>
           </View>
           }
+
           
-          {buscado === true && !dados && avancado === false && <>
+          
+          {buscado === true && dados.length === 0 && avancado === false && <>
           
             <Text style={{marginTop:10, marginBottom: 10,color: '#fff', fontSize: 18, backgroundColor: 'transparent'}}> Marcas</Text>
           
@@ -580,7 +647,66 @@ export default function CadastrarVeiculos  ({ navigation }) {
           
           <ScrollView > 
             <View style={styles.container}>
-              {avancado === true && buscado === true && <>
+
+              {buscado === true && dados !== '' && avancado === false && <View>
+                <View style={styles.opcoes} >
+                  <Text style={styles.title}>Marca: {dados.fabricante}</Text>
+                  
+                </View>
+                <View style={styles.opcoes} >
+                  <Text style={styles.title}>Modelo: {dados.modelo}</Text>
+                </View>
+                <View style={styles.opcoes} >
+                  <Text style={styles.title}>Ano: {dados.ano}</Text>
+                </View>
+                <View style={styles.opcoes} >
+                  <Text style={styles.title}>GNV: {dados.gnv === true ? 'Sim' : 'Não'}</Text>
+                </View>
+                <View style={styles.opcoes} >
+                  <Text style={styles.title}>Chassi: {dados.chassi}</Text>
+                </View>
+                <Button style={styles.buscar} onPress={() => setAvancado(true)}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Avançar </Button>
+              </View>  
+              }
+
+              {buscado === true && avancado === true && dados !== '' && <>
+                <Input       
+                keyboardType="default"         
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={{marginTop: 10, color: '#fff'}} 
+                placeholder="Placa"
+                returnKeyType="next"
+                onSubmitEditing={() => kmRef.current.focus()}
+                value={dados.veiculos_placas[0].placa}
+                onChangeText={setPlaca} />
+
+                <Input       
+                keyboardType="number-pad"         
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={{marginTop: 10, color: '#fff'}} 
+                ref={kmRef}
+                placeholder="KM atual"
+                returnKeyType="next"
+                onSubmitEditing={() => gnvRef.current.focus()}
+                value={km}
+                onChangeText={setKm} />
+
+                <Text style={styles.titulo}> Data aquisição </Text>  
+                <MyDate onSetDate={date => { setAquisicao(date); }} /> 
+
+                <View style={styles.toggle}>
+
+                  <Text  style={styles.titulo} > GNV   <Switch  value={gnv} ref={gnvRef} onValueChange={setGnv} /> </Text>
+                </View>
+                <Button  onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
+
+
+              </>
+              }
+
+              {buscado === true && avancado === true && dados.length === 0 && <>
               
                 <Input       
                 keyboardType="default"         
@@ -591,8 +717,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
                 returnKeyType="next"
                 onSubmitEditing={() => kmRef.current.focus()}
                 value={placa.toUpperCase()}
-                onChangeText={setPlaca}
-                style={{marginTop:30}} />
+                onChangeText={setPlaca} />
 
                 <Input       
                 keyboardType="number-pad"         
@@ -618,17 +743,10 @@ export default function CadastrarVeiculos  ({ navigation }) {
                 value={chassi.toUpperCase()}
                 onChangeText={setChassi} />
 
-                <Input       
-                keyboardType="number-pad"         
-                autoCorrect={false}
-                autoCapitalize="none"
-                style={{marginTop: 10, color: '#fff'}} 
-                ref={aquisicaoRef}
-                placeholder="Data aquisição"
-                returnKeyType="next"
-                onSubmitEditing={() => gnvRef.current.focus()}
-                value={dataMask(aquisicao)}
-                onChangeText={setAquisicao} />
+                
+              <Text style={styles.titulo}> Data aquisição </Text>  
+              <MyDate onSetDate={date => { setAquisicao(date); }} /> 
+
                 <View style={styles.toggle}>
 
                   <Text  style={styles.titulo} > GNV   <Switch  value={gnv} ref={gnvRef} onValueChange={setGnv} /> </Text>

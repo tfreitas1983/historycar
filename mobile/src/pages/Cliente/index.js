@@ -78,8 +78,8 @@ export default function Cliente  ({ navigation }) {
   const passwordRef = useRef();
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('cliente7@gmail.com');
+  const [password, setPassword] = useState('123456');
   const signed = useSelector(state => state.auth.signed);
   const tipo = useSelector(state => state.auth.tipo);
   const situacao = useSelector(state => state.auth.situacao);
