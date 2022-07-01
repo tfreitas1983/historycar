@@ -9,6 +9,10 @@ class CadastroClienteDataService {
     buscarUm(id) {
         return http.get(`/clientes/${id}`)
     }
+	
+	buscarusuario(id) {
+        return http.get(`/clientes?userId=${id}`)
+    }
 
     cadastrar(data) {
         return http.post("/clientes", data)

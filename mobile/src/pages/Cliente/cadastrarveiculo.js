@@ -8,8 +8,8 @@ import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import MyDate from '../../components/datepicker';
+import CadastroClienteDataService from '../../services/cadastrocliente';
 import VeiculoDataService from '../../services/veiculo';
-import PlacaDataService from '../../services/veiculosplacas';
 import Feather from 'react-native-vector-icons/Feather';
 Feather.loadFont()
 
@@ -128,7 +128,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
 
   async function PegaCliente () {
     console.log('userid', userId);
-    let respcliente = await axios.get(`http://10.0.2.2:5099/api/clientes?userId=${userId}`)
+    let respcliente = await CadastroClienteDataService.buscarusuario(userId)
     .then( response => {
       let temp = response.data.map( item => { return item.id})
       console.log('temp', temp[0]);
@@ -367,36 +367,6 @@ export default function CadastrarVeiculos  ({ navigation }) {
       setGnv(dados.gnv);
       setLoadingDados(false);
     } else {
-      Alert.alert('Efetuando a busca');
-      await  VeiculoDataService.buscarRenavam(renavam)
-      .then( response  =>  {  
-        setLoadingDados(true) ;
-        if (response.data) {
-          let tempdados = response.data;
-          console.log('tempdadoselse', tempdados);
-          setDados(tempdados);
-          
-        } else {
-          Alert.alert('RENAVAM não encontrado')
-        }  
-      })
-      .catch (e => {
-      console.error(e);
-      });
-
-      console.log('dadoselse', dados);
-      let placatemp = await dados.veiculos_placas.map(item => { return item.placa });
-      setFabricante(dados.fabricante);
-      setMarca(dados.idfabricante);
-      setModelo(dados.modelo);   
-      setIdModeloApi(dados.idmodelo);
-      setAnoSelecionado(dados.ano);
-      setIdAno(dados.idano);
-      setPlaca(placatemp[0] );
-      setChassi(dados.chassi);
-      setGnv(dados.gnv);
-      
-      setLoadingDados(false);
     }
   }
 
@@ -429,32 +399,60 @@ export default function CadastrarVeiculos  ({ navigation }) {
   }, [])
 
   const onOpenSuggestionsList = useCallback(isOpened => {}, [])
- 
+
+  
  
   async function handleSubmit () {
 
     
- 
+    if (!dados) {
+      var data = {
 
-    var data = {
+        fabricante: fabricante,
+        idfabricante: marca,
+        modelo: modeloSelecionado ,
+        idmodelo: idModeloapi,
+        ano: anoSelecionado,
+        idano: idAno,
+        combustivel: combustivel,
+        gnv: gnv,
+        situacao: 1,
+        placa: placa,
+        kmaquisicao: km,
+        chassi: chassi,
+        renavam: renavam,
+        dataaquisicao: aquisicao,
+        clienteId: cliente
+  
+      }
+    } else {
+      var data = {
 
-      fabricante: fabricante,
-      idfabricante: marca,
-      modelo: modeloSelecionado ,
-      idmodelo: idModeloapi,
-      ano: anoSelecionado,
-      idano: idAno,
-      combustivel: combustivel,
-      gnv: gnv,
-      situacao: 1,
-      placa: placa,
-      kmaquisicao: km,
-      chassi: chassi,
-      renavam: renavam,
-      dataaquisicao: aquisicao,
-      clienteId: cliente
-
+        fabricante: dados.fabricante,
+        idfabricante: dados.idfabricante,
+        modelo: dados.modelo ,
+        idmodelo: dados.idmodelo,
+        ano: dados.ano,
+        idano: dados.idAno,
+        combustivel: dados.combustivel,
+        gnv: dados.gnv,
+        situacao: 1,
+        placa: dados.veiculos_placas[0].placa,
+        kmaquisicao: km,
+        chassi: dados.chassi,
+        renavam: dados.renavam,
+        dataaquisicao: aquisicao,
+        clienteId: cliente  
+      }
     }
+
+   await VeiculoDataService.cadastrar(data)
+   .then(response => {
+    console.log('cadastro', response.data)
+   })
+   .catch(e => {
+
+   })
 
     console.log('data', data);
   }

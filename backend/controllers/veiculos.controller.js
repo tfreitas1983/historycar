@@ -1,5 +1,7 @@
 const db = require("../models");
 const Veiculo = db.veiculo;
+const Placas = db.veiculos_placas;
+const VeiculosClientes = db.veiculos_clientes;
 const Op = db.Sequelize.Op;
 
 exports.cadastrar = (req, res) => {
@@ -27,6 +29,23 @@ exports.cadastrar = (req, res) => {
       
       Veiculo.create(dados)
         .then(data => {
+          VeiculosClientes.create({				
+            clienteId: req.body.clienteId,
+            veiculoId: data.id,
+            dataaquisicao: req.body.dataaquisicao,
+            kmaquisicao: req.body.kmaquisicao,
+            datavenda: req.body.datavenda,
+            kmvenda: req.body.kmvenda,
+            fotocrv: req.body.fotocrv,
+            situacao: req.body.situacao
+          })
+          Placas.create({
+            veiculoId: data.id,
+            placa: req.body.placa,           
+            situacao: req.body.situacao
+          })
+        		
+			
           res.send(data);
         })
         .catch(err => {
@@ -67,7 +86,10 @@ exports.findOne = (req, res) => {
 exports.buscaRenavam = (req, res) => {
   const renavam = req.params.renavam
 
-  return Veiculo.findOne({ where: {renavam: renavam} })
+  return Veiculo.findOne({
+     where: {renavam: renavam}, 
+     include: {model:Placas, where: {situacao: true} } 
+    })
     .then(data => {
      res.send(data)
     })

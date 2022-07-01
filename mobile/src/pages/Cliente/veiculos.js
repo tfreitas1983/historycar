@@ -4,6 +4,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
+import CadastroClienteDataService from '../../services/cadastrocliente';
+import VeiculoDataService from '../../services/veiculo';
 import {pegaVeiculo} from '../../store/modules/veiculos/actions';
 import Feather from 'react-native-vector-icons/Feather'
 Feather.loadFont()
@@ -126,7 +128,7 @@ export default function Veiculos  ({ navigation }) {
 
   async function PegaCliente () {
    
-    let respcliente = await axios.get(`http://10.0.2.2:5099/api/clientes?userId=${userId}`)
+    let respcliente = await CadastroClienteDataService.buscarusuario(userId)
     .then( response => {       
       temp = response.data.map(item =>  {return item.id});          
     })
@@ -150,7 +152,7 @@ export default function Veiculos  ({ navigation }) {
 
     if (cliente) {
       setLoading(true);
-      let resp = await axios.get('http://10.0.2.2:5099/api/veiculosclientes?cliente='+cliente)
+      let resp = await VeiculoDataService.buscaveiculocliente(cliente)
       .then(response => {            
           setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
           console.log('veiculos', response.data)

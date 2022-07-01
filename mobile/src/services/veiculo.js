@@ -14,6 +14,10 @@ class VeiculoDataService {
         return http.get(`/veiculos/renavam/${renavam}`)
     }
 
+    buscaveiculocliente(id) {
+        return http.get(`/veiculosclientes?cliente=${id}`)
+    }
+
     cadastrar(data) {
         return http.post("/veiculos", data)
     }

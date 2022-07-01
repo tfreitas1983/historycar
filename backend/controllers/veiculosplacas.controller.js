@@ -30,6 +30,7 @@ exports.cadastrar = (req, res) => {
 
 exports.findAll = (req, res) => {
   const placa = req.query.placa
+  const veiculo = req.query.veiculo
 
   var query = {}
 
@@ -37,7 +38,11 @@ exports.findAll = (req, res) => {
     query = {where: {placa: placa}, include: "veiculo"}
   }
 
-  if (!placa) {
+  if (veiculo) {
+    query = {where: {veiculoId: veiculo, situacao: 1}, include: "veiculo"}
+  }
+
+  if (!placa && !veiculo) {
     query = { include: "veiculo"}
   }
 
@@ -59,7 +64,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id
 
-  return VeiculosPlacas.findByPk(id, { include: "veiculo"})
+  return VeiculosPlacas.findByPk(id, { include: ["veiculo",  ]})
     .then(data => {
      res.send(data)
     })
