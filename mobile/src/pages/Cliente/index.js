@@ -92,6 +92,8 @@ export default function Cliente  ({ navigation }) {
       return
     }
     
+    console.log('email', email);
+    console.log('senha', password);
     dispatch(signInRequest(email, password));
 
     if (situacao === 0) {

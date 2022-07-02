@@ -17,6 +17,10 @@ export default function auth(state = INITIAL_STATE, action) {
                 break;
             }
             case '@auth/SIGN_IN_SUCESS': {
+                draft.id = null;
+                draft.signed = false;
+                draft.accessToken = null;
+                draft.signed = false;
                 draft.accessToken = action.payload.accessToken;
                 draft.tipo = action.payload.tipo;
                 draft.id = action.payload.id,

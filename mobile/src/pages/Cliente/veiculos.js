@@ -115,7 +115,7 @@ export default function Veiculos  ({ navigation }) {
   const userId = useSelector(state => state.auth.id);
   
   const [veiculos, setVeiculos] = useState([]);
-  const [cliente, setCliente] = useState('');
+  let cliente = null;
   const [loading, setLoading] = useState('');
   
 
@@ -140,7 +140,7 @@ export default function Veiculos  ({ navigation }) {
     let idcliente = temp[0];
     console.log('idcliente', idcliente);
     
-    setCliente(idcliente);      
+    cliente = idcliente;      
             
     pegaVeiculos();
   }
@@ -164,7 +164,34 @@ export default function Veiculos  ({ navigation }) {
       resp = await resp; 
       setLoading(false)  
     } else {
+      setLoading(true);
 
+      let respcliente = await CadastroClienteDataService.buscarusuario(userId)
+      .then( response => {       
+        temp = response.data.map(item =>  {return item.id});          
+      })
+      .catch( e => {
+        console.error(e);
+      })     
+      respcliente = await respcliente;   
+      
+      let idcliente = temp[0];
+      console.log('idcliente', idcliente);
+      
+      cliente = idcliente;  
+      console.log('clienteelse', cliente);
+
+      let resp = await VeiculoDataService.buscaveiculocliente(cliente)
+      .then(response => {            
+          setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
+          console.log('veiculos', response.data)
+      })
+      .catch(e => {
+        console.error(e);
+      })
+  
+      resp = await resp; 
+      setLoading(false)
     }
   
   }

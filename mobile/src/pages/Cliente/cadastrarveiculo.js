@@ -140,11 +140,9 @@ export default function CadastrarVeiculos  ({ navigation }) {
   }, [])
 
   async function PegaCliente () {
-    console.log('userid', userId);
     let respcliente = await CadastroClienteDataService.buscarusuario(userId)
     .then( response => {
       let temp = response.data.map( item => { return item.id})
-      console.log('temp', temp[0]);
       setCliente(temp[0])      
     })    
     .catch( e =>  {
@@ -152,7 +150,6 @@ export default function CadastrarVeiculos  ({ navigation }) {
     })
 
     respcliente = await respcliente;
-    console.log('cliente', cliente);
   }
 
   const [cliente, setCliente] = useState('');
@@ -442,8 +439,8 @@ export default function CadastrarVeiculos  ({ navigation }) {
 
       await VeiculoDataService.cadastrar(data)
       .then(response => {
-        console.log('cadastro', response.data)
-        setMessage(response.data)
+        Alert.alert("Veículo Cadastrado");
+        navigation.navigate('Veiculos');
       })
       .catch(e => {
         console.error(e)
@@ -471,18 +468,12 @@ export default function CadastrarVeiculos  ({ navigation }) {
 
       await VeiculoDataService.novocliente(dados.id, data)
       .then(response => {
-        console.log('novocliente', response.data)
         setMessage(response.data);
-        Alert.alert(message);
       })
       .catch(e => {
         console.error(e)
       })  
     }
-
-   
-
-    console.log('data', data);
   }
 
 
