@@ -135,3 +135,44 @@ exports.editar = (req, res) => {
       })
   })     
 };
+
+exports.novocliente = (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+        message: "Os dados para edição não podem ficar em branco!"
+    })
+  }
+
+  const id = parseInt(req.params.id)
+
+  VeiculosClientes.findOne({where: {veiculoId: id, situacao: 1}})
+    .then(data => {
+      if (data) {
+        console.log(data);
+        let message = 'Veículo ainda ativo em outro proprietário. Envie a foto do CRLV para nosso suporte.'
+        res.send(message);
+      } else {
+        VeiculosClientes.create({				
+          clienteId: req.body.clienteId,
+          veiculoId: id,
+          dataaquisicao: req.body.dataaquisicao,
+          kmaquisicao: req.body.kmaquisicao,
+          datavenda: req.body.datavenda,
+          kmvenda: req.body.kmvenda,
+          fotocrv: req.body.fotocrv,
+          situacao: req.body.situacao          
+        })
+        .then(response => {
+          console.log('response', response);
+          res.send(response);
+        })
+        .catch(e => {
+          console.error(e);
+        })
+      }
+    })
+    .catch((err) => {
+      console.log(">> Erro ao buscar o veículo: ", err);
+    });  
+   
+};

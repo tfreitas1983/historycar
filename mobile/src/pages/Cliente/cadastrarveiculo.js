@@ -51,6 +51,19 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: 'center',
     width: Dimensions.get('window').width
+  },  
+  erro: {
+    fontFamily: 'Open Sans',
+    color: '#fff',
+    backgroundColor: '#ef2000',
+    borderWidth: 5,
+    borderRadius: 10,
+    borderColor: '#fc2000',
+    fontSize: 20,
+    marginTop: 20,
+    padding: 5,
+    textAlign: 'center',
+    width: Dimensions.get('window').width
   },
   entrar:{
     fontFamily: 'Open Sans',
@@ -176,12 +189,14 @@ export default function CadastrarVeiculos  ({ navigation }) {
   const [km, setKm] = useState('');
   const [chassi, setChassi] = useState('');
   const [gnv, setGnv] = useState('');
+  const [message, setMessage] = useState('');
   let idMarca = null;  
   let idModelo = null;
   let idano = null;
   let modelos = {};
   let anos = [];
   let anoscombustivel = [];
+  
 
   const marcas = [{"id": "1", "title": "Acura"}, {"id": "2", "title": "Agrale"}, {"id": "3", "title": "Alfa Romeo"}, {"id": "4", "title": "AM Gen"}, {"id": "5", "title": "Asia Motors"}, {"id": "189", "title": "ASTON MARTIN"}, {"id": "6", "title": "Audi"}, {"id": "207", "title": "Baby"}, {"id": "7", "title": "BMW"}, {"id": "8", "title": "BRM"}, {"id": "123", "title": "Bugre"}, {"id": "238", "title": "BYD"}, {"id": "236", "title": "CAB Motors"}, {"id": "10", "title": "Cadillac"}, {"id": "161", "title": "Caoa Chery"}, {"id": "11", "title": "CBT Jipe"}, {"id": "136", "title": "CHANA"}, {"id": "182", "title": "CHANGAN"}, {"id": "12", "title": "Chrysler"}, {"id": "13", "title": "Citroën"}, {"id": "14", "title": "Cross Lander"}, {"id": "15", "title": "Daewoo"}, {"id": "16", "title": "Daihatsu"}, {"id": "17", "title": "Dodge"}, {"id": "147", "title": "EFFA"}, {"id": "18", "title": "Engesa"}, {"id": "19", "title": "Envemo"}, {"id": "20", "title": "Ferrari"}, {"id": "21", "title": "Fiat"}, {"id": "149", "title": "Fibravan"}, {"id": "22", "title": "Ford"}, {"id": "190", "title": "FOTON"}, {"id": "170", "title": "Fyber"}, {"id": "199", "title": "GEELY"}, {"id": "23", "title": "GM - Chevrolet"}, {"id": "153", "title": "GREAT WALL"}, {"id": "24", "title": "Gurgel"}, {"id": "152", "title": "HAFEI"}, {"id": "214", "title": "HITECH ELECTRIC"}, {"id": "25", "title": "Honda"}, {"id": "26", "title": "Hyundai"}, {"id": "27", "title": "Isuzu"}, {"id": "208", "title": "IVECO"}, {"id": "177", "title": "JAC"}, {"id": "28", "title": "Jaguar"}, {"id": "29", "title": "Jeep"}, {"id": "154", "title": "JINBEI"}, {"id": "30", "title": "JPX"}, {"id": "31", "title": "Kia Motors"}, {"id": "32", "title": "Lada"}, {"id": "171", "title": "LAMBORGHINI"}, {"id": "33", "title": "Land Rover"}, {"id": "34", "title": "Lexus"}, {"id": "168", "title": "LIFAN"}, {"id": "127", "title": "LOBINI"}, {"id": "35", "title": "Lotus"}, {"id": "140", "title": "Mahindra"}, {"id": "36", "title": "Maserati"}, {"id": "37", "title": "Matra"}, {"id": "38", "title": "Mazda"}, {"id": "211", "title": "Mclaren"}, {"id": "39", "title": "Mercedes-Benz"}, {"id": "40", "title": "Mercury"}, {"id": "167", "title": "MG"}, {"id": "156", "title": "MINI"}, {"id": "41", "title": "Mitsubishi"}, {"id": "42", "title": "Miura"}, {"id": "43", "title": "Nissan"}, {"id": "44", "title": "Peugeot"}, {"id": "45", "title": "Plymouth"}, {"id": "46", "title": "Pontiac"}, {"id": "47", "title": "Porsche"}, {"id": "185", "title": "RAM"}, {"id": "186", "title": "RELY"}, {"id": "48", "title": "Renault"}, {"id": "195", "title": "Rolls-Royce"}, {"id": "49", "title": "Rover"}, {"id": "50", "title": "Saab"}, {"id": "51", "title": "Saturn"}, {"id": "52", "title": "Seat"}, {"id": "183", "title": "SHINERAY"}, {"id": "157", "title": "smart"}, {"id": "125", "title": "SSANGYONG"}, {"id": "54", "title": "Subaru"}, {"id": "55", "title": "Suzuki"}, {"id": "165", "title": "TAC"}, {"id": "56", "title": "Toyota"}, {"id": "57", "title": "Troller"}, {"id": "58", "title": "Volvo"}, {"id": "59", "title": "VW - VolksWagen"}, {"id": "163", "title": "Wake"}, {"id": "120", "title": "Walk"}];
   
@@ -422,9 +437,18 @@ export default function CadastrarVeiculos  ({ navigation }) {
         chassi: chassi,
         renavam: renavam,
         dataaquisicao: aquisicao,
-        clienteId: cliente
-  
+        clienteId: cliente        
       }
+
+      await VeiculoDataService.cadastrar(data)
+      .then(response => {
+        console.log('cadastro', response.data)
+        setMessage(response.data)
+      })
+      .catch(e => {
+        console.error(e)
+      })  
+
     } else {
       var data = {
 
@@ -444,15 +468,19 @@ export default function CadastrarVeiculos  ({ navigation }) {
         dataaquisicao: aquisicao,
         clienteId: cliente  
       }
+
+      await VeiculoDataService.novocliente(dados.id, data)
+      .then(response => {
+        console.log('novocliente', response.data)
+        setMessage(response.data);
+        Alert.alert(message);
+      })
+      .catch(e => {
+        console.error(e)
+      })  
     }
 
-   await VeiculoDataService.cadastrar(data)
-   .then(response => {
-    console.log('cadastro', response.data)
-   })
-   .catch(e => {
-
-   })
+   
 
     console.log('data', data);
   }
@@ -471,13 +499,17 @@ export default function CadastrarVeiculos  ({ navigation }) {
     <View style={styles.container}>
       <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>
+          
+           
+         
           <View>
             {mostraloading}
             {buscado === true && <>
             <Text style={styles.titulo}>Renavam</Text>
             </>
             }
-            
+
+                        
             <Input       
             keyboardType="number-pad"         
             autoCorrect={false}
@@ -698,6 +730,12 @@ export default function CadastrarVeiculos  ({ navigation }) {
 
                   <Text  style={styles.titulo} > GNV   <Switch  value={gnv} ref={gnvRef} onValueChange={setGnv} /> </Text>
                 </View>
+                <View>
+                {message !== '' && <View> 
+                  <Text style={styles.erro}> Veículo ainda ativo com outro proprietário. Envie a foto do CRLV para nosso suporte. </Text>
+                </View> 
+                }                  
+                </View>
                 <Button  onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
 
 
@@ -753,6 +791,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
                 </>          
               }
             </View>
+            
           </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>

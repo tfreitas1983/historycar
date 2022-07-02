@@ -9,7 +9,9 @@ module.exports = app => {
     
     router.get("/renavam/:renavam", veiculos.buscaRenavam);
 
-    router.post("/", veiculos.cadastrar)
+    router.post("/", veiculos.cadastrar);
+
+    router.put("/novocliente/:id", veiculos.novocliente)
     
     router.put("/:id", veiculos.editar)
   

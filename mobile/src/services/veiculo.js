@@ -26,6 +26,10 @@ class VeiculoDataService {
         return http.put(`/veiculos/${id}`, data)
     }
 
+    novocliente(id, data) {
+        return http.put(`/veiculos/novocliente/${id}`, data)
+    }
+
 
 }
 
