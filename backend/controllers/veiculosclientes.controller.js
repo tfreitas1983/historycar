@@ -43,11 +43,16 @@ exports.cadastrar = (req, res) => {
 exports.findAll = (req, res) => { 
 
   const cliente = req.query.cliente
+  const veiculo = req.query.veiculo
 
   var query = {}
 
   if (cliente) {
     query = {where: {clienteId: cliente}, include: ["veiculo"], order: [['situacao', 'DESC']]}
+  }
+
+  if (cliente && veiculo) {
+    query = {where: {clienteId: cliente, veiculoId: veiculo}, include: "veiculo"}
   }
 
   if (!cliente) {
@@ -104,7 +109,7 @@ exports.editar = (req, res) => {
                 message: `Não foi possível encontrar e/ou alterar o veículo ou cliente com o id=${id}. `
             })
         } else res.send({
-                message: "Transferência alterada com sucesso!"
+                message: "Relação alterada com sucesso!"
             })        
     })
     .catch(err => {

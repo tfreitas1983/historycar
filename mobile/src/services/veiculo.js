@@ -18,12 +18,24 @@ class VeiculoDataService {
         return http.get(`/veiculosclientes?cliente=${id}`)
     }
 
+    veiculocliente(id) {
+        return http.get(`/veiculosclientes/${id}`)
+    }
+
+    vendaveiculo (veiculo, cliente) {
+        return http.get(`/veiculosclientes?veiculo=${veiculo}&cliente=${cliente}`)
+    }
+
     cadastrar(data) {
         return http.post("/veiculos", data)
     }
 
     editar(id, data) {
         return http.put(`/veiculos/${id}`, data)
+    }
+
+    editarrelacao(id, data) {
+        return http.put(`/veiculosclientes/${id}`, data)
     }
 
     novocliente(id, data) {

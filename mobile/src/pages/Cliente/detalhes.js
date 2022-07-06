@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import {View, Text, StyleSheet, Dimensions, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Dimensions, ScrollView, ActivityIndicator} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -88,42 +88,84 @@ export default function Detalhes ({navigation}){
   
   const id = useSelector(state => state.veiculo.id);
   const [dados, setDados] = useState('');
+  const [valor, setValor] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  console.log('veiculoId', id);
 
   useEffect( () => { 
     async function VeiculosClientes () {
       try{
       let resp = await axios.get(`http://10.0.2.2:5099/api/veiculosclientes/${id}`) 
         .then( response  =>  {               
-           setDados(response.data)//.map(item => ({ veiculo: item.veiculo} ))); 
+           setDados(response.data);
         })
-        resp = await resp//map(item => ({...item})) 
+        resp = await resp;
       }
       catch (e){
         console.error(e);
       }    
      
     }   
-    VeiculosClientes();   
+    VeiculosClientes(); 
+    PegaValor();
     
   }, [])
 
   console.log('dados', dados);
+
+  async function PegaValor() {
+
+    
+
+    if (dados) {
+      setLoading(true);
+      console.log('fabricante', dados.veiculo.idfabricante.toString());
+      console.log('modelo', dados.veiculo.idmodelo);
+      console.log('ano', dados.veiculo.idano);
+   
+      
+      await axios.get('https://parallelum.com.br/fipe/api/v1/carros/marcas/'+dados.veiculo.idfabricante+'/modelos/'+dados.veiculo.idmodelo+'/anos/'+dados.veiculo.idano)
+      .then(response => {
+        let temp = response.data;
+        console.log('temp', temp);
+        setValor(temp);
+
+        setLoading(false)
+      })
+      .catch(e => {
+        console.error(e);
+      })
+    } else {
+      console.log('Sem dados');
+    }
+
+    
+  }
   
+  mostraloading = null;
+  if (loading === true) {
+    mostraloading = <>
+      <ActivityIndicator size="large" color="#fff" />
+    </>
+  }
   
   if (dados.length > 0 || dados) {
+    
 
    if( dados && (dados !== "" || dados !== null)) {  
+   
     
       return(
         <View>
             <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
             <ScrollView>   
+                
               
-                <Text style={styles.titulo}> {dados.veiculo.modelodescricao} </Text>
+                <Text style={styles.titulo}> {dados.veiculo.modelo} </Text>
                 <View style={styles.toogle}>
                     <Text style={styles.item}> Valor FIPE </Text>
-                    <Text style={styles.item}>R$ 124.000,00 </Text>
+                    <Text style={styles.item}> {mostraloading} {valor.Valor} </Text>
                 </View>
                 <View style={styles.toogle}>
                     <Text style={styles.item}> Última Km registrada </Text>

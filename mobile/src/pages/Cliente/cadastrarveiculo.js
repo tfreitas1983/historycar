@@ -506,7 +506,8 @@ export default function CadastrarVeiculos  ({ navigation }) {
             autoCorrect={false}
             autoCapitalize="none"
             style={{marginTop: 10, color: '#fff'}} 
-            placeholder="RENAVAM"
+            placeholder="RENAVAM"            
+            autoFocus={true}
             returnKeyType="next"
             onSubmitEditing={() => buscar()}
             value={renavam}
