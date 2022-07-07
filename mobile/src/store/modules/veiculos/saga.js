@@ -5,9 +5,9 @@ import * as AuthActions from './actions';
 
 export function* pegaVeiculo({ payload }) {
     try {
-        const { id } = payload;
+        const idbusca = payload;
         
-        const response = yield call(api.get, 'veiculosclientes'+id);
+        const response = yield call(api.get, 'veiculosclientes'+idbusca);
 
         const { kmaquisicao, clienteId, situacao,id, veiculoId } = response.data;
         console.log('data', response.data)

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-
+import VeiculoDataService from '../../services/veiculo';
 import {View, Text, StyleSheet, Dimensions, ScrollView, ActivityIndicator} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -94,42 +94,50 @@ export default function Detalhes ({navigation}){
   console.log('veiculoId', id);
 
   useEffect( () => { 
+
     async function VeiculosClientes () {
-      try{
-      let resp = await axios.get(`http://10.0.2.2:5099/api/veiculosclientes/${id}`) 
-        .then( response  =>  {               
-           setDados(response.data);
+      
+      await VeiculoDataService.veiculocliente(id) 
+        .then( response  =>  {  
+          let tempdados = response.data
+          console.log('tempdados', tempdados);
+          setDados(tempdados);
+          let teste = dados;
+          console.log('teste',teste);
         })
-        resp = await resp;
-      }
-      catch (e){
-        console.error(e);
-      }    
-     
-    }   
+        .catch(e => {
+          console.error(e);
+        })
+       
+        console.log('dados', dados);
+        setTimeout(() => {
+          console.log('timeout', dados);
+          PegaValor();
+       
+        }, 5000);
+    }
+
     VeiculosClientes(); 
-    PegaValor();
     
   }, [])
 
-  console.log('dados', dados);
+      
+  
+
+  
 
   async function PegaValor() {
 
-    
-
-    if (dados) {
+    if (dados !== '') {
       setLoading(true);
-      console.log('fabricante', dados.veiculo.idfabricante.toString());
+      console.log('fabricante', dados.veiculo.idfabricante);
       console.log('modelo', dados.veiculo.idmodelo);
       console.log('ano', dados.veiculo.idano);
    
       
       await axios.get('https://parallelum.com.br/fipe/api/v1/carros/marcas/'+dados.veiculo.idfabricante+'/modelos/'+dados.veiculo.idmodelo+'/anos/'+dados.veiculo.idano)
       .then(response => {
-        let temp = response.data;
-        console.log('temp', temp);
-        setValor(temp);
+        setValor(response.data);
 
         setLoading(false)
       })
@@ -138,9 +146,47 @@ export default function Detalhes ({navigation}){
       })
     } else {
       console.log('Sem dados');
-    }
+      setLoading(true)
 
+      let resp = await VeiculoDataService.veiculocliente(id) 
+      .then( response  =>  {   
+        let tempdados = response.data  
+        console.log('tempdadoselse',tempdados);       
+        setDados(tempdados);
+      })
+      .catch(e => {
+        console.error(e);
+      })
+      resp = await resp;
+      console.log('dadoselse', dados);
+
+      setTimeout(() => {
+        
+        PegaValor2();
+     
+      }, 5000);   
+
+    }
     
+  }
+
+  async function PegaValor2() {
+    console.log('fabricante2', dados.veiculo.idfabricante);
+    console.log('modelo2', dados.veiculo.idmodelo);
+    console.log('ano2', dados.veiculo.idano);
+  
+    
+    await axios.get('https://parallelum.com.br/fipe/api/v1/carros/marcas/'+dados.veiculo.idfabricante+'/modelos/'+dados.veiculo.idmodelo+'/anos/'+dados.veiculo.idano)
+    .then(response => {
+      let temp = response.data;
+      console.log('temp', temp);
+      setValor(temp);
+
+      setLoading(false)
+    })
+    .catch(e => {
+      console.error(e);
+    })
   }
   
   mostraloading = null;

@@ -1,13 +1,13 @@
-import React from 'react';
-
-// import all the components we are going to use
-import {StyleSheet, Text, View} from 'react-native';
-
-// import Timeline
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
+import VeiculoDataService from '../services/veiculo'
+import ManutencaoDataService from '../services/manutencoes';
+import moment from 'moment';
+import { useSelector } from "react-redux";
 import Timeline from 'react-native-timeline-flatlist';
 
 const TimeLine = () => {
-  const data = [
+  /*const data = [
     {
       
       title: '10/02/2022',
@@ -35,6 +35,72 @@ const TimeLine = () => {
         'Troca das velas'
     },
   ];
+
+  */
+
+  const id = useSelector(state => state.veiculo.id);
+  //const [veiculo, setVeiculo] = useState('');
+  const [data, setData] = useState([]);
+
+
+  let veiculo = null;
+  let dados = null;
+
+
+  useEffect( () => { 
+
+    async function BuscaVeiculo () {
+      
+      await VeiculoDataService.veiculocliente(id) 
+        .then( response  =>  {  
+          veiculo = response.data.veiculo.id
+          console.log('testeveiculo',veiculo);
+          
+          VeiculosManutencoes(); 
+        })
+        .catch(e => {
+          console.error(e);
+        })
+    }
+   
+    BuscaVeiculo ();
+
+    
+  }, [])
+
+
+  async function VeiculosManutencoes () {
+      
+    if (veiculo !== '') {
+      await ManutencaoDataService.buscaveiculo(veiculo) 
+      .then( response  =>  {  
+        let tempdados = response.data
+        console.log('tempdados', tempdados);
+        dados = tempdados;
+        Vetor();
+      })
+      .catch(e => {
+        console.error(e);
+      })
+     
+      console.log('dados', dados);
+      
+    }
+    
+  }
+
+  async function Vetor() {
+
+     let dadosmanutencao = dados.map(item => {
+      return  {title: item.detalhes, description: moment(item.datamanutencao).format('DD/MM/YYYY')}
+     })
+     await setData(dadosmanutencao);
+     console.log('data', data);
+
+     
+  }
+
+  console.log('data', data);
 
   return (
     <View style={styles.container}>

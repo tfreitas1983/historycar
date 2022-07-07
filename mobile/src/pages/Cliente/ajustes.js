@@ -104,10 +104,6 @@ const styles = StyleSheet.create({
 });
 
 
-
-
-
-
 const Ajustes = ({ navigation }) => (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     

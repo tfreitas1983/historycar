@@ -1,9 +1,12 @@
-import React from 'react';
-
+import React, {useEffect, useState} from 'react';
+import VeiculoDataService from '../../services/veiculo';
+import ManutencaoDataService from '../../services/manutencoes';
 import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import TimeLine from '../../components/timeline';
+import moment from 'moment';
+import { useSelector } from "react-redux";
 
 const styles = StyleSheet.create({
   container: {
@@ -116,21 +119,81 @@ const styles = StyleSheet.create({
   },
 });
 
+export default function Manutencao  ({ navigation }) {
+
+  const id = useSelector(state => state.veiculo.id);
+  //const [veiculo, setVeiculo] = useState('');
+  const [data, setData] = useState('');
 
 
+  let veiculo = null;
+  let dados = null;
 
 
+  useEffect( () => { 
 
-const Manutencao = ({ navigation }) => (
+    async function BuscaVeiculo () {
+      
+      await VeiculoDataService.veiculocliente(id) 
+        .then( response  =>  {  
+          veiculo = response.data.veiculo.id
+          console.log('testeveiculo',veiculo);
+          
+          VeiculosManutencoes(); 
+        })
+        .catch(e => {
+          console.error(e);
+        })
+    }
+   
+    BuscaVeiculo ();
+
+    
+  }, [])
+
+
+  async function VeiculosManutencoes () {
+      
+    if (veiculo !== '') {
+      await ManutencaoDataService.buscaveiculo(veiculo) 
+      .then( response  =>  {  
+        let tempdados = response.data
+        console.log('tempdados', tempdados);
+        dados = tempdados;
+        Vetor();
+      })
+      .catch(e => {
+        console.error(e);
+      })
+     
+      console.log('dados', dados);
+      
+    }
+    
+  }
+
+  async function Vetor() {
+
+     let dadosmanutencao = dados[0].map(item => {
+      return  {title: item.detalhes, description: moment(item.datamanutencao).format('DD/MM/YYYY')}
+     })
+     await setData(dadosmanutencao);
+
+     
+  }
+
+  console.log('data', data);
+  
+  return (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <ScrollView>
         <Text style={styles.titulo}>Chevrolet Celta VHC 1.4</Text>
-        <TimeLine />
+        <TimeLine data={data}/>
             <Text onPress={() => navigation.navigate('Registro')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo registro</Text>
         </ScrollView>
         </LinearGradient>
     </View>
-);
+)
 
-export default Manutencao;
+}
