@@ -112,6 +112,7 @@ const TimeLine = () => {
         lineColor="#bb8800"
         timeContainerStyle={{minWidth: 52}}        
         descriptionStyle={{color: '#fff', fontSize: 19}}
+        key={data.id}
         options={{
           style: {margin: 5, marginLeft: -40},
         }}

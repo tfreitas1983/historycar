@@ -2,27 +2,27 @@ import React, {forwardRef} from "react";
 import PropTypes from 'prop-types';
 import  Icon from "react-native-vector-icons/MaterialIcons";
 
-import { Container, TInput} from './styles';
+import { Container, TTextArea} from './styles';
 
-function Input ({style, icon, ...rest}, ref) {
+function TextArea ({style, icon, ...rest}) {
     return (
         <Container style={style}>
             {icon && <Icon name={icon} size={20} color="rgba(255,255,255,0.6)" />}
-            <TInput {...rest} ref={ref}/>
+            <TTextArea {...rest}   multiline numberOfLines={10} />
         </Container>
     )
 }
 
-Input.PropTypes = {
+TextArea.PropTypes = {
     icon: PropTypes.string,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
 };
 
-Input.defaultProps = {
+TextArea.defaultProps = {
     icon: null,
     style: {},
 }
 
 
-export default forwardRef(Input);
+export default TextArea;

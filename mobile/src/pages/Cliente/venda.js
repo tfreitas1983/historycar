@@ -128,26 +128,7 @@ export default function Venda  ({ navigation }) {
 
    
  useEffect( () => { 
-  /* async function PegaVeiculo () {
-      try{
-      let resp = await VeiculoDataService.buscarUm(veiculoid) 
-        .then( response  =>  {    
-          setLoading(true)           ;
-           setDados(response.data.map(item => ({ ...item}) )); 
-        })
-        resp = await resp;
-      }
-      catch (e){
-        console.error(e);
-      }     
-    }   
-    PegaVeiculo();   
-    PegaCliente();
-
-    setLoading(false);
-    */
-   PegaVeiculoCliente()
-    
+   PegaVeiculoCliente()   
     
   }, [])
   
@@ -171,7 +152,7 @@ export default function Venda  ({ navigation }) {
     setLoading(true)
     let respcliente = await VeiculoDataService.veiculocliente(veiculoclienteid)
     .then( response => {
-      let temp = response.data;//.map( item => { return item})
+      let temp = response.data;
       setDados(temp) ;   
       console.log('temp', temp);
     })    

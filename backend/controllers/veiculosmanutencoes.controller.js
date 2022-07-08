@@ -60,7 +60,7 @@ exports.findAll = (req, res) => {
   const veiculoId = req.query.veiculo
 
   if (veiculoId) {
-    query = {where: {veiculoId: veiculoId, situacao: 1}, include: "veiculo"}
+    query = {where: {veiculoId: veiculoId, situacao: 1}, include: "veiculo",  order: [['datamanutencao', 'DESC']]}
   }
 
   VeiculosManutencoes.findAll(query)  
