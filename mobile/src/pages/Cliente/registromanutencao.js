@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import VeiculoDataService from '../../services/veiculo';
-import {Text, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, ActivityIndicator, Alert} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from "react-redux";
@@ -60,14 +60,21 @@ const styles = StyleSheet.create({
     color:'#fff',
     fontSize: 25,
     textAlign: 'center',
-    width: Dimensions.get('window').width*0.6
+    width: Dimensions.get('window').width*0.5,
+    borderWidth: 5,
+    borderRadius: 10,
+    borderColor: '#f02500'
   },
   recall: {
     fontWeight: 'bold',
-    backgroundColor: '#c05500',
+    backgroundColor: '#f33400',
     color:'#fff',
-    fontSize: 20,
+    fontSize: 25,
     textAlign: 'center',
+    width: Dimensions.get('window').width*0.5,
+    borderWidth: 5,
+    borderRadius: 10,
+    borderColor: '#f02500'
   },
   opcoes: {
     fontFamily: 'Open Sans',
@@ -241,6 +248,20 @@ export default function Registro  ({ navigation }) {
 
   function handleSubmit () {
 
+   /*if (km && km < veiculodados.kmaquisicao) {
+      Alert.alert('Quilometragem menor do que a aferida na aquisição')
+      kmRef.current.focus()
+      return false
+    }*/
+
+    if (!data) {
+      setData(moment())
+    }
+
+    if (!garantia) {
+      setGarantia(moment())
+    }
+
     var vetor = {
       tipo: tipo,
       km: km,
@@ -260,9 +281,12 @@ export default function Registro  ({ navigation }) {
       uf: uf
     }
 
+    console.log('vetor', vetor);
+
     ManutencaoDataService.cadastrar(vetor)
     .then( response => {
       console.log(response.data);
+      //navigation.navigate('Manutencao')
     })
     .catch(e=> {
       console.error(e);
@@ -357,6 +381,7 @@ export default function Registro  ({ navigation }) {
             autoCorrect={false}
             autoCapitalize="none"
             style={{marginTop: 10, color: '#fff'}} 
+            maxLength={9}
             placeholder="CEP"
             ref={cepRef}
             returnKeyType="next"

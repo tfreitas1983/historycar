@@ -5,10 +5,12 @@ export const Container = styled.View`
     height: 200px;
     background: rgba(255,200,0,0.1);    
     border: 2px;
-    border-color: #343434; 
+    border-color: #efefef; 
     border-radius: 5px;
     flex-direction: row;
     align-items: center;
+    margin-top: 10px;
+    
 `;
 
 export const TTextArea = styled.TextInput.attrs({
@@ -16,7 +18,6 @@ export const TTextArea = styled.TextInput.attrs({
 })`
     flex: 1;
     font-size: 20px;
-    margin-left:10px; 
+    margin-left:5px; 
     color:#fff;
-    vertical-align: baseline;
 `;

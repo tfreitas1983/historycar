@@ -264,6 +264,7 @@ export default function Cadastrar  ({ navigation }) {
               autoCapitalize="none"
               style={{marginTop: 10, color: '#fff'}} 
               placeholder="CEP"
+              maxLength={9}
               ref={cepRef}
               returnKeyType="next"
               onSubmitEditing={() => pegaCEP()}
@@ -431,6 +432,7 @@ export default function Cadastrar  ({ navigation }) {
               autoCapitalize="none"
               style={{marginTop: 10, color: '#fff'}} 
               placeholder="CEP"
+              maxLength={9}
               ref={cepRef}
               returnKeyType="next"
               onSubmitEditing={() => pegaCEP()}

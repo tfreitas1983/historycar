@@ -8,7 +8,7 @@ function TextArea ({style, icon, ...rest}) {
     return (
         <Container style={style}>
             {icon && <Icon name={icon} size={20} color="rgba(255,255,255,0.6)" />}
-            <TTextArea {...rest}   multiline numberOfLines={10} />
+            <TTextArea {...rest}   multiline numberOfLines={10} style={{ textAlignVertical: 'top',}}/>
         </Container>
     )
 }
