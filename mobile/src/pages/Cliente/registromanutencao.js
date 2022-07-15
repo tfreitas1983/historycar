@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import VeiculoDataService from '../../services/veiculo';
-import {Text, View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView, ActivityIndicator, Alert} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, Image,ScrollView, KeyboardAvoidingView, ActivityIndicator, Alert } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import MyDate from '../../components/datepicker';
 import moment from 'moment';
 import {cepMask} from '../../components/masks';
 import axios from 'axios';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const styles = StyleSheet.create({
   container: {
@@ -147,6 +148,22 @@ const styles = StyleSheet.create({
     height: 200
   },
 });
+const SERVER_URL = 'http://10.0.2.2:5099/';
+const createFormData = (photo, body = {}) => {
+  const data = new FormData();
+
+  data.append('photo', {
+    name: photo.fileName,
+    type: photo.type,
+    uri: photo.uri,
+  });
+
+  Object.keys(body).forEach((key) => {
+    data.append(key, body[key]);
+  });
+
+  return data;
+};
 
 
 export default function Registro  ({ navigation }) {
@@ -166,6 +183,8 @@ export default function Registro  ({ navigation }) {
   const [uf, setUf] = useState('');
   const [mecanico, setMecanico] = useState('');
   const [garantia, setGarantia] = useState('');
+  const [photo, setPhoto] = useState(null);
+  const [fotoKm, setFotoKm] = useState('');
 
   let veiculodados = null;
 
@@ -262,6 +281,11 @@ export default function Registro  ({ navigation }) {
       setGarantia(moment())
     }
 
+    if (photo) {
+      handleUploadPhoto()
+      
+    }
+
     var vetor = {
       tipo: tipo,
       km: km,
@@ -278,7 +302,8 @@ export default function Registro  ({ navigation }) {
       complemento: complemento,
       bairro: bairro,
       cidade: cidade,
-      uf: uf
+      uf: uf,
+      fotokm: fotoKm
     }
 
     console.log('vetor', vetor);
@@ -322,6 +347,43 @@ export default function Registro  ({ navigation }) {
     classe = styles.tipo
     classerecall = styles.tipo;;
   }
+
+  const handleChoosePhoto = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      console.log(response);
+      if (response) {
+        setPhoto(response);
+      }
+    });
+  };
+
+  async function handleUploadPhoto  () {
+
+    /*console.log('foto',createFormData(photo) );*/
+    var foto =  new FormData();
+    foto.append('file', {
+    name: photo.assets.fileName,
+    type: photo.assets.type,
+    uri: photo.assets.uri,
+  })
+    console.log('foto', foto);
+    
+	  await ManutencaoDataService.cadastrarImagem(foto)
+	  /*
+   fetch(`${SERVER_URL}/api/veiculosmanutencoes/files`, {
+      method: 'POST',
+      body: createFormData(photo.assets[0]),
+    })*/
+      //.then((response) => response.json())
+      .then((response) => {
+        console.log('response', response);
+        setFotoKm(response.name)
+      })
+      .catch((error) => {
+        console.log('error', error);
+        setFotoKm(error.name)
+      });
+  };
 
   return (
     <View>         
@@ -484,8 +546,21 @@ export default function Registro  ({ navigation }) {
 
 
             <View style={styles.upload}>
-                <Text> <Entypo name='camera' size={30} /> </Text>
-                <Text style={styles.item}> Foto painel</Text>
+                <Text> <Entypo name='camera' size={30}   onPress={handleChoosePhoto}/> </Text>
+                <Text style={styles.item}  onPress={handleChoosePhoto}> Foto painel</Text>
+            </View>
+            <View style={{ flex: 1,  justifyContent: 'space-evenly',  alignSelf: 'center', }}>
+              {photo && (
+                <>
+                  <Image
+                    source={{ uri: photo.assets[0].uri }}
+                    style={{ width: 100, height: 100 }}
+                  />
+                  
+				  
+                </>
+              )}
+              
             </View>
             <View style={styles.upload}>
                 <Text> <Entypo name='camera' size={30} /> </Text>
@@ -496,10 +571,7 @@ export default function Registro  ({ navigation }) {
                 <Text style={styles.item}> Foto nota fiscal</Text>
             </View>
 
-             
-
-
-            <Button  onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
+            <Button  style={{marginBottom: 80}} onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
            
         </ScrollView>
         </KeyboardAvoidingView>

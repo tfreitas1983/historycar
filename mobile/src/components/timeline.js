@@ -1,12 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import VeiculoDataService from '../services/veiculo'
 import ManutencaoDataService from '../services/manutencoes';
 import moment from 'moment';
 import { useSelector } from "react-redux";
 import Timeline from 'react-native-timeline-flatlist';
 
-const TimeLine = () => {
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  title: {
+    padding: 16,
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+});
+
+export default function TimeLine  ({navigation})  {
   /*const data = [
     {
       
@@ -119,19 +132,4 @@ const TimeLine = () => {
       />
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  title: {
-    padding: 16,
-    fontSize: 20,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-});
-
-
-export default TimeLine;
+}

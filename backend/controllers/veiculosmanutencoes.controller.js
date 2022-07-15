@@ -3,7 +3,8 @@ const VeiculosManutencoes = db.veiculos_manutencoes;
 const Image = db.image;
 const Op = db.Sequelize.Op;
 const fs = require('fs');
-const path = require ('path')
+const path = require ('path');
+const { encode } = require("punycode");
 
 exports.cadastrar = (req, res) => {
     if (!req.body.veiculoId) {
@@ -75,8 +76,6 @@ exports.findAll = (req, res) => {
     });
 };
 
-
-
 exports.findOne = (req, res) => {
   const id = req.params.id
 
@@ -147,25 +146,28 @@ exports.editar = (req, res) => {
 
 exports.cadastrarImagem = (req, res) => {
   
-    if (!req.file.originalname) {
+   /* if (!req.file.originalname) {
         res.status(400).send({ message: "A imagem deve ser enviada"})
         return
-    }
+    }*/
    
   
     Image.create({
-          type: req.file.mimetype,
-          name: req.file.filename,
-          url: path.resolve(__dirname +   '/uploads/' + req.file.filename)
+          type: req.file.type,
+          name: req.file.name,
+          url: path.resolve(__dirname +   '/uploads/' + req.file.name)
       }).then(image => {
           try{
-              fs.writeFileSync(__dirname,  + '/uploads/' + image.name, image.url);		
+              fs.writeFileSync(__dirname  + '/uploads/' + image.name,image.url,  image.type);		
+
               
               // exit node.js app
-              res.json({'msg': 'Arquivo enviado com sucesso!'});
+              res.json({
+                'name': image.name,
+                'msg': 'Arquivo enviado com sucesso!'});
           }catch(e){
               console.log(e);
-              res.json({'err': e});
+              res.json({'name': image.name,'err': e});
           }
       })
 }

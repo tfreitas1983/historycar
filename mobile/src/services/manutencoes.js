@@ -21,6 +21,10 @@ class ManutencaoDataService {
     editar(id, data) {
         return http.put(`/veiculosmanutencoes/${id}`, data)
     }
+	
+	cadastrarImagem(file) {
+        return http.post("/veiculosmanutencoes/files", file)
+    } 
 
 
 }

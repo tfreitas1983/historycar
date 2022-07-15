@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import VeiculoDataService from '../../services/veiculo';
-import {Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import TimeLine from '../../components/timeline';
 import { useSelector } from "react-redux";
+import ManutencaoDataService from '../../services/manutencoes';
+import moment from 'moment';
 
 const styles = StyleSheet.create({
   container: {
@@ -84,21 +86,29 @@ const styles = StyleSheet.create({
     borderColor: '#f2f2f2',
     width: Dimensions.get('window').width,
   },
-  inativo: {      
+  bordado: {      
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignSelf: 'flex-start',
     fontFamily: 'Open Sans',
-    backgroundColor: '#aaaaaa',
-    color: '#b2b2b2',
+    color: '#fafafa',
     fontSize: 25,
     fontWeight: 'bold',       
     marginTop: 10,
     padding:8,
     borderWidth: 2,
     borderRadius: 10,
-    borderColor: '#909090',
+    borderColor: '#f2f2f2',
+    width: Dimensions.get('window').width,
+  },
+  linha: {      
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'flex-start',
+    fontFamily: 'Open Sans',
+    color: '#fafafa',
+    fontSize: 25,
+    fontWeight: 'bold',  
     width: Dimensions.get('window').width,
   },
   resumo: {
@@ -121,10 +131,11 @@ export default function Manutencao  ({ navigation }) {
 
   const id = useSelector(state => state.veiculo.id);
   const [veiculo, setVeiculo] = useState('');
-  const [data, setData] = useState('');
-
+  const [detalhes, setDetalhes] = useState(false);
+  const [lista, setLista] = useState('');
 
   let veiculodados = null;
+  let manutencoes = '';
 
 
   useEffect( () => { 
@@ -142,20 +153,102 @@ export default function Manutencao  ({ navigation }) {
           console.error(e);
         })
     }
+    BuscaVeiculo();
    
-    BuscaVeiculo ();
+    VeiculosManutencoes ();
 
     
   }, [])
 
+  async function VeiculosManutencoes () {
+      
+    if (veiculo !== '') {
+      await ManutencaoDataService.buscaveiculo(veiculo.id) 
+      .then( response  =>  {  
+        let tempdados = response.data
+        console.log('tempdados', tempdados);
+        manutencoes = tempdados;
+       
+      })
+      .catch(e => {
+        console.error(e);
+      })
+     
+      setLista(manutencoes);
+      console.log('manutencoes', lista);
+      
+    }
+    
+  }
+
+  let mostrar = null;
+  if (detalhes === true && lista) {
+    mostrar = lista.map(item => {
+    return (
+    <>
+    <View style={styles.toogle}>
+      <Text style={styles.item}>Data: </Text>
+      <Text style={styles.item}>{moment(item.datamanutencao).format('DD/MM/YYYY')}</Text>
+      <Text style={styles.item}>Garantia: </Text>
+      <Text style={styles.item}>{moment(item.garantia).format('DD/MM/YYYY')}</Text>
+    </View>
+    <View style={styles.toogle}>
+      <Text style={styles.item}>Detalhes: </Text>
+      <Text style={styles.item}>{item.detalhes.toUpperCase()}</Text>
+    </View>
+    <View style={styles.bordado}>
+      <View style={styles.linha}>
+        <Text style={styles.item}>Oficina: </Text>
+        <Text style={styles.item}>{item.mecanica.toUpperCase()}  </Text>
+      </View>
+      <Text style={styles.item}>
+        {item.endereco.toUpperCase()} - {item.numero} - {item.bairro.toUpperCase()} - {item.cidade.toUpperCase()}
+      </Text>
+    </View>
+    {(lista && item.fotokm)  && <>
+      <Image source={{ uri:'http://10.1.1.26:5099/files/'+item.fotokm}}
+      style={{height:200, margin: 20}}
+      resizeMode="cover" />
+      </>
+    }
+    {(lista && item.fotonf)  && <>
+      <Image source={{ uri:'http://10.1.1.26:5099/files/'+item.fotonf}}
+      style={{height:200}}
+      resizeMode="cover" />
+     </>
+    }
+    {(lista && item.fotoservico)  && <>
+      <Image source={{ uri:'http://10.1.1.26:5099/files/'+item.fotoservico}}
+      style={{height:200}}
+      resizeMode="cover" />
+      </>
+    }
+    
+    <View style={{borderBottomColor: '#fff', borderBottomWidth: 3, marginTop: 20, marginBottom: 20}}>
+    </View>
+    
+    </>
+  )})
+  }
 
   return (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <ScrollView>
         <Text style={styles.titulo}> {veiculo.modelo}</Text>
-        <TimeLine />
-            <Text onPress={() => navigation.navigate('Registro')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo registro</Text>
+        {detalhes === false && <>
+          <Text onPress={() => setDetalhes(true)} style={styles.item}> Ver mais...</Text>
+          <TimeLine />
+          <Text onPress={() => navigation.navigate('Registro')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo registro</Text>
+          </>
+        }
+        {detalhes === true  && <>
+          <Text  style={styles.item}>Manutenções</Text>
+          {mostrar}
+          <View style={{borderBottomColor: '#fff', borderBottomWidth: 3, marginTop: 20, marginBottom: 20}}>
+          </View>
+        </>
+        }
         </ScrollView>
         </LinearGradient>
     </View>
