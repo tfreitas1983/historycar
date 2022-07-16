@@ -6,6 +6,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useSelector } from "react-redux";
 import axios from 'axios';
+import veiculo from '../../services/veiculo';
 
 const styles = StyleSheet.create({
   container: {
@@ -87,11 +88,11 @@ const styles = StyleSheet.create({
 export default function Detalhes ({navigation}){
   
   const id = useSelector(state => state.veiculo.id);
-  const [dados, setDados] = useState('');
+ const [dadosVeiculo, setDados] = useState(null);
   const [valor, setValor] = useState('');
   const [loading, setLoading] = useState(false);
-
-  console.log('veiculoId', id);
+  let dados = null;
+  console.log('veiculoclienteId', id);
 
   useEffect( () => { 
 
@@ -101,20 +102,18 @@ export default function Detalhes ({navigation}){
         .then( response  =>  {  
           let tempdados = response.data
           console.log('tempdados', tempdados);
-          setDados(tempdados);
-          let teste = dados;
-          console.log('teste',teste);
+         // setDados(tempdados);
+         dados = tempdados;
+         setDados(dados);
+          
         })
         .catch(e => {
           console.error(e);
         })
        
         console.log('dados', dados);
-        setTimeout(() => {
-          console.log('timeout', dados);
-          PegaValor();
-       
-        }, 5000);
+        console.log('teste',dadosVeiculo);
+        PegaValor();
     }
 
     VeiculosClientes(); 
@@ -137,7 +136,9 @@ export default function Detalhes ({navigation}){
       
       await axios.get('https://parallelum.com.br/fipe/api/v1/carros/marcas/'+dados.veiculo.idfabricante+'/modelos/'+dados.veiculo.idmodelo+'/anos/'+dados.veiculo.idano)
       .then(response => {
-        setValor(response.data);
+        let tempvalor = response.data.Valor
+        console.log('tempvalor', tempvalor);
+        setValor(tempvalor);
 
         setLoading(false)
       })
@@ -160,11 +161,9 @@ export default function Detalhes ({navigation}){
       resp = await resp;
       console.log('dadoselse', dados);
 
-      setTimeout(() => {
+     
         
         PegaValor2();
-     
-      }, 5000);   
 
     }
     
@@ -194,73 +193,52 @@ export default function Detalhes ({navigation}){
     mostraloading = <>
       <ActivityIndicator size="large" color="#fff" />
     </>
-  }
-  
-  if (dados.length > 0 || dados) {
+  }      
     
+  return(
+    <View>
+        <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+        <ScrollView>    
 
-   if( dados && (dados !== "" || dados !== null)) {  
-   
-    
-      return(
-        <View>
-            <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-            <ScrollView>   
-                
-              
-                <Text style={styles.titulo}> {dados.veiculo.modelo} </Text>
-                <View style={styles.toogle}>
-                    <Text style={styles.item}> Valor FIPE </Text>
-                    <Text style={styles.item}> {mostraloading} {valor.Valor} </Text>
-                </View>
-                <View style={styles.toogle}>
-                    <Text style={styles.item}> Última Km registrada </Text>
-                    <Text style={styles.item}> {dados.kmaquisicao} </Text>
-                </View>
-                <View style={styles.toogle}>
-                    <Text style={styles.item}> Recall </Text>
-                    <Text style={styles.item}> Não </Text>
-                </View>
-                <View style={styles.toogle}>
-                    <Text style={styles.item}> Última manutenção </Text>
-                    <Text style={styles.item}> 15/09/2021 </Text>
-                </View>
-                <View style={styles.toogle}>
-                    <Text style={styles.item}> Segurado </Text>
-                    <Text style={styles.item}> Sim </Text>
-                </View>
-                <View style={styles.toogle}>
-                    <Text style={styles.item}> Renavam </Text>
-                    <Text style={styles.item}> {dados.veiculo.renavam} </Text>
-                </View>
-                <Text  onPress={() => navigation.navigate('Manutencao')} style={styles.entrar}> <Entypo name="tools" size={30} /> Registrar Manutenção</Text>
-                <Text  onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <MaterialCommunityIcons name="shield-car" size={37} /> Novo Seguro</Text>
-                <Text  onPress={() => navigation.navigate('Venda')} style={styles.entrar}>  <Entypo name="swap" size={30} /> Comunicar Venda</Text>
-            </ScrollView>
-            </LinearGradient>
-        </View>
-      )
-    
-  } else {
-    return (
-    <View>
-    <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-    <ScrollView>       
-        <Text style={styles.titulo}> Não há dados para este veículo </Text>
-    </ScrollView>
-    </LinearGradient>
+          {dadosVeiculo !== null && <>
+          
+            <Text style={styles.titulo}> {dadosVeiculo.veiculo.modelo} </Text>
+            <View style={styles.toogle}>
+                <Text style={styles.item}> Valor FIPE </Text>
+                <Text style={styles.item}> {mostraloading} {valor} </Text>
+            </View>
+            <View style={styles.toogle}>
+                <Text style={styles.item}> Última Km registrada </Text>
+                <Text style={styles.item}> {dadosVeiculo.kmaquisicao} </Text>
+            </View>
+            <View style={styles.toogle}>
+                <Text style={styles.item}> Recall </Text>
+                <Text style={styles.item}> Não </Text>
+            </View>
+            <View style={styles.toogle}>
+                <Text style={styles.item}> Última manutenção </Text>
+                <Text style={styles.item}> 15/09/2021 </Text>
+            </View>
+            <View style={styles.toogle}>
+                <Text style={styles.item}> Segurado </Text>
+                <Text style={styles.item}> Sim </Text>
+            </View>
+            <View style={styles.toogle}>
+                <Text style={styles.item}> Renavam </Text>
+                <Text style={styles.item}> {dadosVeiculo.veiculo.renavam} </Text>
+            </View>
+            <Text  onPress={() => navigation.navigate('Manutencao')} style={styles.entrar}> <Entypo name="tools" size={30} /> Registrar Manutenção</Text>
+            <Text  onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <MaterialCommunityIcons name="shield-car" size={37} /> Novo Seguro</Text>
+            <Text  onPress={() => navigation.navigate('Venda')} style={styles.entrar}>  <Entypo name="swap" size={30} /> Comunicar Venda</Text>
+            </>               
+          }
+          {!dadosVeiculo && <>
+            <Text style={styles.titulo}> Não há dados para este veículo </Text>
+          </>
+          }
+        </ScrollView>
+        </LinearGradient>
     </View>
-    )
-  }
-  } else {
-    return (
-    <View>
-    <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-    <ScrollView>       
-        <Text style={styles.container}> Não há dados para este veículo </Text>
-    </ScrollView>
-    </LinearGradient>
-    </View>
-    )
-  }
+  )
+  
 }

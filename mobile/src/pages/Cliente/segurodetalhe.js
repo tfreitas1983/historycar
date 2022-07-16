@@ -5,6 +5,7 @@ import moment from 'moment'
 import {Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
+import VeiculoDataService from '../../services/veiculo';
 
 const styles = StyleSheet.create({
   container: {
@@ -137,16 +138,18 @@ export default function SeguroDetalhe ({ navigation }) {
 
   useEffect( () => { 
     async function SegurosClientes () {
-      try{
-      let resp = await axios.get(`http://10.0.2.2:5099/api/veiculosseguros?veiculo=${id}`) 
-        .then( response  =>  {               
-           setDados(response.data.map(item => ({ ...item}) )); 
-        })
-        resp = await resp//map(item => ({...item})) 
-      }
-      catch (e){
-        console.error(e);
-      }     
+      let respcliente = await VeiculoDataService.veiculocliente(id)
+    .then( response => {
+      let temp = response.data;
+      setDados(temp) ;   
+      console.log('temp', temp);
+    })    
+    .catch( e =>  {
+      console.error(e);
+    })
+
+    respcliente = await respcliente;
+
     }   
     SegurosClientes();   
     
@@ -179,7 +182,7 @@ export default function SeguroDetalhe ({ navigation }) {
       <View>
           <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
           <ScrollView>
-             <Text style={styles.titulo}> {dados[0].seguradora.descricao} </Text>
+             <Text style={styles.titulo}> {dados.seguradora.descricao} </Text>
               {lista}
               <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Voltar</Text>
           </ScrollView>
@@ -198,20 +201,4 @@ export default function SeguroDetalhe ({ navigation }) {
       </View>
     )
   }
-    return (
-        <View>
-            <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-            <ScrollView>
-                
-                <Text style={styles.opcoes}> Porto Seguro </Text>
-                <Text style={styles.titulo}> Vigência </Text>
-                <View style={styles.periodo}>
-                    <Text style={styles.datas}> 01/10/2021</Text>
-                    <Text style={styles.datas}> 30/09/2022</Text>
-                </View>
-                <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Salvar</Text>
-            </ScrollView>
-            </LinearGradient>
-        </View>
-    )
 }

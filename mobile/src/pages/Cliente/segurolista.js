@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
-
 import {Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from "react-redux";
 import axios from 'axios';
-import moment from 'moment'
+import moment from 'moment';
+import VeiculoDataService from '../../services/veiculo';
 
 const styles = StyleSheet.create({
   container: {
@@ -109,36 +109,75 @@ const styles = StyleSheet.create({
 export default function SeguroLista  ({ navigation }) {
 
   const id = useSelector(state => state.veiculo.id);
-  const [dados, setDados] = useState('');
-
+  const [veiculoId, setVeiculo] = useState('');
+  const [dadosVeiculo, setDados] = useState('');
+console.log('useSelector', id);
 
   useEffect( () => { 
-    async function SegurosClientes () {
-      try{
-      let resp = await axios.get(`http://10.0.2.2:5099/api/veiculosseguros?veiculo=${id}`) 
-        .then( response  =>  {               
-           setDados(response.data.map(item => ({ ...item}) )); 
-        })
-        resp = await resp//map(item => ({...item})) 
-      }
-      catch (e){
-        console.error(e);
-      }     
-    }   
-    SegurosClientes();   
+    
+    PegaVeiculo();  
+    
     
   }, [])
 
-  console.log('seguros', dados)
+  async function PegaVeiculo () {
+    let respcliente = await VeiculoDataService.veiculocliente(id)
+    .then( response => {
+      let temp = response.data.veiculo.id;
+      console.log('temp', temp);
+      setVeiculo(temp) ;
+    })    
+    .catch( e =>  {
+      console.error(e);
+    })
+
+    respcliente = await respcliente;
+    PegaSeguros(); 
+  }   
+
+  console.log('seguros', dadosVeiculo)
 
   lista = null;
 
-  if (dados) {
-    lista = dados.map((item, index) => {
+  async function PegaSeguros() {
+    console.log('veiculoId', veiculoId);
+
+    if (veiculoId !== '') {
+      let respseguro = await VeiculoDataService.veiculoseguro(veiculoId)
+        .then( response => {
+          let tempseguro = response.data;
+          setDados(tempseguro) ;   
+          console.log('dados', tempseguro);
+        })    
+        .catch( e =>  {
+          console.error(e);
+        })
+
+      respseguro = await respseguro;
+    } else {
+      await VeiculoDataService.veiculocliente(id)
+    .then( response => {
+      let temp = response.data.veiculo.id;
+      setVeiculo(temp) ;
+    })
+    .catch( e =>  {
+      console.error(e);
+    })
+
+    console.log('veiculoIdselse', veiculoId);
+
+    }    
+  }
+
+
+
+  if (dadosVeiculo) {
+    lista = dadosVeiculo.map(item => {
       if (item.seguradora) {
         return (
           <View style={styles.toogle}>
-            <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('SeguroDetalhe')}>{item.seguradora.descricao} - {moment(item.vigenciafim).format('DD/MM/YYYY')}</Text>
+            <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('SeguroDetalhe')}>
+              {item.seguradora.descricao} - {moment(item.vigenciainicio).format('DD/MM/YYYY')}- {moment(item.vigenciafim).format('DD/MM/YYYY')}</Text>
             <Text style={styles.titulo} key={item.id+'a'} onPress={() => navigation.navigate('SeguroDetalhe')} > <Entypo name="text-document" size={30} /> </Text>
           </View>
         )
@@ -146,12 +185,12 @@ export default function SeguroLista  ({ navigation }) {
     })
   }
 
-  if (dados !== "") {
+  if (dadosVeiculo !== "") {
     return (
       <View>
           <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
           <ScrollView>
-             <Text style={styles.titulo}> {dados[0].veiculo.modelodescricao} </Text>
+             
               {lista}
               <Text onPress={() => navigation.navigate('Seguro')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo Seguro</Text>
           </ScrollView>
