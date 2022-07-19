@@ -109,8 +109,11 @@ const styles = StyleSheet.create({
 export default function SeguroLista  ({ navigation }) {
 
   const id = useSelector(state => state.veiculo.id);
-  const [veiculoId, setVeiculo] = useState('');
-  const [dadosVeiculo, setDados] = useState('');
+  const [veiculoId, setVeiculo] = useState(null);
+  const [dadosVeiculo, setDados] = useState(null);
+  let veiculo = null;
+  let veiculosdados = null;
+
 console.log('useSelector', id);
 
   useEffect( () => { 
@@ -123,37 +126,44 @@ console.log('useSelector', id);
   async function PegaVeiculo () {
     let respcliente = await VeiculoDataService.veiculocliente(id)
     .then( response => {
-      let temp = response.data.veiculo.id;
-      console.log('temp', temp);
-      setVeiculo(temp) ;
+      let veiculotemp = response.data.veiculo.id;
+      console.log('veiculotemp', veiculotemp);
+      veiculo = veiculotemp;
+      console.log('veiculo', veiculo);
     })    
     .catch( e =>  {
       console.error(e);
     })
-
     respcliente = await respcliente;
+    setVeiculo(veiculo) ;
+    console.log('veiculoId', veiculoId);
+    
     PegaSeguros(); 
   }   
 
-  console.log('seguros', dadosVeiculo)
-
+  
   lista = null;
 
   async function PegaSeguros() {
-    console.log('veiculoId', veiculoId);
+    
 
     if (veiculoId !== '') {
-      let respseguro = await VeiculoDataService.veiculoseguro(veiculoId)
+      let respseguro = await VeiculoDataService.veiculoseguro(veiculo)
         .then( response => {
           let tempseguro = response.data;
-          setDados(tempseguro) ;   
-          console.log('dados', tempseguro);
+          veiculosdados = tempseguro;
+          
+          console.log('dados', dadosVeiculo);
         })    
         .catch( e =>  {
           console.error(e);
         })
 
+        setDados(veiculosdados) ;   
+
       respseguro = await respseguro;
+      console.log('seguros', dadosVeiculo)
+
     } else {
       await VeiculoDataService.veiculocliente(id)
     .then( response => {
@@ -175,38 +185,36 @@ console.log('useSelector', id);
     lista = dadosVeiculo.map(item => {
       if (item.seguradora) {
         return (
-          <View style={styles.toogle}>
-            <Text style={styles.titulo} key={item.id} onPress={() => navigation.navigate('SeguroDetalhe')}>
-              {item.seguradora.descricao} - {moment(item.vigenciainicio).format('DD/MM/YYYY')}- {moment(item.vigenciafim).format('DD/MM/YYYY')}</Text>
-            <Text style={styles.titulo} key={item.id+'a'} onPress={() => navigation.navigate('SeguroDetalhe')} > <Entypo name="text-document" size={30} /> </Text>
+          <View style={{borderWidth: 2, borderColor: '#fff', borderRadius: 15,padding: 15, marginBottom: 20}}>
+          <View style={{}}>
+            <Text style={styles.titulo} key={item.id}>
+              {item.seguradora.descricao} - {moment(item.vigenciainicio).format('DD/MM/YYYY')} - {moment(item.vigenciafim).format('DD/MM/YYYY')}
+            </Text>        
+            
+          </View>
+          <Text  style={styles.titulo} key={item.id+'v'}> R$ {item.valor}  </Text>
           </View>
         )
       }
     })
   }
 
-  if (dadosVeiculo !== "") {
+ 
     return (
       <View>
           <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
           <ScrollView>
-             
+             {dadosVeiculo && <>
               {lista}
               <Text onPress={() => navigation.navigate('Seguro')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo Seguro</Text>
+              </>
+            }
+            {!dadosVeiculo && <>
+              <Text onPress={() => navigation.navigate('Seguro')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo Seguro</Text>
+            </>
+            }
           </ScrollView>
           </LinearGradient>
       </View>
     )
-  } else {
-    return (
-      <View>
-        <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-          <ScrollView>
-            <Text onPress={() => navigation.navigate('Seguro')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo Seguro</Text>
-          </ScrollView>
-        </LinearGradient>
-      </View>
-    )
-  }
-  
 }

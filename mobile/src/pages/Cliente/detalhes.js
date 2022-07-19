@@ -6,7 +6,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useSelector } from "react-redux";
 import axios from 'axios';
-import veiculo from '../../services/veiculo';
+import moment from 'moment';
+import ManutencaoDataService from '../../services/manutencoes';
 
 const styles = StyleSheet.create({
   container: {
@@ -88,32 +89,34 @@ const styles = StyleSheet.create({
 export default function Detalhes ({navigation}){
   
   const id = useSelector(state => state.veiculo.id);
- const [dadosVeiculo, setDados] = useState(null);
+  const [dadosVeiculo, setDados] = useState(null);
   const [valor, setValor] = useState('');
+  const [manutencoes, setManutencoes] = useState('');
+  const [seguros, setSeguros] = useState('');
+  const [recall, setRecall] = useState('');
   const [loading, setLoading] = useState(false);
+  const [segurado, setSegurado] = useState(false);
   let dados = null;
-  console.log('veiculoclienteId', id);
-
+ 
   useEffect( () => { 
 
     async function VeiculosClientes () {
       
       await VeiculoDataService.veiculocliente(id) 
         .then( response  =>  {  
-          let tempdados = response.data
-          console.log('tempdados', tempdados);
-         // setDados(tempdados);
-         dados = tempdados;
-         setDados(dados);
+          let tempdados = response.data;
+          dados = tempdados;
+          setDados(dados);
           
         })
         .catch(e => {
           console.error(e);
         })
        
-        console.log('dados', dados);
-        console.log('teste',dadosVeiculo);
+
         PegaValor();
+        PegaManutencao();
+        PegaSeguro();
     }
 
     VeiculosClientes(); 
@@ -121,7 +124,42 @@ export default function Detalhes ({navigation}){
   }, [])
 
       
-  
+  async function PegaManutencao() {
+    await ManutencaoDataService.buscaveiculo(dados.veiculo.id)
+    .then( response => {
+      let tempmanutencao = response.data.shift()
+      let todas = response.data.filter(item => {
+        return item.tipo === 2
+      })
+      setRecall(todas);
+      console.log('recall', todas);
+       setManutencoes(tempmanutencao);
+    })
+    .catch(e => {
+      console.error(e);
+    })
+  }
+
+  async function PegaSeguro() {
+    await VeiculoDataService.veiculoseguro(dados.veiculo.id)
+        .then( response => {
+          let tempseguro = response.data.map(item => {return item.vigenciafim});      
+          
+          setSeguros(tempseguro) ;   
+
+          function compare(a,b) {
+            return a < b;
+          }
+          
+          setSegurado(tempseguro.sort(compare).shift());
+          
+
+        })    
+        .catch( e =>  {
+          console.error(e);
+        })
+    
+  }
 
   
 
@@ -209,19 +247,19 @@ export default function Detalhes ({navigation}){
             </View>
             <View style={styles.toogle}>
                 <Text style={styles.item}> Última Km registrada </Text>
-                <Text style={styles.item}> {dadosVeiculo.kmaquisicao} </Text>
+                <Text style={styles.item}> {manutencoes.km} </Text>
             </View>
             <View style={styles.toogle}>
                 <Text style={styles.item}> Recall </Text>
-                <Text style={styles.item}> Não </Text>
+                <Text style={styles.item}> {recall.length > 0 ? 'Sim' : 'Não'} </Text>
             </View>
             <View style={styles.toogle}>
                 <Text style={styles.item}> Última manutenção </Text>
-                <Text style={styles.item}> 15/09/2021 </Text>
+                <Text style={styles.item}> {moment(manutencoes.datamanutencao).format('DD/MM/YYYY')} </Text>
             </View>
             <View style={styles.toogle}>
                 <Text style={styles.item}> Segurado </Text>
-                <Text style={styles.item}> Sim </Text>
+                <Text style={styles.item}> {moment(segurado) >= moment.now() ? 'Sim' : 'Não' } </Text>
             </View>
             <View style={styles.toogle}>
                 <Text style={styles.item}> Renavam </Text>

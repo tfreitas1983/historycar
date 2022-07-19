@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
            
             <DatePicker
                 modal
-                maximumDate={new Date()}
                 open={open}
                 date={date}
                 mode="date"

@@ -177,28 +177,24 @@ export default function SeguroDetalhe ({ navigation }) {
     })
   }
 
-  if (dados !== "") {
+ 
     return (
       <View>
           <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
           <ScrollView>
-             <Text style={styles.titulo}> {dados.seguradora.descricao} </Text>
+            {dados !== '' && <>
+              <Text style={styles.titulo}> {dados.seguradora.descricao} </Text>
               {lista}
               <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Voltar</Text>
+            </>
+            }
+            {!dados && <>
+              <Text style={styles.titulo}>Não há informações disponíveis sobre o seguro</Text>
+            <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Voltar</Text>
+            </>}
+            
           </ScrollView>
           </LinearGradient>
       </View>
-    )
-  } else {
-    return (
-      <View>
-        <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-          <ScrollView>
-            <Text style={styles.titulo}>Não há informações disponíveis sobre o seguro</Text>
-            <Text onPress={() => navigation.navigate('SeguroLista')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Voltar</Text>
-          </ScrollView>
-        </LinearGradient>
-      </View>
-    )
-  }
+    )  
 }
