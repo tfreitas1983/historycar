@@ -1,10 +1,23 @@
 const db = require("../models");
 const Op = db.Sequelize.Op;
 const ParceirosPrecos = db.parceiros_precos;
+const parceiros = db.parceiros;
 
 
 exports.findAll = (req, res) => { 
-    ParceirosPrecos.findAll({ include: "parceiros" })    
+
+  const parceiro = req.query.parceiro;
+
+  var query = null;
+
+  if (parceiro) {
+    query = {where: {parceiroId: parceiro}, include: "parceiro" }
+  } else {
+    query = { include: "parceiro" }
+  }
+
+
+    ParceirosPrecos.findAll(query)    
       .then(data => {
         res.send(data);
       })

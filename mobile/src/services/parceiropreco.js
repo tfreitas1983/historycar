@@ -10,6 +10,10 @@ class ParceiroPrecoDataService {
         return http.get(`/parceirosprecos/${id}`)
     }
 
+    parceiro(id) {
+        return http.get(`/parceirosprecos?parceiro=${id}`)
+    }
+
     cadastrar(data) {
         return http.post("/parceirosprecos", data)
     }

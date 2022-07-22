@@ -249,6 +249,7 @@ export default function Seguro  ({ navigation }) {
                 data={dados.map(item => {return item.descricao})}
                 defaultButtonText="Selecione a seguradora"
                 buttonStyle={styles.bordado}
+                buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
                 onSelect={(selectedItem, index) => {
                  console.log(selectedItem, index)
                   setSelecionada(selectedItem)

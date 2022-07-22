@@ -242,6 +242,7 @@ export default function CadastrarParceiro  ({ navigation }) {
         data={dados.map(item => {return item})}
         defaultButtonText="Selecione o sexo"
         buttonStyle={styles.bordado}
+        buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
         onSelect={(selectedItem, index) => {
           console.log(selectedItem, index)
           setSexo(selectedItem)

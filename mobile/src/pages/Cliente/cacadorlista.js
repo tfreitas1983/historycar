@@ -97,7 +97,7 @@ const CacadorLista = ({ navigation }) => (
                     <Text style={styles.titulo}> Consulta Dúvidas a partir de R$ 300,00 </Text>
                     <Text style={styles.titulo}> Consulta Remota  a partir de R$ 50,00 </Text>
                     <Text style={styles.titulo}> 11 99009-9900 </Text>
-                    <Text style={styles.link} onPress={() => navigation.navigate('DespachanteDetalhes')}> + detalhes </Text>
+                    <Text style={styles.link} onPress={() => navigation.navigate('CacadorDetalhes')}> + detalhes </Text>
                 </View>
             </View>
 

@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import { Text, View, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
-
-import Toggle from '../../components/toggle'
 
 const styles = StyleSheet.create({
   container: {

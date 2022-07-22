@@ -4,7 +4,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import SelectDropdown from 'react-native-select-dropdown'
+// import SelectDropdown from 'react-native-select-dropdown'
 import { celMask, cepMask, cpfMask, cnpjMask } from '../../components/masks';
 import CadastroClienteDataService from '../../services/cadastrocliente'
 import Auth from '../../services/auth.service';
@@ -193,6 +193,7 @@ export default function Cadastrar  ({ navigation }) {
               data={dados.map(item => {return item})}
               defaultButtonText="Selecione o sexo"              
               buttonStyle={styles.bordado}
+              buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
               onSelect={(selectedItem, index) => {
                 console.log(selectedItem, index)
                 setSexo(selectedItem)
