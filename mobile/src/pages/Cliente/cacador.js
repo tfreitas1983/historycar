@@ -3,13 +3,11 @@ import {Text, View, StyleSheet, Dimensions, ScrollView, ActivityIndicator, Image
 import LinearGradient from 'react-native-linear-gradient';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import SelectDropdown from 'react-native-select-dropdown';
-import Input from '../../components/Input';
 import Button from '../../components/Button';
 import ParceiroDataService from '../../services/parceiro';
 import ParceiroPrecoDataService from '../../services/parceiropreco'
 import Feather from 'react-native-vector-icons/Feather';
 import axios from 'axios';
-import CacadorDetalhes from './cacadordetalhes';
 Feather.loadFont()
 
 const styles = StyleSheet.create({
@@ -96,7 +94,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',       
     marginTop: 10
-  },resumo: {
+  },
+  resumo: {
     fontFamily: 'Open Sans',
     color: '#b2b2b2',
     backgroundColor: '#f2f2f2',
@@ -105,6 +104,7 @@ const styles = StyleSheet.create({
     borderColor: '#f2f2f2',
     fontSize: 20,
     marginTop: 20,
+    marginBottom:50,
     padding: 5,
     textAlign: 'left',
     width: Dimensions.get('window').width,
@@ -134,8 +134,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 5,
     borderColor: '#fff',
-    padding: 2,
-    margin: 5
+    padding: 2
   },
 });
 
@@ -160,7 +159,8 @@ export default function Cacador  ({ navigation }) {
   const [detalhesCacador, setDetalhesCacador] = useState('');
   const [parceiroEscolhido, setEscolhido] = useState('');
 
-  const ufs = [{ id: "AC", title: "Acre" },
+  const ufs = [
+  { id: "AC", title: "Acre" },
   { id: "AL", title: "Alagoas" },
   { id: "AP", title: "Amapá" },
   { id: "AM", title: "Amazonas" },
@@ -218,7 +218,7 @@ export default function Cacador  ({ navigation }) {
 
   async function buscar () {
     setBuscado(true)
-    await ParceiroDataService.busca(ufselecionado, cidade, sexo)
+    await ParceiroDataService.busca(ufselecionado, cidade, sexo, 1)
     .then(response => {
       setCacadores(response.data);
     })
@@ -257,11 +257,13 @@ export default function Cacador  ({ navigation }) {
   }
 
   async function SelecionaParceiro (id) {
+    mostrar = null;
 
     await ParceiroDataService.buscarUm(id)
     .then(resp => {
       console.log('parceiro',resp.data);
       setEscolhido(resp.data);
+     // setCacadores(resp.data)
     })
     .catch(e => {
       console.error(e);
@@ -277,8 +279,19 @@ export default function Cacador  ({ navigation }) {
     })
 
     setMostraDetalhes(true);
-
+    
    
+  }
+
+  function limpa () {
+    setBuscado(false);
+    setCacadores('');
+    setEscolhido('');
+    setDetalhesCacador('');
+    setMostraDetalhes(false);
+    setUfSelecionado('');
+    mostrar = null;
+    mostradetalhes = null;
   }
 
   function handleSubmit() {
@@ -295,13 +308,13 @@ export default function Cacador  ({ navigation }) {
   let mostrar = null;
   let mostradetalhes = null;
 
-  if (detalhesCacador) {
+  if (detalhesCacador ) {
     mostradetalhes = detalhesCacador.map(detalhe => {
       return (
-        <>
+        <View>
           <Text style={styles.item}> Consulta Dúvidas a partir de R$ {detalhe.presencial} </Text>
           <Text style={styles.item}> Consulta Remota  a partir de R$ {detalhe.remoto} </Text>
-          <Text style={styles.titulo}> Serviços atendidos:</Text>
+          <Text style={styles.bordado}> Serviços atendidos:</Text>
           <Text style={styles.item}> Conhecimento em mecânica: {parceiroEscolhido.mecanica === true ? 'Sim': 'Não'} </Text>
           <Text style={styles.item}> Conhecimento em funilaria: {parceiroEscolhido.funilaria === true ? 'Sim': 'Não'}  </Text>            
           <Text style={styles.item}> Realiza vistoria: {parceiroEscolhido.vistoria === true ? 'Sim': 'Não'} </Text> 
@@ -309,12 +322,12 @@ export default function Cacador  ({ navigation }) {
           <Text style={styles.item}> Equipamentos: {parceiroEscolhido.equipamentos === true ? 'Sim': 'Não'}   </Text>   
           <Text style={styles.titulo}> Resumo a respeito do meu trabalho </Text>
           <Text style={styles.resumo}>{parceiroEscolhido.resumo}</Text>
-        </>
+        </View>
       )
     })
   }
 
-  if (cacadores && buscado === true) {
+  if (cacadores && buscado === true && !parceiroEscolhido) {
     mostrar = cacadores.map(item => {
       return (
         <>
@@ -337,9 +350,8 @@ export default function Cacador  ({ navigation }) {
     })
   }
 
-  if (cacadores && buscado === true && detalhesCacador) {
-    mostradetalhes = detalhesCacador.map(item => {
-      return (
+  if (parceiroEscolhido && buscado === true) {
+    mostrar = 
         <>
         
         <View style={styles.toogle}>
@@ -348,18 +360,18 @@ export default function Cacador  ({ navigation }) {
           style={styles.logo}
               resizeMode="cover"
           />
-          <View >
-          <Text style={styles.ordenar}> {item.nome} - {item.reputacao} </Text>
-              <Text style={styles.item}> Consulta Dúvidas a partir de R$ {item.presencial} </Text>
-              <Text style={styles.item}> Consulta Remota  a partir de R$ {item.remoto} </Text>
-              <Text style={styles.item}> {item.celular} </Text>
-              <Text style={styles.link} onPress={() => SelecionaParceiro(item.id)}> + detalhes </Text>
+          <View>
+              <Text style={styles.ordenar}> {parceiroEscolhido.nome} - {parceiroEscolhido.reputacao} </Text>              
+              <Text style={styles.item}> {parceiroEscolhido.celular} </Text>
+              <Text style={styles.link} onPress={() => SelecionaParceiro(parceiroEscolhido.id)}> + detalhes </Text>
           </View>
         </View>
+        {mostradetalhes}
         </>
-      )
-    })
+      
   }
+  
+
 
   
 
@@ -481,12 +493,31 @@ export default function Cacador  ({ navigation }) {
             <Text onPress={() =>  buscar()} style={styles.entrar}> Pesquisar</Text>
             </>
             }   
-            {buscado === true && <>
+            {buscado === true && !parceiroEscolhido && <>
               <Text style={styles.titulo}>Caçadores na sua região</Text>
+              <View style={{marginBottom:150}}>
+             {mostrar}
+             <Text onPress={() =>  limpa() } style={styles.bordado}> Pesquisar novamente</Text>
+             </View>
              </>
             }   
+           
+            {buscado === true && cacadores === '' && <>
+
+             <Text style={styles.titulo}> ** Não foi encontrado nenhum caçador ** </Text>
+             <Text onPress={() =>  limpa()} style={styles.bordado}> Pesquisar novamente</Text>
+            </>
+            }
+
+            {buscado === true && parceiroEscolhido !== '' && <>
             
-             {mostrar}
+            {mostrar}
+            <View style={{marginBottom:150}}>
+              <Button onPress={() =>  limpa()} > Pesquisar novamente</Button>
+            </View>
+            </>
+
+            }
            
           </ScrollView>
         </LinearGradient>

@@ -6,8 +6,8 @@ class ParceiroDataService {
         return http.get(`/parceiros`)
     }
 
-    busca (uf, cidade, sexo) {
-        return http.get(`/parceiros?uf=${uf}&cidade=${cidade}&sexo=${sexo}`)
+    busca (uf, cidade, sexo, ramo) {
+        return http.get(`/parceiros?uf=${uf}&cidade=${cidade}&sexo=${sexo}&ramo=${ramo}`)
     }
 
     buscarUm(id) {
