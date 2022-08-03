@@ -18,6 +18,10 @@ class VeiculoDataService {
         return http.get(`/veiculosclientes?cliente=${id}`)
     }
 
+    buscacliente(id) {
+        return http.get(`/veiculosclientes?veiculo=${id}`)
+    }
+
     veiculocliente(id) {
         return http.get(`/veiculosclientes/${id}`)
     }

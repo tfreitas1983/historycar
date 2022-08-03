@@ -196,23 +196,7 @@ export default function Despachante  ({ navigation })  {
     setUfSelecionado('');
   }, [])
 
-  const onClearPress2 = useCallback(() => {
-    setSuggestionsList(null)
-    setModelo([]);
-    anos = [];    
-    anoscombustivel = [];
-    setAnoCombustivel('');
-  }, [])
-
-  const onClearPress3 = useCallback(() => {
-    setSuggestionsList(null);
-    idano = '';
-    setAno('');
-    anoscombustivel = '';
-    setAnoCombustivel('');
-    setIdAno('');
-    setAnoSelecionado('');
-  }, [])
+  
 
   const onOpenSuggestionsList = useCallback(isOpened => {}, [])
 

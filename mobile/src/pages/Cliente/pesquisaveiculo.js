@@ -1,8 +1,17 @@
-import React from 'react';
-
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import React, {useRef, useState, useEffect, useCallback}  from 'react';
+import {Text, View, StyleSheet, Dimensions, ScrollView, Alert, Switch, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
+import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
+import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
+import MyDate from '../../components/datepicker';
+import CadastroClienteDataService from '../../services/cadastrocliente';
+import VeiculoDataService from '../../services/veiculo';
+import Feather from 'react-native-vector-icons/Feather';
+Feather.loadFont()
 
 const styles = StyleSheet.create({
   container: {
@@ -10,8 +19,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     paddingHorizontal: 10,
-    backgroundColor: '#a2a2a2',
-    height: Dimensions.get('window').height * 0.5
+    backgroundColor: 'transparent',
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width
   },
   linearGradient: {
     alignItems: 'center',
@@ -26,14 +36,7 @@ const styles = StyleSheet.create({
     marginBottom:5,
     color:'#fff',
     fontSize: 20,
-    textAlign: 'center',
-  },  
-  mensagem: {
-    fontWeight: 'bold',
-    marginTop: 5,
-    marginBottom:5,
-    color:'#fff',
-    fontSize: 18,
+    padding: 5,
     textAlign: 'left',
   },
   opcoes: {
@@ -48,6 +51,19 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: 'center',
     width: Dimensions.get('window').width
+  },  
+  erro: {
+    fontFamily: 'Open Sans',
+    color: '#fff',
+    backgroundColor: '#ef2000',
+    borderWidth: 5,
+    borderRadius: 10,
+    borderColor: '#fc2000',
+    fontSize: 20,
+    marginTop: 20,
+    padding: 5,
+    textAlign: 'center',
+    width: Dimensions.get('window').width
   },
   entrar:{
     fontFamily: 'Open Sans',
@@ -57,35 +73,43 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderRadius: 10,
     borderColor: '#f2f2f2',
-    fontSize: 30,
+    fontSize: 40,
     marginTop: 20,
-    marginBottom: 150,
+    marginBottom: 80,
     padding: 5,
     textAlign: 'center'
-  },  
+  },
   buscar:{
     fontFamily: 'Open Sans',
     textAlign: 'center',
     color: '#f2f2f2',
-    backgroundColor: 'transparent',
     borderWidth: 5,
     borderRadius: 10,
     borderColor: '#f2f2f2',
     fontSize: 40,
-    marginTop: 20,
-    padding: 5,
-    textAlign: 'center'
+    marginTop: 10,
+    width: Dimensions.get('window').width
   },
-  toogle: {      
-    flex: 1,
+  adicionar:{
+  fontFamily: 'Open Sans',
+  textAlign: 'center',
+  color: '#f2f2f2',
+  borderWidth: 5,
+  borderRadius: 10,
+  borderColor: '#f2f2f2',
+  fontSize: 10,
+  marginTop: 10,
+  width: Dimensions.get('window').width
+},
+  toggle: { 
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignSelf: 'flex-start',
     fontFamily: 'Open Sans',
     color: '#fafafa',
     fontSize: 25,
-    fontWeight: 'bold',       
-    marginTop: 10
+    fontWeight: 'bold', 
+    alignItems:'center'
   },
   resumo: {
     fontFamily: 'Open Sans',
@@ -100,38 +124,313 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: Dimensions.get('window').width,
     height: 200
-  },
+  }
 });
 
+export default function PesquisarVeiculos  ({ navigation })  {
+
+  const dispatch = useDispatch();
+  const userId = useSelector(state => state.auth.id);
+
+  
+  const [dados, setDados] = useState('');
+  const [loadingdados, setLoadingDados] = useState(false);
+  const [buscado, setBuscado] = useState(false);
+  const [avancado, setAvancado] = useState(false);
+  const [fabricantes, setFabricantes] = useState([]);
+  const [loading, setLoading] = useState(false)
+  const [loading2, setLoading2] = useState(false)
+  const [loading3, setLoading3] = useState(false)
+  const [suggestionsList, setSuggestionsList] = useState(null)
+  const searchRef = useRef(null);
+  const searchRef2 = useRef(null);
+  const searchRef3 = useRef(null);
+  const kmRef = useRef('');
+  const chassiRef = useRef('');
+  const aquisicaoRef = useRef('');
+  const gnvRef = useRef('');
+
+  const [renavam, setRenavam] = useState('332838594');
+  const [fabricante, setFabricante] = useState([]);
+  const [modelo, setModelo] = useState([]);
+  const [modeloSelecionado, setModeloSelecionado] = useState('');
+  const [marca, setMarca] = useState([]);
+  const [idModeloapi, setIdModeloApi] = useState('');
+  const [ano, setAno] = useState([]);
+  const [combustivel, setCombustivel] = useState('');
+  const [anocombustivel, setAnoCombustivel] = useState([]);
+  const [idAno, setIdAno] = useState('');
+  const [anoSelecionado,setAnoSelecionado] = useState('');
+  const [aquisicao, setAquisicao] = useState('');
+  const [placa, setPlaca] = useState('');
+  const [km, setKm] = useState('');
+  const [chassi, setChassi] = useState('');
+  const [gnv, setGnv] = useState('');
+  const [message, setMessage] = useState('');
+  const [cliente, setCliente] = useState([]);
+  const [adicionado, setAdicionado] = useState(false);
+  const [idCliente, setIdCliente] = useState('');
+  const [transferencia, setTransferencia] = useState(false);
+
+  useEffect ( () => {
+   
+      BuscaCliente();
+   
+  }, [dados])
+
+  async function PegaCliente () {
+    let respcliente = await CadastroClienteDataService.buscarusuario(userId)
+    .then( response => {
+      let temp = response.data.map( item => { return item.id})
+      setIdCliente(temp[0])      
+    })    
+    .catch( e =>  {
+      console.error(e);
+    })
+
+    respcliente = await respcliente;
+  }
+  
+  
+
+  async function buscar () {
+
+      await  VeiculoDataService.buscarRenavam(renavam)
+      .then( response  =>  {  
+        setLoadingDados(true) ;
+        if (response.data) {
+          let tempdados = response.data;
+          console.log('tempdados', tempdados);
+          setDados(tempdados);
+          carregaDados();
+        } else {
+          Alert.alert('RENAVAM não encontrado')
+        }  
+      })
+      .catch (e => {
+      console.error(e);
+      });
+               
+      setBuscado(true);           
+      setLoadingDados(false);
+      PegaCliente(); 
+    
+  }
+
+  async function BuscaCliente () {
+    await  VeiculoDataService.buscacliente(dados.id)
+    .then(response => {
+      console.log('clienteveiculo', response.data);
+      let tempcliente = response.data[0].cliente;
+      console.log('tempcliente', tempcliente);
+      setCliente(tempcliente);
+      
+    })
+    .catch(e => {
+      console.error(e);
+    })
+  }
+
+  async function carregaDados () {
+    if (dados) {
+      console.log('dados', dados);
+      setLoadingDados(true);
+      let placatemp = await dados.veiculos_placas.map(item => { return item.placa });
+
+      
+      setFabricante(dados.fabricante);
+      setMarca(dados.idfabricante);
+      setModelo(dados.modelo);   
+      setIdModeloApi(dados.idmodelo);
+      setAnoSelecionado(dados.ano);
+      setIdAno(dados.idano);
+      setPlaca(placatemp[0] );
+      setChassi(dados.chassi);
+      setGnv(dados.gnv);
 
 
 
+      
+      setLoadingDados(false);
 
 
-const PesquisarVeiculos = ({ navigation }) => (
+    } else {
+
+    }
+  }
+
+
+  let mostraloading = null;
+  if (loadingdados === true) {
+    mostraloading = <View>
+    <ActivityIndicator size="large" color="#fff" />
+  </View>
+  }
+  
+
+  async function handleSubmit () {
+    var data = {
+
+      situacao: 1,      
+      kmaquisicao: km,     
+      dataaquisicao: aquisicao,
+      veiculoId: dados.id,
+      clienteId: idCliente        
+    }
+
+    var edicao = {
+      gnv: gnv
+    }
+
+    await VeiculoDataService.novocliente(dados.id, data)
+    .then(response => {
+      console.log('novocliente',response.data);
+    })
+    .catch(e => {
+      console.error(e)
+    })  
+
+    await VeiculoDataService.editar(dados.id, edicao)
+    .then(response => {
+      navigation.navigate('Veiculos');
+    })
+    .catch(e => {
+      console.error(e)
+    })  
+  }
+
+ 
+
+  
+  return (
     <View>
         <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-        <ScrollView>
+       
+
+        <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>
+          
+           
+         
+          <View>
+            {mostraloading}
+            {buscado === true && <>
+            <Text style={styles.titulo}>Digite o Renavam</Text>
+            </>
+            }
+
+                        
+            <Input       
+            keyboardType="number-pad"         
+            autoCorrect={false}
+            autoCapitalize="none"
+            style={{marginTop: 10, color: '#fff'}} 
+            placeholder="RENAVAM"            
+            autoFocus={true}
+            returnKeyType="next"
+            onSubmitEditing={() => buscar()}
+            value={renavam}
+            onChangeText={setRenavam}
+            maxLength={11}
+            />              
             
-            <Text style={styles.opcoes}> RENAVAM</Text>
-      
-            <Text style={styles.buscar}> <Entypo name="level-down" size={30} /> Buscar</Text>
-            <Text style={styles.opcoes}> Carros e caminhonetes</Text>
-            <Text style={styles.opcoes}> Chevrolet</Text>
-            <Text style={styles.opcoes}> Celta</Text>
-            <Text style={styles.opcoes}> Celta VHC 1.0</Text>
-            <Text style={styles.opcoes}> 2008 Gasolina</Text>
-            <Text style={styles.opcoes}> KXV-0983</Text>
-            <Text style={styles.opcoes}> Chassi</Text>
-            <Text style={styles.titulo}> Dados do antigo proprietário</Text>
-            <Text style={styles.opcoes}> Juvenal XXXXX XXXva</Text>
-            <Text style={styles.opcoes}> 046.xxx.xxx-09</Text>
-            <Text style={styles.titulo}> Venda não comunicada! </Text>
-            <Text style={styles.mensagem}> Para a transferência de proprietário clique no botão abaixo e envie a foto do CRV do veículo.</Text>
-            <Text onPress={() => navigation.navigate('Transferencia')} style={styles.entrar}> Adicionar à minha lista</Text>
-        </ScrollView>
+          </View>
+
+          { (buscado === false || !dados) && avancado === false &&
+            <Button style={styles.buscar} onPress={() => buscar()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Buscar </Button>
+          }
+
+          {buscado === false && <View>
+            <Text  style={styles.titulo}>Se o veículo já estiver cadastrado no aplicativo,
+            você verá os dados.          
+            </Text>
+          </View>
+          }
+
+          
+          
+         
+          
+          <ScrollView > 
+            <View >
+
+              {buscado === true && dados !== '' && avancado === false && <View>
+                <View style={styles.opcoes} >
+                  <Text style={styles.title}>Marca: {dados.fabricante}</Text>
+                  
+                  </View>
+                  <View style={styles.opcoes} >
+                    <Text style={styles.title}>Modelo: {dados.modelo}</Text>
+                  </View>
+                  <View style={styles.opcoes} >
+                    <Text style={styles.title}>Ano: {dados.ano}</Text>
+                  </View>
+                  <View style={styles.opcoes} >
+                    <Text style={styles.title}>GNV: {dados.gnv === true ? 'Sim' : 'Não'}</Text>
+                  </View>
+                  <View style={styles.opcoes} >
+                    <Text style={styles.title}>Chassi: {dados.chassi}</Text>
+                  </View>
+                  <View style={styles.opcoes} >
+                    <Text style={styles.title}>Placa: {dados.veiculos_placas[0].placa}</Text>
+                  </View>
+                </View> 
+              }
+              {buscado === true && cliente.length > 0 && <View style={{marginBottom: 50}} >
+                <Text style={styles.titulo}> Dados do proprietário</Text>
+                <Text style={styles.opcoes}> {'Nome: '+cliente.nome.split(' ').slice(0, 1)+'*****'}</Text>
+                <Text style={styles.opcoes}> {'CPF: '+cliente.cpf.slice(0, 3)+'****'}</Text>
+                <Text style={styles.titulo}> Venda não comunicada! </Text>
+                <Text style={styles.titulo}> Para a transferência de proprietário clique no botão abaixo e envie a foto do CRV do veículo.</Text>
+                <Button onPress={() => setTransferencia(true)} > Solicitar</Button>
+                </View>              
+              }
+              {buscado === true && dados !== '' && cliente.length < 1 && adicionado === false && <>
+                <Text style={styles.titulo}> Veículo cadastrado em nosso app! </Text>
+                <Button onPress={() => setAdicionado(true)} > Cadastrar</Button>
+              </>
+
+              }
+
+              {buscado === true && adicionado === true && <View style={{marginBottom: 50}}>
+              
+                <Input       
+                keyboardType="number-pad"         
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={{marginTop: 10, color: '#fff'}} 
+                ref={kmRef}
+                placeholder="KM atual"
+                returnKeyType="next"
+                onSubmitEditing={() => gnvRef.current.focus()}
+                value={km}
+                onChangeText={setKm} />
+
+                <Text style={styles.titulo}> Data aquisição </Text>  
+                <MyDate onSetDate={date => { setAquisicao(date); }} /> 
+
+                <View style={styles.toggle}>
+                  <Text  style={styles.titulo} > GNV   <Switch  value={gnv} ref={gnvRef} onValueChange={setGnv} /> </Text>
+                </View>
+
+                <Button  onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
+
+              </View>
+
+              }
+
+              {buscado === true && transferencia === true && <View style={{marginBottom: 50}}>
+
+              </View>
+              }
+              
+            </View>
+
+            
+            
+            
+          </ScrollView>
+        </KeyboardAvoidingView>
+ 
         </LinearGradient>
     </View>
-);
-
-export default PesquisarVeiculos;
+)}

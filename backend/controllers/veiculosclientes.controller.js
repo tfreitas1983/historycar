@@ -55,9 +55,15 @@ exports.findAll = (req, res) => {
     query = {where: {clienteId: cliente, veiculoId: veiculo}, include: "veiculo"}
   }
 
-  if (!cliente) {
+  if (!cliente && veiculo) {
+    query = {where: {veiculoId: veiculo, situacao: 1}, include: ["cliente", "veiculo" ]}
+  }
+
+  if (!cliente && !veiculo) {
     query = { include: ["cliente", "veiculo" ]}
   }
+
+
     VeiculosClientes.findAll(query)    
       .then(data => {
         res.send(data);
