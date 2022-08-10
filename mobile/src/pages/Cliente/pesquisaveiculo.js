@@ -1,13 +1,15 @@
 import React, {useRef, useState, useEffect, useCallback}  from 'react';
-import {Text, View, StyleSheet, Dimensions, ScrollView, Alert, Switch, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView, Alert, Switch, KeyboardAvoidingView, ActivityIndicator, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
-import axios from 'axios';
+//import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
-import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+import { launchImageLibrary } from 'react-native-image-picker';
+//import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import MyDate from '../../components/datepicker';
+import TextArea from '../../components/TextArea';
 import CadastroClienteDataService from '../../services/cadastrocliente';
 import VeiculoDataService from '../../services/veiculo';
 import Feather from 'react-native-vector-icons/Feather';
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
   fontSize: 10,
   marginTop: 10,
   width: Dimensions.get('window').width
-},
+  },
   toggle: { 
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -149,6 +151,8 @@ export default function PesquisarVeiculos  ({ navigation })  {
   const chassiRef = useRef('');
   const aquisicaoRef = useRef('');
   const gnvRef = useRef('');
+  const descricaoRef = useRef('');
+  const fotoRef = useRef('');
 
   const [renavam, setRenavam] = useState('332838594');
   const [fabricante, setFabricante] = useState([]);
@@ -171,6 +175,28 @@ export default function PesquisarVeiculos  ({ navigation })  {
   const [adicionado, setAdicionado] = useState(false);
   const [idCliente, setIdCliente] = useState('');
   const [transferencia, setTransferencia] = useState(false);
+  const [photo, setPhoto] = useState(null);
+  const [crv, setCrv] = useState(null);
+  const [nome, setNome] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [descricao, setDescricao]  = useState('');
+
+  const createFormData = (photo, body = {}) => {
+    const data = new FormData();
+  
+    data.append('photo', {
+      name: photo.fileName,
+      type: photo.type,
+      uri: photo.uri,
+    });
+  
+    Object.keys(body).forEach((key) => {
+      data.append(key, body[key]);
+    });
+  
+    return data;
+  };
+
 
   useEffect ( () => {
    
@@ -217,13 +243,20 @@ export default function PesquisarVeiculos  ({ navigation })  {
     
   }
 
+  let tempcliente = null;
+  let tempnome = null;
+  let tempcpf = null;
+
   async function BuscaCliente () {
     await  VeiculoDataService.buscacliente(dados.id)
     .then(response => {
-      console.log('clienteveiculo', response.data);
-      let tempcliente = response.data[0].cliente;
-      console.log('tempcliente', tempcliente);
+      tempcliente = response.data[0].cliente;
+	  tempnome = response.data[0].cliente.nome;
+	  tempcpf = response.data[0].cliente.cpf;
+	  setNome(tempnome);	  
+	  setCpf(tempcpf);
       setCliente(tempcliente);
+      console.log('tempcliente', tempcliente);     
       
     })
     .catch(e => {
@@ -259,6 +292,43 @@ export default function PesquisarVeiculos  ({ navigation })  {
     }
   }
 
+
+  const handleChoosePhoto = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      console.log(response);
+      if (response) {
+        setPhoto(response);
+      }
+    });
+  };
+
+  async function handleUploadPhoto  () {
+
+    /*console.log('foto',createFormData(photo) );*/
+    var foto =  new FormData();
+    foto.append('file', {
+    name: photo.assets.fileName,
+    type: photo.assets.type,
+    uri: photo.assets.uri,
+  })
+    console.log('foto', foto);
+    
+	  await ManutencaoDataService.cadastrarImagem(foto)
+	  /*
+   fetch(`${SERVER_URL}/api/veiculosmanutencoes/files`, {
+      method: 'POST',
+      body: createFormData(photo.assets[0]),
+    })*/
+      //.then((response) => response.json())
+      .then((response) => {
+        console.log('response', response);
+        setFotoKm(response.name)
+      })
+      .catch((error) => {
+        console.log('error', error);
+        setFotoKm(error.name)
+      });
+  };
 
   let mostraloading = null;
   if (loadingdados === true) {
@@ -299,7 +369,27 @@ export default function PesquisarVeiculos  ({ navigation })  {
     })  
   }
 
- 
+  async function SolicitarTransferencia () {
+
+    if (!foto ) {
+      Alert.alert('É obrigatório o envio da foto do CRV')
+    }
+
+    /*Envio de e-mail com o texto e a foto
+
+    var data = {
+      foto,
+      descricao
+    }
+    await VeiculoDataService.enviar(id, data)
+    .then(response => {
+      console.log('resposta do email',response.data);
+    })
+    .catch(e => {
+      console.error(e)
+    })
+    */
+  }
 
   
   return (
@@ -313,7 +403,7 @@ export default function PesquisarVeiculos  ({ navigation })  {
          
           <View>
             {mostraloading}
-            {buscado === true && <>
+            {buscado === true && transferencia === false && <>
             <Text style={styles.titulo}>Digite o Renavam</Text>
             </>
             }
@@ -353,7 +443,7 @@ export default function PesquisarVeiculos  ({ navigation })  {
           <ScrollView > 
             <View >
 
-              {buscado === true && dados !== '' && avancado === false && <View>
+              {buscado === true && dados !== '' && avancado === false && transferencia === false && <View>
                 <View style={styles.opcoes} >
                   <Text style={styles.title}>Marca: {dados.fabricante}</Text>
                   
@@ -375,15 +465,17 @@ export default function PesquisarVeiculos  ({ navigation })  {
                   </View>
                 </View> 
               }
-              {buscado === true && cliente.length > 0 && <View style={{marginBottom: 50}} >
+
+              {buscado === true && tempcliente !== ''  && nome !== '' && cpf !== '' && transferencia === false && <View style={{marginBottom: 50}} >
                 <Text style={styles.titulo}> Dados do proprietário</Text>
-                <Text style={styles.opcoes}> {'Nome: '+cliente.nome.split(' ').slice(0, 1)+'*****'}</Text>
-                <Text style={styles.opcoes}> {'CPF: '+cliente.cpf.slice(0, 3)+'****'}</Text>
+                <Text style={styles.opcoes}> {'Nome: '+nome.split(' ').slice(0, 1)+'*****'}</Text>
+                <Text style={styles.opcoes}> {'CPF: '+ cpf.slice(0, 3) + '*****' }</Text>
                 <Text style={styles.titulo}> Venda não comunicada! </Text>
                 <Text style={styles.titulo}> Para a transferência de proprietário clique no botão abaixo e envie a foto do CRV do veículo.</Text>
                 <Button onPress={() => setTransferencia(true)} > Solicitar</Button>
                 </View>              
               }
+
               {buscado === true && dados !== '' && cliente.length < 1 && adicionado === false && <>
                 <Text style={styles.titulo}> Veículo cadastrado em nosso app! </Text>
                 <Button onPress={() => setAdicionado(true)} > Cadastrar</Button>
@@ -391,7 +483,7 @@ export default function PesquisarVeiculos  ({ navigation })  {
 
               }
 
-              {buscado === true && adicionado === true && <View style={{marginBottom: 50}}>
+              {buscado === true && adicionado === true && transferencia === false &&  <View style={{marginBottom: 50}}>
               
                 <Input       
                 keyboardType="number-pad"         
@@ -419,7 +511,37 @@ export default function PesquisarVeiculos  ({ navigation })  {
               }
 
               {buscado === true && transferencia === true && <View style={{marginBottom: 50}}>
+                <Text style={styles.titulo}>Informe os dados sobre a compra do veículo:
+                dados pessoais do novo proprietário e do veículo </Text>
+                
 
+                <TextArea            
+                autoCorrect={false}
+                autoCapitalize="none"
+                ref={descricaoRef}             
+                placeholder="Dados pessoais do novo proprietário e do veículo "
+                returnKeyType="next"
+                onSubmitEditing={() => fotoRef.current.focus()}
+                value={descricao.toUpperCase()}
+                onChangeText={setDescricao} 
+                />				        
+				
+                <View style={styles.upload}>
+                  <Text style={{marginTop: 30}}> <Entypo name='camera' size={30}   onPress={handleChoosePhoto}/> </Text>
+                  <Text style={styles.titulo} ref={fotoRef} onPress={handleChoosePhoto}> Foto CRV</Text>
+                  </View>
+                  <View style={{ flex: 1,  justifyContent: 'space-evenly',  alignSelf: 'center', marginTop: 30 }}>
+                    {photo && (
+                      <>
+                        <Image
+                          source={{ uri: photo.assets ? photo.assets[0].uri : null}}
+                          style={{ width: 150, height: 200 }}
+                        />
+                      </>
+                    )}
+                  
+                </View>
+                <Button onPress = { () => SolicitarTransferencia() }>Enviar</Button>
               </View>
               }
               

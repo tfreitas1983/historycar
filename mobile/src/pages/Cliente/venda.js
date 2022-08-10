@@ -122,11 +122,7 @@ export default function Venda  ({ navigation }) {
   const kmRef = useRef('');
   const vendaRef = useRef('');
 
-  console.log('veiculoclienteId', veiculoclienteid);
-  console.log('userId', userId);
-
-
-   
+    
  useEffect( () => { 
    PegaVeiculoCliente()   
     

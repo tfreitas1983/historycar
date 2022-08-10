@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
     height: 200
   },
 });
+
 const SERVER_URL = 'http://10.0.2.2:5099/';
 const createFormData = (photo, body = {}) => {
   const data = new FormData();
