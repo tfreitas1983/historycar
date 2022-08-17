@@ -1,6 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { useSelector } from "react-redux";
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView,KeyboardAvoidingView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Input from '../../components/Input';
@@ -177,6 +177,20 @@ export default function Ajustes  ({ navigation }) {
       let temp = response.data
       setCliente(temp[0])      
       console.log('cliente', cliente)
+      setNome(temp[0].nome);
+      setCpf(temp[0].cpf);
+      setApelido(temp[0].apelido);
+      setCelular(temp[0].celular);
+      setCep(temp[0].cep.toString());
+      setEndereco(temp[0].endereco);
+      setNumero(temp[0].numero);
+      setComplemento(temp[0].complemento);
+      setBairro(temp[0].bairro);
+      setCidade(temp[0].cidade);
+      setUf(temp[0].uf);
+      setCnpj(temp[0].cnpj);
+      setSexo(temp[0].sexo);
+
     })    
     .catch( e =>  {
       console.error(e);
@@ -195,7 +209,6 @@ export default function Ajustes  ({ navigation }) {
       buttonStyle={styles.bordado}
       buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
       onSelect={(selectedItem, index) => {
-        console.log(selectedItem, index)
         setSexo(selectedItem)
       }}
       buttonTextAfterSelection={(selectedItem, index) => {
@@ -341,40 +354,16 @@ export default function Ajustes  ({ navigation }) {
         value={uf.toUpperCase()}
         onChangeText={setUf} />        
             
-      <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Cadastrar </Button>
+      <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
  
     </>
   }
 
   if (cliente && cliente.tipo === 2) {
     mostrar = <>
-    <Input 
-              keyboardType="email-address"
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              icon="mail-outline" 
-              placeholder="Digite seu e-mail"
-              returnKeyType="next"
-              onSubmitEditing={() => passwordRef.current.focus()}
-              value={email}
-              onChangeText={setEmail} />
+    
 
-            <Input 
-            style={{marginTop: 10, color: '#fff'}} 
-            icon="lock" 
-            secureTextEntry
-            placeholder="Digite a sua senha"
-            ref={passwordRef}
-            returnKeyType="next"
-            onSubmitEditing={() => nomeRef.current.focus()}
-            value={password}
-            onChangeText={setPassword}
-              />
-
-            <Input 
-              
-              
+            <Input
               autoCorrect={false}
               autoCapitalize="none"
               style={{marginTop: 10, color: '#fff'}} 
@@ -511,40 +500,78 @@ export default function Ajustes  ({ navigation }) {
               value={uf.toUpperCase()}
               onChangeText={setUf} />        
             
-            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Cadastrar </Button>
+            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
  
     </>
   }
 
+  async function handleSubmit() {
+
+    var data = {
+        nome: nome,        
+        apelido: apelido,
+        sexo: sexo,
+        cpf: cpf,
+        cnpj: cnpj,
+        celular: celular,
+        cep: parseInt(cep.replace('.', '').replace('-', '')),
+        endereco: endereco,
+        numero: numero,
+        complemento: complemento,
+        bairro: bairro,
+        cidade: cidade,
+        uf: uf
+      }
+
+      console.log('submit', data);
+      
+
+      await CadastroClienteDataService.editar(cliente.id, data)
+      .then( response  =>  {   
+        setAlterar(false);
+      })
+      .catch(e => {
+        console.error(e)
+      }) 
+    }
+  
+
   return (
     <View>
-        <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+      <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>   
+        <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>  
         <ScrollView>
+            <View>
             <Text style={styles.titulo}> Meus dados </Text>
-            {cliente && alterado === false && <>
+            {cliente !== '' && alterado === false && <View>
               <View style={styles.bordado}>
-                <Text style={styles.titulo}>Nome: {cliente.nome } </Text>
-                <Text style={styles.titulo}>Celular: {cliente.celular } </Text>
-                <Text style={styles.titulo}>{cliente.endereco } - {cliente.numero} - {cliente.bairro} </Text>
-                <Text style={styles.titulo}>{cliente.cidade } - {cliente.uf} </Text>
+                <Text style={styles.titulo}>Nome: {cliente.nome} </Text>
+                <Text style={styles.titulo}>Celular: {cliente.celular} </Text>
+                <Text style={styles.titulo}>{cliente.endereco} - {cliente.numero} - {cliente.bairro} </Text>
+                <Text style={styles.titulo}>{cliente.cidade} - {cliente.uf} </Text>
               </View>
               <Text style={{textAlign: 'right', color: '#fff', fontSize: 20}} onPress={() => setAlterar(true)}> 
               <Entypo name="pencil" size={20} /> Alterar dados 
               </Text>
-            </>
+            </View>
             }
 
-            {cliente && alterado === true && <>
-              <View>
-                
+            {cliente !== '' && alterado === true && <>
+              <View>                
                 {mostrar}
               </View>
             </>
             }
 
+            {!cliente && <>
+
+                <Text style={styles.titulo}> Sem informações </Text>
+              </>}
+            </View>
         </ScrollView>
-        </LinearGradient>
-    </View>
+        </KeyboardAvoidingView>
+      </LinearGradient>
+  </View>
 )
 
 }

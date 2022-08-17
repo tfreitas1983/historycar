@@ -17,13 +17,9 @@ export default function auth(state = INITIAL_STATE, action) {
                 break;
             }
             case '@auth/SIGN_IN_SUCESS': {
-                draft.id = null;
-                draft.signed = false;
-                draft.accessToken = null;
-                draft.signed = false;
                 draft.accessToken = action.payload.accessToken;
                 draft.tipo = action.payload.tipo;
-                draft.id = action.payload.id,
+                draft.id = action.payload.id;
                 draft.situacao = action.payload.situacao;
                 draft.signed = true;
                 draft.loading = false;
@@ -40,6 +36,7 @@ export default function auth(state = INITIAL_STATE, action) {
                 draft.tipo = null;
                 draft.situacao = null;
                 draft.id = null;
+                draft.loading = false;
                 break;
             }
             default:

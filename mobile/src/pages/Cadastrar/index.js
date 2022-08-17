@@ -164,190 +164,188 @@ export default function Cadastrar  ({ navigation }) {
 
   if (tipo === 'fisica') {
     mostrar = <>
-    <Input 
-              keyboardType="email-address"
-              autoCorrect={false}
-              autoCapitalize="none"
-              autoFocus={true}
-              style={{marginTop: 10, color: '#fff'}} 
-              icon="mail-outline" 
-              placeholder="Digite seu e-mail"
-              returnKeyType="next"
-              onSubmitEditing={() => passwordRef.current.focus()}
-              value={email}
-              onChangeText={setEmail} />
+      <Input 
+      keyboardType="email-address"
+      autoCorrect={false}
+      autoCapitalize="none"
+      autoFocus={true}
+      style={{marginTop: 10, color: '#fff'}} 
+      icon="mail-outline" 
+      placeholder="Digite seu e-mail"
+      returnKeyType="next"
+      onSubmitEditing={() => passwordRef.current.focus()}
+      value={email}
+      onChangeText={setEmail} />
 
-            <Input 
-            style={{marginTop: 10, color: '#fff'}} 
-            icon="lock" 
-            secureTextEntry
-            placeholder="Digite a sua senha"
-            ref={passwordRef}
-            returnKeyType="next"
-            onSubmitEditing={() => nomeRef.current.focus()}
-            value={password}
-            onChangeText={setPassword}
-              />
+      <Input 
+      style={{marginTop: 10, color: '#fff'}} 
+      icon="lock" 
+      secureTextEntry
+      placeholder="Digite a sua senha"
+      ref={passwordRef}
+      returnKeyType="next"
+      onSubmitEditing={() => nomeRef.current.focus()}
+      value={password}
+      onChangeText={setPassword}
+        />
 
-            <SelectDropdown
-              data={dados.map(item => {return item})}
-              defaultButtonText="Selecione o sexo"              
-              buttonStyle={styles.bordado}
-              buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
-              onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index)
-                setSexo(selectedItem)
-              }}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                // text represented after item is selected
-                // if data array is an array of objects then return selectedItem.property to render after item is selected
-                return selectedItem
-              }}
-              rowTextForSelection={(item, index) => {
-                // text represented for each item in dropdown
-                // if data array is an array of objects then return item.property to represent item in dropdown
-                return item
-              }}
-            />
+      <SelectDropdown
+        data={dados.map(item => {return item})}
+        defaultButtonText="Selecione o sexo"              
+        buttonStyle={styles.bordado}
+        buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
+        onSelect={(selectedItem, index) => {
+          console.log(selectedItem, index)
+          setSexo(selectedItem)
+        }}
+        buttonTextAfterSelection={(selectedItem, index) => {
+          // text represented after item is selected
+          // if data array is an array of objects then return selectedItem.property to render after item is selected
+          return selectedItem
+        }}
+        rowTextForSelection={(item, index) => {
+          // text represented for each item in dropdown
+          // if data array is an array of objects then return item.property to represent item in dropdown
+          return item
+        }}
+      />
 
-            <Input 
-              
-              
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Nome"
-              returnKeyType="next"
-              onSubmitEditing={() => cpfRef.current.focus()}
-              value={nome.toUpperCase()}
-              ref={nomeRef}
-              onChangeText={setNome} />
+      <Input 
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Nome"
+        returnKeyType="next"
+        onSubmitEditing={() => cpfRef.current.focus()}
+        value={nome.toUpperCase()}
+        ref={nomeRef}
+        onChangeText={setNome} />
 
-            <Input           
-              keyboardType="number-pad"    
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="CPF"
-              ref={cpfRef}
-              returnKeyType="next"
-              onSubmitEditing={() => apelidoRef.current.focus()}
-              value={cpfMask(cpf)}
-              onChangeText={setCpf} />
+      <Input           
+        keyboardType="number-pad"    
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="CPF"
+        ref={cpfRef}
+        returnKeyType="next"
+        onSubmitEditing={() => apelidoRef.current.focus()}
+        value={cpfMask(cpf)}
+        onChangeText={setCpf} />
 
-            <Input     
-              keyboardType="default"          
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Apelido"
-              ref={apelidoRef}
-              returnKeyType="next"
-              onSubmitEditing={() => celularRef.current.focus()}              
-              value={apelido.toUpperCase()}
-              onChangeText={setApelido} />
+      <Input     
+        keyboardType="default"          
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Apelido"
+        ref={apelidoRef}
+        returnKeyType="next"
+        onSubmitEditing={() => celularRef.current.focus()}              
+        value={apelido.toUpperCase()}
+        onChangeText={setApelido} />
 
-            <Input               
-              keyboardType="phone-pad" 
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Celular"
-              ref={celularRef}
-              returnKeyType="next"
-              onSubmitEditing={() => cepRef.current.focus()}
-              value={celMask(celular)}
-              onChangeText={setCelular} />
+      <Input               
+        keyboardType="phone-pad" 
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Celular"
+        ref={celularRef}
+        returnKeyType="next"
+        onSubmitEditing={() => cepRef.current.focus()}
+        value={celMask(celular)}
+        onChangeText={setCelular} />
 
-            <Input       
-              keyboardType="number-pad"         
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="CEP"
-              maxLength={9}
-              ref={cepRef}
-              returnKeyType="next"
-              onSubmitEditing={() => pegaCEP()}
-              value={cepMask(cep)}
-              onChangeText={setCep} />
-            
-            <Input 
-              keyboardType="default"
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Endereço"
-              returnKeyType="next"
-              onSubmitEditing={() => numeroRef.current.focus()}
-              ref={enderecoRef}
-              value={endereco.toUpperCase()}
-              onChangeText={setEndereco} />
+      <Input       
+        keyboardType="number-pad"         
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="CEP"
+        maxLength={9}
+        ref={cepRef}
+        returnKeyType="next"
+        onSubmitEditing={() => pegaCEP()}
+        value={cepMask(cep)}
+        onChangeText={setCep} />
+      
+      <Input 
+        keyboardType="default"
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Endereço"
+        returnKeyType="next"
+        onSubmitEditing={() => numeroRef.current.focus()}
+        ref={enderecoRef}
+        value={endereco.toUpperCase()}
+        onChangeText={setEndereco} />
 
-            <Input 
-              keyboardType="default"
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Número"
-              returnKeyType="next"
-              onSubmitEditing={() => complementoRef.current.focus()}
-              ref={numeroRef}
-              value={numero.toUpperCase()}
-              onChangeText={setNumero} />
+      <Input 
+        keyboardType="default"
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Número"
+        returnKeyType="next"
+        onSubmitEditing={() => complementoRef.current.focus()}
+        ref={numeroRef}
+        value={numero.toUpperCase()}
+        onChangeText={setNumero} />
 
-            <Input 
-              keyboardType="default"
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Complemento"
-              returnKeyType="next"
-              onSubmitEditing={() => bairroRef.current.focus()}
-              ref={complementoRef}
-              value={complemento.toUpperCase()}
-              onChangeText={setComplemento} />
+      <Input 
+        keyboardType="default"
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Complemento"
+        returnKeyType="next"
+        onSubmitEditing={() => bairroRef.current.focus()}
+        ref={complementoRef}
+        value={complemento.toUpperCase()}
+        onChangeText={setComplemento} />
 
-              
-            <Input 
-              keyboardType="default"
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Bairro"
-              returnKeyType="next"
-              onSubmitEditing={() => cidadeRef.current.focus()}
-              ref={bairroRef}
-              value={bairro.toUpperCase()}
-              onChangeText={setBairro} />
+        
+      <Input 
+        keyboardType="default"
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Bairro"
+        returnKeyType="next"
+        onSubmitEditing={() => cidadeRef.current.focus()}
+        ref={bairroRef}
+        value={bairro.toUpperCase()}
+        onChangeText={setBairro} />
 
-            
-            <Input 
-              keyboardType="default"
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Cidade"
-              returnKeyType="next"
-              onSubmitEditing={() => ufRef.current.focus()}
-              ref={cidadeRef}
-              value={cidade.toUpperCase()}
-              onChangeText={setCidade} />
+      
+      <Input 
+        keyboardType="default"
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="Cidade"
+        returnKeyType="next"
+        onSubmitEditing={() => ufRef.current.focus()}
+        ref={cidadeRef}
+        value={cidade.toUpperCase()}
+        onChangeText={setCidade} />
 
-            
-            <Input 
-              keyboardType="default"
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="UF"
-              returnKeyType="next"
-              onSubmitEditing={() => handleSubmit()}
-              ref={ufRef}
-              value={uf.toUpperCase()}
-              onChangeText={setUf} />        
-            
-            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Cadastrar </Button>
+      
+      <Input 
+        keyboardType="default"
+        autoCorrect={false}
+        autoCapitalize="none"
+        style={{marginTop: 10, color: '#fff'}} 
+        placeholder="UF"
+        returnKeyType="next"
+        onSubmitEditing={() => handleSubmit()}
+        ref={ufRef}
+        value={uf.toUpperCase()}
+        onChangeText={setUf} />        
+      
+      <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Cadastrar </Button>
  
     </>
   }

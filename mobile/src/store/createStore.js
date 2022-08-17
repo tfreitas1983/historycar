@@ -2,12 +2,6 @@ import { legacy_createStore as createStore, compose, applyMiddleware } from 'red
 
 
 export default (reducers, middlewares) => {
-    const enhancer =
-        __DEV__
-            ? compose(
-                  console.tron.createEnhancer(),
-                  applyMiddleware(...middlewares)
-              )
-            : applyMiddleware(...middlewares);
+    const enhancer = applyMiddleware(...middlewares);
     return createStore(reducers, enhancer);
 };
