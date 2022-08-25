@@ -77,27 +77,27 @@ export default function ParceiroLogin  ({ navigation }) {
   const passwordRef = useRef();
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('juvenal@gmail.com');
+  const [password, setPassword] = useState('123456');
   const signed = useSelector(state => state.auth.signed);
   const tipo = useSelector(state => state.auth.tipo);
   const situacao = useSelector(state => state.auth.situacao);
 
-  function handleSubmit () {
+  async function handleSubmit () {
 
     if (email ==='' ||password === '') {
       Alert.alert('Digite um e-mail e/ou senha válidos')
       return
     }
     
-    dispatch(signInRequest(email, password));
+    await dispatch(signInRequest(email, password));
 
     if (situacao === 0) {
       Alert.alert('Seu login está inativo')
     }
 
     if (signed === true && tipo === 1 && situacao === true) {
-      navigation.navigate('TemplateParceiro')
+      navigation.navigate('HomeParceiro')
     } else {
       Alert.alert('Suas credenciais são inválidas ou seu acesso é de cliente')
       return

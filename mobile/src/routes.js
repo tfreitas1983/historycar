@@ -12,6 +12,7 @@ import CadastrarParceiro from './pages/CadastrarParceiro'
 import Atividades from './pages/CadastrarParceiro/atividades'
 import TemplateParceiro from './pages/CadastrarParceiro/template';
 import HomeCliente from './pages/Cliente/home';
+import HomeParceiro from './pages/CadastrarParceiro/homeparceiro'
 import Veiculos from './pages/Cliente/veiculos';
 import CadastrarVeiculos from './pages/Cliente/cadastrarveiculo';
 import PesquisarVeiculos from './pages/Cliente/pesquisaveiculo';
@@ -19,6 +20,7 @@ import Cacador from './pages/Cliente/cacador';
 import Despachante from './pages/Cliente/despachante';
 import Detalhes from './pages/Cliente/detalhes';
 import Ajustes from './pages/Cliente/ajustes'; 
+import AjustesParceiro from './pages/CadastrarParceiro/ajustesparceiro'; 
 import Suporte from './pages/Cliente/suporte';
 import SeguroRecall from './pages/Cliente/segurorecall';
 import Manutencao from './pages/Cliente/manutencao';
@@ -137,6 +139,17 @@ export default function Routes() {
             />
 
             <Stack.Screen
+                name="HomeParceiro"
+                component={HomeParceiro}
+                options={{
+                title: 'Home do parceiro',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+
+            <Stack.Screen
                 name="Veiculos"
                 component={Veiculos}
                 options={{
@@ -194,6 +207,17 @@ export default function Routes() {
             <Stack.Screen
                 name="Ajustes"
                 component={Ajustes}
+                options={{
+                title: 'Ajustes',
+                headerStyle: { backgroundColor: '#ffad26' },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                }}
+            />
+
+            <Stack.Screen
+                name="AjustesParceiro"
+                component={AjustesParceiro}
                 options={{
                 title: 'Ajustes',
                 headerStyle: { backgroundColor: '#ffad26' },

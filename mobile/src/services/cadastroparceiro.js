@@ -10,6 +10,10 @@ class CadastroParceiroDataService {
         return http.get(`/parceiros/${id}`)
     }
 
+    buscarusuario(id) {
+        return http.get(`/parceiros?user=${id}`)
+    }
+
     cadastrar(data) {
         return http.post("/parceiros", data)
     }

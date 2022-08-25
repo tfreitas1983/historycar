@@ -85,7 +85,7 @@ export default function Cliente  ({ navigation }) {
   const situacao = useSelector(state => state.auth.situacao);
 
   
-  function handleSubmit () {
+  async function handleSubmit () {
 
     if (email === '' || password === '') {
       Alert.alert('Digite um e-mail e/ou senha válidos')
@@ -94,7 +94,7 @@ export default function Cliente  ({ navigation }) {
     
     console.log('email', email);
     console.log('senha', password);
-    dispatch(signInRequest(email, password));
+    await dispatch(signInRequest(email, password));
 
     if (situacao === 0) {
       Alert.alert('Seu login está inativo')

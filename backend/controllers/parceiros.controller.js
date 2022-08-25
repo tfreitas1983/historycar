@@ -60,9 +60,20 @@ exports.findAll = (req, res) => {
   const uf = req.query.uf;
   const sexo = req.query.sexo;
   const ramo = req.query.ramo;
+  const userId = req.query.user;
   var query = null;
+  
 
-  if (ramo === 1) {
+  if (userId) {
+    query = {where: {userId: userId}, include: ["user", "parceiros_precos"] }
+  }
+
+  if (!req.query) {
+    query = { include: ["user", "parceiros_precos"]} 
+  }
+
+
+  if (ramo === 1 && !userId) {
     if (sexo && !uf && !cidade) {
       query = { where: {sexo:sexo, ramo: 1},  include: ["user", "parceiros_precos"]  }
     }
@@ -86,7 +97,9 @@ exports.findAll = (req, res) => {
     if (!sexo && !uf && !cidade) {    
       query =  { where: {ramo: 1},include: ["user", "parceiros_precos"]  }
     }
-  } else {
+  } 
+
+  if (ramo === 2 && !userId) {
     if (sexo && !uf && !cidade) {
       query = { where: {sexo:sexo, ramo: 2},  include: ["user", "parceiros_precos"]  }
     }

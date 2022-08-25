@@ -1,13 +1,17 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { useSelector } from "react-redux";
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView,KeyboardAvoidingView} from 'react-native';
+import {Text, View, TextInput, StyleSheet, Dimensions, StatusBar, ActivityIndicator,ScrollView,KeyboardAvoidingView, Switch} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import SelectDropdown from 'react-native-select-dropdown'
-import { celMask, cepMask, cpfMask, cnpjMask } from '../../components/masks';
-import CadastroClienteDataService from '../../services/cadastrocliente';
+import { celMask, cepMask, cpfMask, cnpjMask, moedaMask} from '../../components/masks';
+import CadastroParceiroDataService from '../../services/cadastroparceiro';
+import ParceiroPrecoDataService from '../../services/parceiropreco';
+import moment from 'moment';
+import Feather from 'react-native-vector-icons/Feather'
+Feather.loadFont()
 
 const styles = StyleSheet.create({
   container: {
@@ -124,11 +128,12 @@ const styles = StyleSheet.create({
 });
 
 
-export default function Ajustes  ({ navigation }) {
+export default function AjustesParceiro  ({ navigation }) {
 
   const userId = useSelector(state => state.auth.id);
-  const [cliente, setCliente] = useState('');
+  const [parceiro, setParceiro] = useState('');
   const [alterado, setAlterar] = useState(false);
+  const [atividades, setAtividades] = useState(false);
 
   const nomeRef = useRef();  
   const cpfRef = useRef();
@@ -141,7 +146,9 @@ export default function Ajustes  ({ navigation }) {
   const numeroRef = useRef();
   const bairroRef = useRef();
   const cidadeRef = useRef();
-  const ufRef = useRef();
+  const ufRef = useRef();  
+  const presencialRef = useRef();
+  const remotaRef = useRef();
 
 
   const [email, setEmail] = useState('');
@@ -160,23 +167,41 @@ export default function Ajustes  ({ navigation }) {
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
   const [uf, setUf] = useState('');
+  const [foto, setFoto] = useState('');
 
   const dados = ["Feminino", "Masculino"];
-
+  const ramos = ["Caçador de veículos", "Despachante", "Ambos"];
+  const [parceiroprecoId, setParceiroPrecoId] = useState('');
+  const [mecanica, setMecanica] = useState('');
+  const [equipamentos, setEquipamentos] = useState('');
+  const [precompra, setPrecompra] = useState('');
+  const [vistoria, setVistoria] = useState('');
+  const [funilaria, setFunilaria] = useState('');
+  const [resumo, setResumo] = useState('');
+  const [selecionada, setSelecionada] = useState('');
+  const [idSelecionada, setIdSelecionada] = useState('');
+  const [remotomoeda, setRemotoMoeda] = useState('');
+  const [presencialmoeda, setPresencialMoeda] = useState('');
+  const [remotoantigo, setRemotoAntigo] = useState('');
+  const [presencialantigo, setPresencialAntigo] = useState('');
+  const [ramo, setRamo] = useState('');
+  const [loading, setLoading] = useState(false);
 
   let mostrar = null;
 
   useEffect( () => { 
-   PegaCliente()   
+   PegaParceiro();
+   setLoading(true);
+
     
   }, [])
 
-  async function PegaCliente () {
-    let respcliente = await CadastroClienteDataService.buscarusuario(userId)
+  async function PegaParceiro () {
+    let respparceiro = await CadastroParceiroDataService.buscarusuario(userId)
     .then( response => {
-      let temp = response.data
-      setCliente(temp[0])      
-      console.log('cliente', cliente)
+      let temp = response.data;
+      console.log('parceiro', parceiro);
+      setParceiro(temp[0]);
       setNome(temp[0].nome);
       setCpf(temp[0].cpf);
       setApelido(temp[0].apelido);
@@ -190,19 +215,32 @@ export default function Ajustes  ({ navigation }) {
       setUf(temp[0].uf);
       setCnpj(temp[0].cnpj);
       setSexo(temp[0].sexo);
+      setMecanica(temp[0].mecanica);
+      setFunilaria(temp[0].funilaria);
+      setEquipamentos(temp[0].equipamentos);
+      setVistoria(temp[0].vistoria);
+      setPrecompra(temp[0].precompra);
+      setResumo(temp[0].resumo);
+      setFoto(temp[0].foto);
+      setRamo(temp[0].ramo);
+      setRemotoMoeda(temp[0].parceiros_precos[0].remoto);
+      setPresencialMoeda(temp[0].parceiros_precos[0].presencial);
+      setRemotoAntigo(temp[0].parceiros_precos[0].remoto);
+      setPresencialAntigo(temp[0].parceiros_precos[0].presencial);
+      setParceiroPrecoId(temp[0].parceiros_precos[0].id);
 
     })    
     .catch( e =>  {
       console.error(e);
     })
 
-    respcliente = await respcliente;
+    respparceiro = await respparceiro;
+    setLoading(false);
   }
 
-  if (cliente && cliente.tipo === 1) {
+  if (parceiro && parceiro.tipo === 1 && atividades === false) {
     mostrar = <>
     
-
     <SelectDropdown
       data={dados.map(item => {return item})}
       defaultButtonText="Selecione o sexo"              
@@ -359,10 +397,8 @@ export default function Ajustes  ({ navigation }) {
     </>
   }
 
-  if (cliente && cliente.tipo === 2) {
+  if (parceiro && parceiro.tipo === 2 && atividades === false) {
     mostrar = <>
-    
-
             <Input
               autoCorrect={false}
               autoCapitalize="none"
@@ -505,6 +541,68 @@ export default function Ajustes  ({ navigation }) {
     </>
   }
 
+  if (parceiro && atividades === true) {
+    mostrar = <>
+      <Text style={styles.titulo}> Meus atividades </Text>
+      <Text style={styles.toggle}> Conhecimento em mecânica <Switch value={mecanica} onValueChange={setMecanica} /> </Text> 
+                
+      <Text style={styles.toggle}> Conhecimento em funilaria  <Switch value={funilaria} onValueChange={setFunilaria} /> </Text> 
+      <Text style={styles.toggle}> Realiza vistoria   <Switch value={vistoria} onValueChange={setVistoria} /> </Text> 
+      <Text style={styles.toggle}> Pré compra   <Switch value={precompra} onValueChange={setPrecompra} /> </Text> 
+      <Text style={styles.toggle}> Equipamentos   <Switch value={equipamentos} onValueChange={setEquipamentos} /> </Text> 
+      <TextInput 
+      style={{
+        backgroundColor: 'transparent', 
+        borderWidth: 2,
+        borderRadius: 5,
+        borderColor: '#dfdfdf', 
+        color: '#FFFFFF',
+        fontSize: 20,
+        marginTop: 10
+      }}
+      autoCorrect={false}
+      value={resumo} 
+      onChangeText={setResumo} 
+      multiline={true}
+      numberOfLines={5}
+      placeholder='Resumo do meu trabalho' 
+      placeholderTextColor="#f2f2f2" 
+      /> 
+
+      <Input 
+       style={{marginTop: 10}}
+       value={presencialmoeda}
+       keyboardType="number-pad"
+       onChangeText={setPresencialMoeda} 
+       ref={presencialRef}
+       autoCorrect={false}
+       placeholder='Consulta presencial R$'
+       returnKeyType="next"
+       onSubmitEditing={() => remotaRef.current.focus()} /> 
+
+      <Input 
+      style={{marginTop: 10}}
+      value={remotomoeda}
+      onChangeText={setRemotoMoeda} 
+      keyboardType="number-pad"
+      ref={remotaRef}
+      placeholder='Consulta remota R$'
+      onSubmitEditing={() => handleSubmit()}  /> 
+
+      <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
+    </>
+  }
+
+  if (loading === true) {
+    mostrar = <View>
+      <ActivityIndicator size="large" color="#fff" />
+    </View>
+
+  }
+
+  console.log('parceiropreco', parceiroprecoId)
+
+
   async function handleSubmit() {
 
     var data = {
@@ -520,19 +618,75 @@ export default function Ajustes  ({ navigation }) {
         complemento: complemento,
         bairro: bairro,
         cidade: cidade,
-        uf: uf
+        uf: uf,
+        mecanica: mecanica,
+        funilaria: funilaria,
+        equipamentos: equipamentos,
+        vistoria: vistoria,
+        precompra: precompra,
+        resumo: resumo,
+        foto: foto,
+        ramo: ramo
       }
 
-      console.log('submit', data);
-      
+      var inativar = {
+        
+        remotofim: moment(),
+        presencialfim: moment(),
+        situacao: 0
+      }
 
-      await CadastroClienteDataService.editar(cliente.id, data)
+      var precos = {
+        remotoinicio: moment().add(1,'seconds'),
+        presencialinicio: moment().add(1,'seconds'),
+        remoto: remotomoeda,
+        presencial: presencialmoeda,
+        situacao: 1,
+        parceiroId: parceiro.id
+      }
+
+      if ((remotomoeda !== remotoantigo) || (presencialmoeda !== presencialantigo) ) {
+        await ParceiroPrecoDataService.editar(parceiroprecoId, inativar)
+        .then( response  =>  {  
+          console.log('inativar', response.data)
+        })
+        .catch(e => {
+          console.error(e)
+        }) 
+
+        await ParceiroPrecoDataService.cadastrar(precos)
+        .then( response  =>  {  
+          console.log('cadastrar', response.data)
+        })
+        .catch(e => {
+          console.error(e)
+        }) 
+
+
+      }
+
+      
+      await CadastroParceiroDataService.editar(parceiro.id, data)
       .then( response  =>  {   
         setAlterar(false);
+        setAtividades(false);
       })
       .catch(e => {
         console.error(e)
       }) 
+
+
+    }
+
+    let textoramo = null;
+    if (parceiro !== '') {
+      if (ramo === 1) {
+        textoramo = 'Caçador'
+      } else if (ramo === 2) {
+        textoramo = 'Despachante'
+      } else {
+        textoramo = 'Caçador e Despachante'
+      }
     }
   
 
@@ -541,32 +695,68 @@ export default function Ajustes  ({ navigation }) {
       <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>   
         <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>  
         <ScrollView>
+          
             <View>
-            <Text style={styles.titulo}> Meus dados </Text>
-            {cliente !== '' && alterado === false && <View>
-              <View style={styles.bordado}>
-                <Text style={styles.titulo}>Nome: {nome} </Text>
-                <Text style={styles.titulo}>Celular: {celular} </Text>
-                <Text style={styles.titulo}>{endereco} - {numero} - {bairro} </Text>
-                <Text style={styles.titulo}>{cidade} - {uf} </Text>
+            
+            {parceiro !== '' && alterado === false && atividades === false &&
+            <>
+              <Text style={styles.titulo}> Meus dados </Text>
+              <View>
+                <View style={styles.bordado}>
+                  <Text style={styles.titulo}>Nome: {nome} </Text>
+                  <Text style={styles.titulo}>Celular: {celular} </Text>
+                  <Text style={styles.titulo}>{endereco} - {numero} - {bairro} </Text>
+                  <Text style={styles.titulo}>{cidade} - {uf} </Text>
+                </View>
+                <Text style={{textAlign: 'right', color: '#fff', fontSize: 20, marginBottom: 10}} onPress={() => setAlterar(true)}> 
+                <Entypo name="pencil" size={20} /> Alterar dados 
+                </Text>
               </View>
-              <Text style={{textAlign: 'right', color: '#fff', fontSize: 20}} onPress={() => setAlterar(true)}> 
-              <Entypo name="pencil" size={20} /> Alterar dados 
-              </Text>
-            </View>
+
+              <View>
+                <Text style={styles.titulo}> Minhas atividades </Text>
+              
+                <View style={styles.bordado}>
+                  <Text style={styles.titulo}>Ramo: {textoramo} </Text>
+                  <Text style={styles.titulo}>Mecânica: {mecanica === true ? 'Sim' : 'Não'} </Text>
+                  <Text style={styles.titulo}>Funilaria: {funilaria === true ? 'Sim' : 'Não'}  </Text>
+                  <Text style={styles.titulo}>Equipamentos: {equipamentos === true ? 'Sim' : 'Não'} </Text>
+                  <Text style={styles.titulo}>Vistoria: {vistoria === true ? 'Sim' : 'Não'} </Text>
+                  <Text style={styles.titulo}>Consulta remota: R$ {remotomoeda}</Text>
+                  <Text style={styles.titulo}>Consulta presencial: R$  {presencialmoeda}</Text>
+                </View>
+                <Text style={{textAlign: 'right', color: '#fff', fontSize: 20}} onPress={() => setAtividades(true)}> 
+                <Entypo name="pencil" size={20} /> Alterar atividades </Text>
+              </View>
+            </>
             }
 
-            {cliente !== '' && alterado === true && <>
+            {parceiro !== '' && alterado === false && atividades === true && <>
               <View>                
                 {mostrar}
               </View>
             </>
             }
 
-            {!cliente && <>
+            {parceiro !== '' && alterado === true && <>
+              <View>                
+                {mostrar}
+              </View>
+            </>
+            }
 
+            {loading === true && <>
+              <View>                
+                {mostrar}
+              </View>
+            </>
+            }
+
+            {loading === false && parceiro === '' && 
+              <>
                 <Text style={styles.titulo}> Sem informações </Text>
-              </>}
+              </>
+            }
             </View>
         </ScrollView>
         </KeyboardAvoidingView>

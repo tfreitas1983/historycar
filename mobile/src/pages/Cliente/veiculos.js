@@ -116,7 +116,7 @@ export default function Veiculos  ({ navigation }) {
   
   const [veiculos, setVeiculos] = useState([]);
   let cliente = null;
-  const [loading, setLoading] = useState('');
+  const [loading, setLoading] = useState(false);
   
 
    useEffect( () => { 

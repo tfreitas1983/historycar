@@ -11,7 +11,7 @@ exports.findAll = (req, res) => {
   var query = null;
 
   if (parceiro) {
-    query = {where: {parceiroId: parceiro}, include: "parceiro" }
+    query = {where: {parceiroId: parceiro, situacao: 1}, include: "parceiro" }
   } else {
     query = { include: "parceiro" }
   }
