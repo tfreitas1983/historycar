@@ -31,6 +31,7 @@ db.clientes_transferencia = require("./clientestransferencia.model.js")(sequeliz
 db.parceiro = require("./parceiros.model.js")(sequelize, Sequelize);
 db.parceiros_precos = require("./parceirosprecos.model.js")(sequelize, Sequelize);
 db.image = require("./image.model.js")(sequelize, Sequelize);
+db.suporte = require("./suporte.model.js")(sequelize, Sequelize);
 db.seguradora = require("./seguradoras.model.js")(sequelize, Sequelize);
 db.veiculo = require("./veiculo.model.js")(sequelize, Sequelize);
 db.veiculos_clientes = require("./veiculosclientes.model.js")(sequelize, Sequelize);
@@ -71,6 +72,10 @@ db.clientes_transferencia.belongsTo(db.cliente);
 //Relação veículo e transferência 1:N
 db.veiculo.hasMany(db.clientes_transferencia, {  foreignKey: 'veiculoId' });
 db.clientes_transferencia.belongsTo(db.veiculo);
+
+// Relação usuário e suporte
+db.user.hasMany(db.suporte, {foreignKey: 'userId' });
+db.suporte.belongsTo(db.user);
 
 //Relação veículos e clientes N:M
 

@@ -1,47 +1,45 @@
 const db = require("../models");
-const Cep = db.cep;
+const Suporte = db.suporte;
+const User = db.user;
 const Op = db.Sequelize.Op;
 
 exports.cadastrar = (req, res) => {
-    if (!req.body.cep) {
+    if (!req.body.assunto) {
         res.status(400).send({
-          message: "O CEP deve ser preenchido!"
+          message: "O assunto deve ser preenchido!"
         });
         return;
       }
       
       const dados = {
-        cep: req.body.cep,
-        endereco: req.body.endereco,
-        numero: req.body.numero,
-        complemento: req.body.complemento,
-        bairro: req.body.bairro,
-        cidade: req.body.cidade,
-        uf: req.body.uf,
-        situacao: req.body.situacao
+        assunto: req.body.assunto,
+        descricao: req.body.descricao,
+        situacao: req.body.situacao,
+        userId: req.body.userId
       };
       
-      Cep.create(dados)
+      Suporte.create(dados)
         .then(data => {
           res.send(data);
         })
         .catch(err => {
           res.status(500).send({
             message:
-              err.message || "Um erro ocorreu ao criar o CEP."
+              err.message || "Um erro ocorreu ao criar o chamado."
           });
         });
 };
 
 exports.findAll = (req, res) => {
-    Cep.findAll()  
+
+    Suporte.findAll({include: User})  
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Ocorreu algum erro ao carregar os CEPS."
+          err.message || "Ocorreu algum erro ao carregar os chamados."
       });
     });
 };
@@ -51,12 +49,12 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id
 
-  return Cep.findByPk(id)
+  return Suporte.findByPk(id)
     .then(data => {
      res.send(data)
     })
     .catch((err) => {
-      console.log(">> Erro ao buscar o CEP: ", err);
+      console.log(">> Erro ao buscar o chamado: ", err);
     });   
 };
 
@@ -71,28 +69,24 @@ exports.editar = (req, res) => {
 
   const id = req.params.id
 
-  Cep.update({
-    cep: req.body.cep,
-    endereco: req.body.endereco,
-    numero: req.body.numero,
-    complemento: req.body.complemento,
-    bairro: req.body.bairro,
-    cidade: req.body.cidade,
-    uf: req.body.uf,
-    situacao: req.body.situacao
+  Suporte.update({
+    assunto: req.body.assunto,
+    descricao: req.body.descricao,
+    situacao: req.body.situacao,
+    userId: req.body.userId
   }, {where: {id: id}})    
   .then(data => {
       if (!data) {
           res.status(404).send({
-              message: `Não foi possível encontrar e/ou alterar o CEP com o id=${id}. `
+              message: `Não foi possível encontrar e/ou alterar o chamado com o id=${id}. `
           })
       } else res.send({
-              message: "CEP alterado com sucesso!"                
+              message: "chamado alterado com sucesso!"                
           })        
   })
   .catch(err => {
       res.status(500).send({
-          message: "Erro ao alterar o CEP com o id " + id
+          message: "Erro ao alterar o chamado com o id " + id
       })
   })     
 };

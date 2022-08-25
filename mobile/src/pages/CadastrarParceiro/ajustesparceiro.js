@@ -597,11 +597,7 @@ export default function AjustesParceiro  ({ navigation }) {
     mostrar = <View>
       <ActivityIndicator size="large" color="#fff" />
     </View>
-
   }
-
-  console.log('parceiropreco', parceiroprecoId)
-
 
   async function handleSubmit() {
 
@@ -648,7 +644,7 @@ export default function AjustesParceiro  ({ navigation }) {
       if ((remotomoeda !== remotoantigo) || (presencialmoeda !== presencialantigo) ) {
         await ParceiroPrecoDataService.editar(parceiroprecoId, inativar)
         .then( response  =>  {  
-          console.log('inativar', response.data)
+          
         })
         .catch(e => {
           console.error(e)
@@ -656,7 +652,7 @@ export default function AjustesParceiro  ({ navigation }) {
 
         await ParceiroPrecoDataService.cadastrar(precos)
         .then( response  =>  {  
-          console.log('cadastrar', response.data)
+          
         })
         .catch(e => {
           console.error(e)

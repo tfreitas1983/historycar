@@ -1,8 +1,11 @@
-import React from 'react';
-
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView} from 'react-native';
+import React, {useRef, useState} from 'react';
+import { useSelector } from "react-redux";
+import {Text, TextInput, View, StyleSheet, Dimensions, StatusBar, ScrollView, KeyboardAvoidingView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
+import SuporteDataService from '../../services/suporte';
 
 const styles = StyleSheet.create({
   container: {
@@ -102,22 +105,82 @@ const styles = StyleSheet.create({
 
 
 
-const Suporte = ({ navigation }) => (
-    <View>
-        <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-        <ScrollView>
-            <Text style={styles.titulo}> Envie sua dúvida ou solicitação </Text>
-            <Text style={styles.opcoes}> Assunto </Text>
-            <Text style={styles.resumo}> Descreva sua solicitação </Text>
-            
-            <View style={styles.toogle}>
-            <Text> <Entypo name='upload' size={30} /> </Text>
-            <Text style={styles.titulo}> Upload de arquivo</Text>
-            </View>
-            <Text onPress={() => navigation.navigate('CadastrarVeiculos')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Enviar </Text>
-        </ScrollView>
-        </LinearGradient>
-    </View>
-);
+export default function Suporte  ({ navigation }) {
 
-export default Suporte;
+  const userId = useSelector(state => state.auth.id);
+  const [descricao, setDescricao] = useState('');
+  const [assunto, setAssunto] = useState('');
+  const [foto, setFoto] = useState('');
+  const descricaoRef = useRef(); 
+  const assuntoRef = useRef(); 
+
+  
+  async function handleSubmit() {
+    var data = {
+      assunto: assunto,
+      descricao: descricao,
+      userId: userId,
+      situacao: 1      
+    } 
+
+
+    await SuporteDataService.cadastrar(data)
+    .then( response  =>  {  
+      console.log('cadastrar', response.data)
+    })
+    .catch(e => {
+      console.error(e)
+    })  
+  }
+
+  return (
+    <View>
+      <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+        <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>  
+          <ScrollView>
+              <Text style={styles.titulo}> Envie sua dúvida ou solicitação </Text>
+              <Input
+              autoCorrect={false}
+              autoCapitalize="none"
+              style={{marginTop: 10, color: '#fff'}} 
+              placeholder="Assunto"
+              returnKeyType="next"
+              onSubmitEditing={() => descricaoRef.current.focus()}
+              value={assunto.toUpperCase()}
+              ref={assuntoRef}
+              onChangeText={setAssunto} />
+
+
+              <TextInput 
+              style={{
+                backgroundColor: 'transparent', 
+                borderWidth: 2,
+                borderRadius: 5,
+                borderColor: '#dfdfdf', 
+                color: '#FFFFFF',
+                fontSize: 20,
+                marginTop: 10
+              }}
+              autoCorrect={false}
+              value={descricao} 
+              onChangeText={setDescricao} 
+              multiline={true}
+              numberOfLines={5}
+              ref={descricaoRef}
+              placeholder='Descreva sua solicitação' 
+              placeholderTextColor="#f2f2f2" 
+              /> 
+              
+              <View style={styles.toogle}>
+              <Text> <Entypo name='upload' size={30} /> </Text>
+              <Text style={styles.titulo}> Upload de arquivo</Text>
+              </View>
+
+              <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Enviar </Button>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </LinearGradient>
+    </View>
+)
+
+}

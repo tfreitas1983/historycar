@@ -112,7 +112,7 @@ require('./routes/user.routes')(app);
 require('./routes/clientes.routes')(app);
 require('./routes/parceiros.routes')(app);
 require('./routes/parceirosprecos.routes')(app);
-require('./routes/ceps.routes')(app);
+require('./routes/suporte.routes')(app);
 require('./routes/seguradoras.routes')(app);
 require('./routes/veiculos.routes')(app);
 require('./routes/veiculosseguros.routes')(app);
