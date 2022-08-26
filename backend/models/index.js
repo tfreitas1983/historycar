@@ -30,6 +30,7 @@ db.cliente = require("./clientes.model.js")(sequelize, Sequelize);
 db.clientes_transferencia = require("./clientestransferencia.model.js")(sequelize, Sequelize);
 db.parceiro = require("./parceiros.model.js")(sequelize, Sequelize);
 db.parceiros_precos = require("./parceirosprecos.model.js")(sequelize, Sequelize);
+db.comentarios = require("./comentarios.model.js")(sequelize, Sequelize);
 db.image = require("./image.model.js")(sequelize, Sequelize);
 db.suporte = require("./suporte.model.js")(sequelize, Sequelize);
 db.seguradora = require("./seguradoras.model.js")(sequelize, Sequelize);
@@ -65,6 +66,10 @@ db.parceiro.belongsTo(db.user);
 db.parceiro.hasMany(db.parceiros_precos, {  foreignKey: 'parceiroId' });
 db.parceiros_precos.belongsTo(db.parceiro);
 
+//Relação parceiros e comentários 1:N
+db.parceiro.hasMany(db.comentarios, {  foreignKey: 'parceiroId' });
+db.comentarios.belongsTo(db.parceiro);
+
 //Relação clientes e transferência 1:N
 db.cliente.hasMany(db.clientes_transferencia, {  foreignKey: 'clienteId' });
 db.clientes_transferencia.belongsTo(db.cliente);
@@ -73,7 +78,7 @@ db.clientes_transferencia.belongsTo(db.cliente);
 db.veiculo.hasMany(db.clientes_transferencia, {  foreignKey: 'veiculoId' });
 db.clientes_transferencia.belongsTo(db.veiculo);
 
-// Relação usuário e suporte
+// Relação usuário e suporte 1:N
 db.user.hasMany(db.suporte, {foreignKey: 'userId' });
 db.suporte.belongsTo(db.user);
 

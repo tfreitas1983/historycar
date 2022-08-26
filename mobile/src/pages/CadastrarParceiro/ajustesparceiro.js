@@ -185,6 +185,7 @@ export default function AjustesParceiro  ({ navigation }) {
   const [remotoantigo, setRemotoAntigo] = useState('');
   const [presencialantigo, setPresencialAntigo] = useState('');
   const [ramo, setRamo] = useState('');
+  const [reputacao, setReputacao] = useState('');
   const [loading, setLoading] = useState(false);
 
   let mostrar = null;
@@ -223,6 +224,7 @@ export default function AjustesParceiro  ({ navigation }) {
       setResumo(temp[0].resumo);
       setFoto(temp[0].foto);
       setRamo(temp[0].ramo);
+      setReputacao(temp[0].reputacao);
       setRemotoMoeda(temp[0].parceiros_precos[0].remoto);
       setPresencialMoeda(temp[0].parceiros_precos[0].presencial);
       setRemotoAntigo(temp[0].parceiros_precos[0].remoto);
@@ -703,6 +705,7 @@ export default function AjustesParceiro  ({ navigation }) {
                   <Text style={styles.titulo}>Celular: {celular} </Text>
                   <Text style={styles.titulo}>{endereco} - {numero} - {bairro} </Text>
                   <Text style={styles.titulo}>{cidade} - {uf} </Text>
+                  <Text style={styles.titulo}>Nota: {reputacao} </Text>
                 </View>
                 <Text style={{textAlign: 'right', color: '#fff', fontSize: 20, marginBottom: 10}} onPress={() => setAlterar(true)}> 
                 <Entypo name="pencil" size={20} /> Alterar dados 
@@ -721,7 +724,7 @@ export default function AjustesParceiro  ({ navigation }) {
                   <Text style={styles.titulo}>Consulta remota: R$ {remotomoeda}</Text>
                   <Text style={styles.titulo}>Consulta presencial: R$  {presencialmoeda}</Text>
                 </View>
-                <Text style={{textAlign: 'right', color: '#fff', fontSize: 20}} onPress={() => setAtividades(true)}> 
+                <Text style={{textAlign: 'right', color: '#fff', fontSize: 20, marginBottom: 80}} onPress={() => setAtividades(true)}> 
                 <Entypo name="pencil" size={20} /> Alterar atividades </Text>
               </View>
             </>
