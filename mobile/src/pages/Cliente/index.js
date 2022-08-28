@@ -7,8 +7,6 @@ import Button from '../../components/Button';
 import { useDispatch, useSelector } from "react-redux";
 import {signInRequest} from '../../store/modules/auth/actions';
 
-
-
 const styles = StyleSheet.create({
   container: {
     fontFamily: 'Open Sans',
@@ -92,8 +90,6 @@ export default function Cliente  ({ navigation }) {
       return
     }
     
-    console.log('email', email);
-    console.log('senha', password);
     await dispatch(signInRequest(email, password));
 
     if (situacao === 0) {

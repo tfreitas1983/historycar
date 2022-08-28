@@ -61,71 +61,99 @@ exports.findAll = (req, res) => {
   const sexo = req.query.sexo;
   const ramo = req.query.ramo;
   const userId = req.query.user;
-  var query = {};
+  var query = null;
 
-  if (userId && !uf && !cidade  && !sexo && !ramo) {
-    query = {where: {userId: userId}, include: ["user", "parceiros_precos"] }
+
+  if (userId) {
+    query = { where: {userId: userId},  include: ["user", "parceiros_precos"]  }
   }
 
   if (!req.query) {
+    query = { where: {situacao: 1}, include: ["user", "parceiros_precos"]} 
+  }
+
+
+  if (ramo === "1") {
+    if (sexo && !uf && !cidade ) {
+      query = { where: {sexo:sexo,  ramo: {[Op.or]: [1, 3]}, situacao: 1 },  include: ["user", "parceiros_precos"]  }
+    }
+  
+    if (sexo && uf && !cidade) {
+      query = { where: {sexo:sexo, uf: uf, ramo: {[Op.or]: [1, 3]}, situacao: 1  },  include: ["user", "parceiros_precos"]  }
+    }
+  
+    if (sexo && uf && cidade) {
+      query = { where: {sexo:sexo, uf: uf, cidade: cidade, ramo: {[Op.or]: [1, 3]}, situacao: 1  },  include: ["user", "parceiros_precos"]  }
+    }
+  
+    if (!sexo && uf && cidade) {
+      query = { where: {uf: uf, cidade: cidade, ramo: {[Op.or]: [1, 3]}, situacao: 1  },  include: ["user", "parceiros_precos"]  }
+    }
+
+    if (!sexo && uf && !cidade)  {
+      query = { where: {uf: uf,  ramo: {[Op.or]: [1, 3]}, situacao: 1 },  include: ["user", "parceiros_precos"]  }
+    }
+  
+    if (!sexo && !uf && !cidade) {    
+      query =  { where: { ramo: {[Op.or]: [1, 3]}, situacao: 1  },include: ["user", "parceiros_precos"]  }
+    }
+  } 
+
+  if (ramo === "2") {
+    if (sexo && !uf && !cidade) {
+      query = { where: {sexo:sexo, ramo: {[Op.or]: [2, 3]}, situacao: 1  },  include: ["user", "parceiros_precos"]  }
+    }
+  
+    if (sexo && uf && !cidade) {
+      query = { where: {sexo:sexo, uf: uf, ramo: {[Op.or]: [2, 3]}, situacao: 1  },  include: ["user", "parceiros_precos"]  }
+    }
+  
+    if (sexo && uf && cidade) {
+      query = { where: {sexo:sexo, uf: uf, cidade: cidade, ramo: {[Op.or]: [2, 3]}, situacao: 1  },  include: ["user", "parceiros_precos"]  }
+    }
+  
+    if (!sexo && uf && cidade) {
+      query = { where: {uf: uf, cidade: cidade, ramo: {[Op.or]: [2, 3]}, situacao: 1  },  include: ["user", "parceiros_precos"]  }
+    }
+
+    if (!sexo && uf && !cidade)  {
+      query = { where: {uf: uf, ramo: {[Op.or]: [2, 3]}, situacao: 1  },  include: ["user", "parceiros_precos"]  }
+    }
+  
+    if (!sexo && !uf && !cidade) {    
+      query =  { where: { ramo: {[Op.or]: [2, 3]}, situacao: 1  },include: ["user", "parceiros_precos"]  }
+    }
+  }
+
+
+  Parceiro.findAll(query)  
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Ocorreu algum erro ao carregar os parceiros."
+      });
+    });
+};
+
+exports.findParceiro = (req, res) => {
+
+ 
+  const userId = req.params.id;
+  var query = {};
+
+  if (userId) {
+    query = {where: {userId: userId}, include: ["user", "parceiros_precos"] }
+  }
+
+  if (!req.params) {
     query = { include: ["user", "parceiros_precos"]} 
   }
 
 
-  if (ramo === 1 && !userId) {
-    if (sexo && !uf && !cidade  && !userId) {
-      query = { where: {sexo:sexo, ramo: 1},  include: ["user", "parceiros_precos"]  }
-    }
   
-    if (sexo && uf && !cidade && !userId) {
-      query = { where: {sexo:sexo, uf: uf, ramo: 1},  include: ["user", "parceiros_precos"]  }
-    }
-  
-    if (sexo && uf && cidade && !userId) {
-      query = { where: {sexo:sexo, uf: uf, cidade: cidade, ramo: 1},  include: ["user", "parceiros_precos"]  }
-    }
-  
-    if (!sexo && uf && cidade && !userId) {
-      query = { where: {uf: uf, cidade: cidade, ramo: 1},  include: ["user", "parceiros_precos"]  }
-    }
-
-    if (!sexo && uf && !cidade && !userId)  {
-      query = { where: {uf: uf, ramo: 1},  include: ["user", "parceiros_precos"]  }
-    }
-  
-    if (!sexo && !uf && !cidade && !userId) {    
-      query =  { where: {ramo: 1},include: ["user", "parceiros_precos"]  }
-    }
-  } 
-
-  if (ramo === 2 && !userId) {
-    if (sexo && !uf && !cidade && !userId) {
-      query = { where: {sexo:sexo, ramo: 2},  include: ["user", "parceiros_precos"]  }
-    }
-  
-    if (sexo && uf && !cidade && !userId) {
-      query = { where: {sexo:sexo, uf: uf, ramo: 2},  include: ["user", "parceiros_precos"]  }
-    }
-  
-    if (sexo && uf && cidade && !userId) {
-      query = { where: {sexo:sexo, uf: uf, cidade: cidade, ramo: 2},  include: ["user", "parceiros_precos"]  }
-    }
-  
-    if (!sexo && uf && cidade && !userId) {
-      query = { where: {uf: uf, cidade: cidade, ramo: 2},  include: ["user", "parceiros_precos"]  }
-    }
-
-    if (!sexo && uf && !cidade && !userId)  {
-      query = { where: {uf: uf, ramo: 2},  include: ["user", "parceiros_precos"]  }
-    }
-  
-    if (!sexo && !uf && !cidade && !userId) {    
-      query =  { where: {ramo: 2},include: ["user", "parceiros_precos"]  }
-    }
-  }
-
-  console.log('query', query)
-
 
   Parceiro.findAll(query)  
     .then(data => {

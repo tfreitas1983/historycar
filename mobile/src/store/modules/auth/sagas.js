@@ -3,26 +3,16 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import api from '../../../services/api';
 import * as AuthActions from './actions';
 
-export function* signIn({ payload }) {
+export function* signIn({ payload }) {        
     try {
         const { email, password } = payload;
-        
-        const response = yield call(api.post, 'signin', { email, password });
-
-        const { accessToken, tipo, situacao,id } = response.data;
-        
+        const response = yield call(api.post, 'signin', { email, password });              
+        const { accessToken, tipo, situacao, id } = response.data;            
         api.defaults.headers.Authorization = `Barear ${accessToken}`;
 
-        yield put(AuthActions.signInSucess(accessToken, email, tipo, situacao, id));
-       
-
-       // history.push('/dashboard');
+        yield put(AuthActions.signInSucess(accessToken, email, tipo, situacao, id));       
     } catch (error) {
-        Alert.alert('Erro no login', 'Login não efetuado' )        
-        yield put(AuthActions.signFailure());
-
-        
-        
+        yield put(AuthActions.signFailure());        
     }
 }
 

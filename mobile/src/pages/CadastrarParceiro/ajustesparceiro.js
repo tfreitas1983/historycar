@@ -591,7 +591,7 @@ export default function AjustesParceiro  ({ navigation }) {
       placeholder='Consulta remota R$'
       onSubmitEditing={() => handleSubmit()}  /> 
 
-      <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
+      <Button style={{marginBottom: 200}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
     </>
   }
 
@@ -692,7 +692,7 @@ export default function AjustesParceiro  ({ navigation }) {
     <View>
       <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>   
         <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>  
-        <ScrollView>
+          <ScrollView>
           
             <View>
             
@@ -757,7 +757,7 @@ export default function AjustesParceiro  ({ navigation }) {
               </>
             }
             </View>
-        </ScrollView>
+          </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>
   </View>
