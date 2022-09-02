@@ -109,6 +109,7 @@ app.get("/", (req, res) => {
 // routes
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
+require('./routes/email.routes')(app);
 require('./routes/clientes.routes')(app);
 require('./routes/parceiros.routes')(app);
 require('./routes/parceirosprecos.routes')(app);

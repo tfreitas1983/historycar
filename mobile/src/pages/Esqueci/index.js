@@ -1,7 +1,8 @@
-import React from 'react';
-
-import { Text, View, StyleSheet, Dimensions, ImageBackground, StatusBar} from 'react-native';
-//import Icon from 'react-native-vector-icons/FontAwesome';
+import React, {useRef, useState}  from 'react';
+import EmailDataService from '../../services/email';
+import { Text, View, StyleSheet, Dimensions, ImageBackground, StatusBar, Alert} from 'react-native';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -53,21 +54,94 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: 'center',
     width: Dimensions.get('window').width * 0.7
+  },
+  mensagem: {
+    color: '#fff',
+    backgroundColor: '#ff2010',
+    borderWidth: 5,
+    borderRadius: 10,
+    borderColor: '#ff2000',
+    fontSize: 18,
+    marginTop: 20,
+    textAlign: 'center',
+    alignSelf: 'center',
+    width: Dimensions.get('window').width * 0.95
   }
 });
 
-const Esqueci = () => (
-    <View>            
-        <StatusBar barStyle="light-content" backgroundColor="#ffad26" />
-        
-        <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
-    
-            <Text style={styles.titulo}>Entre com seu e-mail abaixo:</Text>   
-    
-            <Text style={styles.opcoes}> <Entypo name="email" size={30} color="#a2a2a2" /> E-mail </Text>
-            <Text style={styles.enviar}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Enviar </Text>
-        </LinearGradient>
-    </View>
-);
+export default function Esqueci () {
 
-export default Esqueci;
+  const [email, setEmail] = useState('cliente7@gmail.com');
+  const [msg, setMsg] = useState('');
+
+
+  async function handleSubmit () {
+    setMsg('');
+    if (email === '') {
+      Alert.alert('Digite um e-mail válido')
+      return
+    }
+
+    EmailDataService.existe(email)
+    .then(response => {
+      if (response.data.length > 0) {
+        console.log('response', response.data)
+        esqueci();        
+      } else {
+        console.log('vazio', response.data)
+        setMsg('E-mail não encontrado. Por favor, verifique!')
+        
+      }
+    })
+    .catch(e => {
+      console.error(e)
+    })
+   
+  }
+
+  async function esqueci () {
+
+    var acao = "esqueci";
+
+    await EmailDataService.esqueci(email, acao)
+    .then(response => {
+      setMsg('Sua nova senha foi enviada para seu e-mail');
+    })
+    .catch(e => {
+      console.error(e)
+    })
+  }
+
+  return (
+      <View>            
+          <StatusBar barStyle="light-content" backgroundColor="#ffad26" />
+          
+          <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
+      
+              <Text style={styles.titulo}>Entre com seu e-mail abaixo:</Text>   
+      
+              <Input 
+              keyboardType="email-address"
+              autoCorrect={false}
+              autoCapitalize="none"
+              style={{marginTop: 30, color: '#fff'}} 
+              icon="mail-outline" 
+              autoFocus={true}
+              placeholder="Digite seu e-mail"
+              returnKeyType="next"
+              onSubmitEditing={() => handleSubmit()}
+              value={email}
+              onChangeText={setEmail} />
+
+              {msg !== '' && 
+                <>
+                  <Text style={styles.mensagem}>{msg}</Text>
+                </>
+              }
+              
+              <Button  onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Enviar </Button>
+              
+          </LinearGradient>
+      </View>
+  )
+}

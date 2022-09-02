@@ -89,8 +89,15 @@ exports.signin = (req, res) => {
 };
 
 exports.buscarTodos = (req, res) => {   
+
+  const email = req.query.email;
+  var query = null;
+
+  if (email) {
+    query = {where: {email: email}}
+  }
   
-  User.findAll()   
+  User.findAll(query)   
       .then(data => {
           res.send(data)
       })
