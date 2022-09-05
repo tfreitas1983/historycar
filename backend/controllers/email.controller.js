@@ -1,5 +1,6 @@
 const db = require("../models");
 const config = require("../config/auth.config");
+const authemail = require('./authemail.json')
 const User = db.user;
 const Role = db.role;
 const Op = db.Sequelize.Op;
@@ -18,10 +19,10 @@ exports.email = (req, res) => {
     const email = req.query.email;
     var novasenha = Math.floor(1000 + Math.random() * 9000).toString();
     const password =  bcrypt.hashSync(novasenha, 8);
-
+    console.log('authemail', authemail)
     var remetente = nodemailer.createTransport({
 		service: "Hotmail",
-		auth:{ user: 'autohistorysuporte@hotmail.com', pass: '****' }
+		auth: authemail
 	});
 
 	if (acao === 'esqueci') {
@@ -44,7 +45,7 @@ exports.email = (req, res) => {
 
 		var emailASerEnviado = {
 			from: 'autohistorysuporte@hotmail.com',
-			to: '***@gmail.com',
+			to: email,
 			subject: 'Nova senha Auto History',
 			text: 'Olá! Sua nova senha do app é: ' + novasenha,
 		};	

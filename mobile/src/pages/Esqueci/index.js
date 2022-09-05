@@ -66,6 +66,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignSelf: 'center',
     width: Dimensions.get('window').width * 0.95
+  },
+  sucesso: {
+    color: '#fff',
+    backgroundColor: '#208810',
+    borderWidth: 5,
+    borderRadius: 10,
+    borderColor: '#128808',
+    fontSize: 18,
+    marginTop: 20,
+    textAlign: 'center',
+    alignSelf: 'center',
+    width: Dimensions.get('window').width * 0.95
   }
 });
 
@@ -73,6 +85,7 @@ export default function Esqueci () {
 
   const [email, setEmail] = useState('cliente7@gmail.com');
   const [msg, setMsg] = useState('');
+  const [msgSucesso, setMsgSucesso] = useState('');
 
 
   async function handleSubmit () {
@@ -85,10 +98,8 @@ export default function Esqueci () {
     EmailDataService.existe(email)
     .then(response => {
       if (response.data.length > 0) {
-        console.log('response', response.data)
         esqueci();        
       } else {
-        console.log('vazio', response.data)
         setMsg('E-mail não encontrado. Por favor, verifique!')
         
       }
@@ -105,7 +116,7 @@ export default function Esqueci () {
 
     await EmailDataService.esqueci(email, acao)
     .then(response => {
-      setMsg('Sua nova senha foi enviada para seu e-mail');
+      setMsgSucesso('Sua nova senha foi enviada para seu e-mail');
     })
     .catch(e => {
       console.error(e)
@@ -138,6 +149,12 @@ export default function Esqueci () {
                   <Text style={styles.mensagem}>{msg}</Text>
                 </>
               }
+              {msgSucesso !== '' && 
+                <>
+                  <Text style={styles.sucesso}>{msgSucesso}</Text>
+                </>
+              }
+
               
               <Button  onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Enviar </Button>
               
