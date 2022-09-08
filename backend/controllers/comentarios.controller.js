@@ -1,5 +1,5 @@
 const db = require("../models");
-const Comentario = db.comentario;
+const Comentario = db.comentarios;
 const Parceiro = db.parceiro;
 const Op = db.Sequelize.Op;
 
@@ -10,13 +10,18 @@ exports.cadastrar = (req, res) => {
         });
         return;
       }
+
+
       
       const dados = {
         comentario: req.body.comentario,
         nota: req.body.nota,
         situacao: req.body.situacao,
+        userId: req.body.userId,
         parceiroId: req.body.parceiroId
       };
+
+   
       
       Comentario.create(dados)
         .then(data => {
@@ -32,7 +37,16 @@ exports.cadastrar = (req, res) => {
 
 exports.findAll = (req, res) => {
 
-    Comentario.findAll({include: Parceiro})  
+  const parceiroId = req.query.parceiro;
+  var query = null;
+
+  if (parceiroId) {
+    query = {where: {parceiroId: parceiroId},  include: Parceiro}
+  } else {
+    query = {include: Parceiro}
+  }
+
+    Comentario.findAll(query)  
     .then(data => {
       res.send(data);
     })

@@ -10,9 +10,9 @@ export function* signIn({ payload }) {
         const { accessToken, tipo, situacao, id } = response.data;            
         api.defaults.headers.Authorization = `Barear ${accessToken}`;
 
-        yield put(AuthActions.signInSucess(accessToken, email, tipo, situacao, id));       
+        yield put(AuthActions.signInSucess(accessToken, email, tipo, situacao, id)); 
     } catch (error) {
-        yield put(AuthActions.signFailure());        
+        yield put(AuthActions.signFailure()); 
     }
 }
 
@@ -28,9 +28,9 @@ export function* signUp({ payload }) {
         });
 
         //history.push('/');
-        toast.success('Account created with sucess');
+        //toast.success('Account created with sucess');
     } catch (error) {
-        toast.error('Please check your informations and try again.');
+       // toast.error('Please check your informations and try again.');
         yield put(AuthActions.signFailure());
     }
 }

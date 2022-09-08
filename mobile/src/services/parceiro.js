@@ -22,6 +22,14 @@ class ParceiroDataService {
         return http.put(`/parceiros/${id}`, data)
     }
 
+    comentario(data) {
+        return http.post("/comentarios", data)
+    }
+
+    todoscomentarios (id) {
+        return http.get(`/comentarios?parceiro=${id}`)
+    }
+
 
 }
 
