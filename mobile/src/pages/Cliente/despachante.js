@@ -1,13 +1,16 @@
-import React, {useRef, useState, useCallback} from 'react';
-import {Text, View, StyleSheet, Dimensions, ScrollView, ActivityIndicator, Image} from 'react-native';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
+import {Text, TextInput, View, StyleSheet, Dimensions, ScrollView, ActivityIndicator, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import SelectDropdown from 'react-native-select-dropdown';
 import Button from '../../components/Button';
+import Entypo from 'react-native-vector-icons/Entypo';
 import ParceiroDataService from '../../services/parceiro';
 import ParceiroPrecoDataService from '../../services/parceiropreco'
 import Feather from 'react-native-vector-icons/Feather';
 import axios from 'axios';
+import moment from 'moment';
+import { useDispatch, useSelector } from "react-redux";
 Feather.loadFont()
 
 const styles = StyleSheet.create({
@@ -136,10 +139,40 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     padding: 2
   },
+  notas : {
+    fontFamily: 'Open Sans',
+    backgroundColor: 'transparent',
+    color: '#fff',
+    fontSize: 25,
+    fontWeight: 'bold', 
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 6,
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: '#f2f2f2'
+  },
+  selecionada : {
+    fontFamily: 'Open Sans',
+    backgroundColor: '#fc4020',
+    color: '#fff',
+    fontSize: 25,
+    fontWeight: 'bold', 
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 6,
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: '#ff6060'
+  },
 });
 
 
 export default function Despachante  ({ navigation })  {
+
+  const userId = useSelector(state => state.auth.id);
   const [loadingdados, setLoadingDados] = useState(false);
   const [buscado, setBuscado] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -157,9 +190,15 @@ export default function Despachante  ({ navigation })  {
   const [ufselecionado, setUfSelecionado] = useState('');
   const [despachantes, setDespachantes]  = useState('');
   const [detalhesDespachante, setDetalhesDespachante] = useState('');
-  const [parceiroEscolhido, setEscolhido] = useState('');
+  const [parceiroEscolhido, setEscolhido] = useState('');  
+  const [avaliacao, setAvaliacao] = useState(false);
+  const [nota, setNota] = useState('');
+  const [comentarios, setComentarios] = useState('');
+  const [comentario, setComentario] = useState('');
 
   const ufs = [
+  { id: 'RJ', title: "Rio de Janeiro" },
+  { id: 'SP', title: "São Paulo" },
   { id: "AC", title: "Acre" },
   { id: "AL", title: "Alagoas" },
   { id: "AP", title: "Amapá" },
@@ -177,14 +216,12 @@ export default function Despachante  ({ navigation })  {
   { id: 'PB', title: "Paraíba" },
   { id: 'PR', title: "Paraná" },
   { id: 'PE', title: "Pernambuco" },
-  { id: 'PI', title: "Piauí" },
-  { id: 'RJ', title: "Rio de Janeiro" },
+  { id: 'PI', title: "Piauí" },  
   { id: 'RN', title: "Rio Grande do Norte" },
   { id: 'RS', title: "Rio Grande do Sul" },
   { id: 'RO', title: "Rondônia" },
   { id: 'RR', title: "Roraima" },
-  { id: 'SC', title: "Santa Catarina" },
-  { id: 'SP', title: "São Paulo" },
+  { id: 'SC', title: "Santa Catarina" },  
   { id: 'SE', title: "Sergipe" },
   { id: 'TO', title: "Tocantins" }];
 
@@ -231,40 +268,39 @@ export default function Despachante  ({ navigation })  {
       console.error(e);
       })   
       resp = await resp;
-      console.log('resp', resp);
+      
       setLoading(false)
   }
 
   async function SelecionaCidade (item) {
     setCidade(item.title);
-    console.log('cidade', cidade);
+    
   }
 
+  let tempparceiro = null;
   async function SelecionaParceiro (id) {
     mostrar = null;
 
     await ParceiroDataService.buscarUm(id)
     .then(resp => {
-      console.log('parceiro',resp.data);
+      
       setEscolhido(resp.data);
-     // setCacadores(resp.data)
+      tempparceiro = resp.data.id;
     })
     .catch(e => {
       console.error(e);
     })
     
     await ParceiroPrecoDataService.parceiro(id)
-    .then(response => {
-      console.log('preco',response.data);
+    .then(response => {      
       setDetalhesDespachante(response.data);
     })
     .catch(e => {
       console.error(e);
     })
 
+    pegaComentarios(id);
     setMostraDetalhes(true);
-    
-   
   }
 
   function limpa () {
@@ -282,6 +318,49 @@ export default function Despachante  ({ navigation })  {
     
   }
 
+  async function avaliar () {
+
+    if (parceiroEscolhido.reputacao === 0) {
+      var data = {
+        comentario: comentario,
+        nota: (parseInt(nota) + parceiroEscolhido.reputacao),
+        parceiroId: parceiroEscolhido.id,
+        userId: userId,
+        situacao: 1
+      }
+    } else {
+      var data = {
+        comentario: comentario,
+        nota: (parseInt(nota) + parceiroEscolhido.reputacao) / 2,
+        parceiroId: parceiroEscolhido.id,
+        userId: userId,
+        situacao: 1
+      }
+    }
+
+
+    await ParceiroDataService.editar(parceiroEscolhido.id, {reputacao: parseFloat(data.nota)})
+    .then(response => {
+      SelecionaParceiro(parceiroEscolhido.id)
+    })
+    .catch(e => {
+      console.error(e)
+    })
+
+    await  ParceiroDataService.comentario(data)
+    .then(response => {
+      setAvaliacao(false);
+    })
+    .catch(e => {
+      console.error(e)
+    })
+    
+    tempparceiro = parceiroEscolhido.id;
+    pegaComentarios(parceiroEscolhido.id);
+    
+  }
+
+
   let mostraloading = null;
   if (loadingdados === true) {
     mostraloading = <View>
@@ -289,10 +368,41 @@ export default function Despachante  ({ navigation })  {
   </View>
   }
 
-  let mostrar = null;
-  let mostradetalhes = null;
+ let mostradetalhes, mostracomentarios, mostrar = null;
+
+  async function pegaComentarios () {
+    
+    await ParceiroDataService.todoscomentarios(tempparceiro)
+    .then(response => {
+      setComentarios(response.data);
+    })
+    .catch(e => {
+      console.error(e);
+    })
+  }
+
 
   if (detalhesDespachante ) {
+
+    if (comentarios) {
+      mostracomentarios = comentarios.map(comment => {
+        return (
+        <View>
+        <Text style={{borderTopWidth:2,  borderColor: '#fff'}}></Text>
+          <Text style={styles.item}> {comment.comentario}   </Text> 
+          <Text style={styles.item}> Em: {moment(comment.createdAt).format('DD/MM/YYYY')}   </Text> 
+          <Text style={{borderBottomWidth:2,  borderColor: '#fff'}}></Text>
+        </View>
+        )
+      });
+    } 
+
+    if (comentarios.length < 1) {
+      mostracomentarios = <View>
+           <Text style={styles.item}> Sem comentários no momento.   </Text>   
+        </View>
+    }
+
     mostradetalhes = detalhesDespachante.map(detalhe => {
       return (
         <View>
@@ -306,6 +416,14 @@ export default function Despachante  ({ navigation })  {
           <Text style={styles.item}> Equipamentos: {parceiroEscolhido.equipamentos === true ? 'Sim': 'Não'}   </Text>   
           <Text style={styles.titulo}> Resumo a respeito do meu trabalho </Text>
           <Text style={styles.resumo}>{parceiroEscolhido.resumo}</Text>
+
+          <Text 
+          style={{color:'#fff', textAlign: 'right', fontSize: 20, marginTop:-30, fontWeight: 'bold', marginRight: 20}}
+          onPress={() => setAvaliacao(true)}>
+            <Entypo name="pencil" size={20} /> Avalie meu serviço   
+          </Text>
+          <Text style={styles.titulo}> Comentários de clientes </Text>
+          {mostracomentarios}
         </View>
       )
     })
@@ -323,7 +441,7 @@ export default function Despachante  ({ navigation })  {
               resizeMode="cover"
           />
           <View >
-              <Text style={styles.ordenar}> {item.nome} - {item.reputacao} </Text>              
+              <Text style={styles.ordenar}> {item.nome} - {item.reputacao === 0 ? 'Novo!' : item.reputacao } </Text>           
               <Text style={styles.item}> {item.celular} </Text>
               <Text style={styles.link} onPress={() => SelecionaParceiro(item.id)}> + detalhes </Text>
           </View>
@@ -345,7 +463,7 @@ export default function Despachante  ({ navigation })  {
               resizeMode="cover"
           />
           <View>
-              <Text style={styles.ordenar}> {parceiroEscolhido.nome} - {parceiroEscolhido.reputacao} </Text>              
+              <Text style={styles.ordenar}> {parceiroEscolhido.nome} - {parceiroEscolhido.reputacao === 0 ? 'Novo!' : parceiroEscolhido.reputacao} </Text>
               <Text style={styles.item}> {parceiroEscolhido.celular} </Text>
               <Text style={styles.link} onPress={() => SelecionaParceiro(parceiroEscolhido.id)}> + detalhes </Text>
           </View>
@@ -355,6 +473,49 @@ export default function Despachante  ({ navigation })  {
       
   }
   
+  if (avaliacao === true) {
+    mostrar = <>
+    <View style={{width: Dimensions.get('window').width*0.9}}>
+      <Text style={styles.titulo}> {parceiroEscolhido.nome}  </Text>              
+      <Text style={styles.item}> Gostou do serviço prestado? </Text>
+      <TextInput style={{
+        backgroundColor: 'transparent', 
+        borderWidth: 2,
+        borderRadius: 5,
+        borderColor: '#dfdfdf', 
+        color: '#FFFFFF',
+        fontSize: 20,
+        marginTop: 10
+      }}
+      autoCorrect={false}
+      value={comentario} 
+      onChangeText={setComentario} 
+      autoFocus={true}
+      multiline={true}
+      numberOfLines={5}
+      placeholder='Avalie o despachante' 
+      placeholderTextColor="#f2f2f2"                 
+      /> 
+
+      <Text style={styles.item}> Dê uma nota </Text>
+    </View>
+    <View style={styles.toogle}>
+      <Text style={nota === 1 ? styles.selecionada : styles.notas} onPress={() => setNota(1)}> 1 </Text>
+      <Text style={nota === 2 ? styles.selecionada : styles.notas} onPress={() => setNota(2)} > 2 </Text>
+      <Text style={nota === 3 ? styles.selecionada : styles.notas} onPress={() => setNota(3)} > 3 </Text>
+      <Text style={nota === 4 ? styles.selecionada : styles.notas} onPress={() => setNota(4)} > 4 </Text>
+      <Text style={nota === 5 ? styles.selecionada : styles.notas} onPress={() => setNota(5)} > 5 </Text>
+      <Text style={nota === 6 ? styles.selecionada : styles.notas} onPress={() => setNota(6)} > 6 </Text>
+      <Text style={nota === 7 ? styles.selecionada : styles.notas} onPress={() => setNota(7)}> 7 </Text>
+      <Text style={nota === 8 ? styles.selecionada : styles.notas} onPress={() => setNota(8)} > 8 </Text>
+      <Text style={nota === 9 ? styles.selecionada : styles.notas} onPress={() => setNota(9)}> 9 </Text>
+      <Text style={nota === 10 ? styles.selecionada : styles.notas} onPress={() => setNota(10)}> 10 </Text>
+    </View>
+    <Button onPress={() =>  avaliar()} > Salvar</Button>
+    <Button onPress={() =>  setAvaliacao(false)} > Voltar</Button>
+    </>
+  }  
+
 
 
   
@@ -493,14 +654,17 @@ export default function Despachante  ({ navigation })  {
             </>
             }
 
-            {buscado === true && parceiroEscolhido !== '' && <>
-            
-            {mostrar}
-            <View style={{marginBottom:150}}>
-              <Button onPress={() =>  limpa()} > Pesquisar novamente</Button>
-            </View>
-            </>
+            {buscado === true && parceiroEscolhido !== '' && <>            
+              {mostrar}
+              <View style={{marginBottom:150}}>
+                <Button onPress={() =>  limpa()} > Pesquisar novamente</Button>
+              </View>
+              </>
+            }
 
+            {avaliacao === true && <>
+              {mostrar}
+              </>
             }
            
           </ScrollView>

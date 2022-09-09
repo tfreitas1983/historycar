@@ -313,9 +313,6 @@ export default function Cacador  ({ navigation }) {
 
     pegaComentarios(id);
     setMostraDetalhes(true);
-
-    
-    
    
   }
 
@@ -353,14 +350,26 @@ export default function Cacador  ({ navigation }) {
         situacao: 1
       }
     }
-    await  ParceiroDataService.comentario(data)
-    .then(response => {
-      setAvaliacao(false);
 
+
+    await ParceiroDataService.editar(parceiroEscolhido.id, {reputacao: parseFloat(data.nota)})
+    .then(response => {
+      SelecionaParceiro(parceiroEscolhido.id)
     })
     .catch(e => {
       console.error(e)
     })
+
+    await  ParceiroDataService.comentario(data)
+    .then(response => {
+      setAvaliacao(false);
+    })
+    .catch(e => {
+      console.error(e)
+    })
+ 
+    tempparceiro = parceiroEscolhido.id;
+    pegaComentarios(parceiroEscolhido.id);
     
   }
 
@@ -374,7 +383,7 @@ export default function Cacador  ({ navigation }) {
   let mostradetalhes, mostracomentarios, mostrar = null;
 
   async function pegaComentarios () {
-    console.log('parceiro', tempparceiro)
+    
     await ParceiroDataService.todoscomentarios(tempparceiro)
     .then(response => {
       setComentarios(response.data);

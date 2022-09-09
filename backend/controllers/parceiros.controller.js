@@ -188,6 +188,7 @@ exports.editar = (req, res) => {
 
   const id = req.params.id
 
+
   Parceiro.update({
     nome: req.body.nome,
     tipo: req.body.tipo,
