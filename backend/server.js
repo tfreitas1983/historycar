@@ -2,12 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require ('path')
-const fs = require("fs")
+const fs = require("fs");
+//const formData = require('express-form-data');
 const app = express();
 var nodemailer = require("nodemailer");
-
-//const sgMail = require('@sendgrid/mail')
-
 
 
 //Configurações de e-mail
@@ -59,7 +57,7 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
+//app.use(formData.parse());
 
 
 app.use(function(req, res, next) {

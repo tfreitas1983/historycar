@@ -147,45 +147,56 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: 200
   },
+  remover: {
+    color: '#ff2010',
+    borderBottomColor: '#ff2000',
+    borderBottomWidth: 3,
+    fontWeight: 'bold',
+    width: 100,
+  }
 });
 
-const SERVER_URL = 'http://10.0.2.2:5099/';
-const createFormData = (photo, body = {}) => {
-  const data = new FormData();
-
-  data.append('photo', {
-    name: photo.fileName,
-    type: photo.type,
-    uri: photo.uri,
-  });
-
-  Object.keys(body).forEach((key) => {
-    data.append(key, body[key]);
-  });
-
-  return data;
-};
-
+const SERVER_URL = 'http://10.0.2.2:5099/api/veiculosmanutencoes/files';
 
 export default function Registro  ({ navigation }) {
 
   const id = useSelector(state => state.veiculo.id);
   const [veiculo, setVeiculo] = useState('');
   const [data, setData] = useState('');
-  const [km, setKm] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [oficina, setOficina] = useState('');
-  const [cep, setCep] = useState('');
-  const [endereco, setEndereco] = useState('');
-  const [numero, setNumero] = useState('');
+  const [km, setKm] = useState('210230');
+  const [descricao, setDescricao] = useState('Teste de foto');
+  const [oficina, setOficina] = useState('Auto Fast');
+  const [cep, setCep] = useState('20010090');
+  const [endereco, setEndereco] = useState('Rua São Bento');
+  const [numero, setNumero] = useState('8');
   const [complemento, setComplemento] = useState('');
-  const [bairro, setBairro] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [uf, setUf] = useState('');
-  const [mecanico, setMecanico] = useState('');
+  const [bairro, setBairro] = useState('Centro');
+  const [cidade, setCidade] = useState('Rio de Janeiro');
+  const [uf, setUf] = useState('RJ');
+  const [mecanico, setMecanico] = useState('José Carlos');
   const [garantia, setGarantia] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [photos1, setPhotoS1] = useState(null);
+  const [photos2, setPhotoS2] = useState(null);
+  const [photos3, setPhotoS3] = useState(null);
+  const [photos4, setPhotoS4] = useState(null);
+  const [photos5, setPhotoS5] = useState(null);
+  const [photonf1, setPhotoNf1] = useState(null);
+  const [photonf2, setPhotoNf2] = useState(null);
+  const [photonf3, setPhotoNf3] = useState(null);
+  const [photonf4, setPhotoNf4] = useState(null);
+  const [photonf5, setPhotoNf5] = useState(null);
   const [fotoKm, setFotoKm] = useState('');
+  const [servico1, setServico1] = useState('');
+  const [servico2, setServico2] = useState('');
+  const [servico3, setServico3] = useState('');
+  const [servico4, setServico4] = useState('');
+  const [servico5, setServico5] = useState('');
+  const [nf1, setNf1] = useState('');
+  const [nf2, setNf2] = useState('');
+  const [nf3, setNf3] = useState('');
+  const [nf4, setNf4] = useState('');
+  const [nf5, setNf5] = useState('');
 
   let veiculodados = null;
 
@@ -213,18 +224,14 @@ export default function Registro  ({ navigation }) {
       await VeiculoDataService.veiculocliente(id) 
         .then( response  =>  {  
           veiculodados = response.data;
-          console.log('veiculodados',veiculodados);
-          setVeiculo(veiculodados.veiculo)
-          
+          setVeiculo(veiculodados.veiculo);          
         })
         .catch(e => {
           console.error(e);
         })
     }
    
-    BuscaVeiculo ();
-
-    
+    BuscaVeiculo ();   
   }, [])
 
 
@@ -304,11 +311,21 @@ export default function Registro  ({ navigation }) {
       bairro: bairro,
       cidade: cidade,
       uf: uf,
-      fotokm: fotoKm
+      fotokm: fotoKm,
+      fotonf: nf1,
+      fotonf2: nf2,
+      fotonf3: nf3,
+      fotonf4: nf4,
+      fotonf5: nf5,
+      fotoservico: servico1,
+      fotoservico2: servico2,
+      fotoservico3: servico3,
+      fotoservico4: servico4,
+      fotoservico5: servico5,
     }
 
-    console.log('vetor', vetor);
-
+   // console.log('vetor', vetor);
+/*
     ManutencaoDataService.cadastrar(vetor)
     .then( response => {
       console.log(response.data);
@@ -317,7 +334,7 @@ export default function Registro  ({ navigation }) {
     .catch(e=> {
       console.error(e);
     })
-
+*/
   }
 
   mostraloading = null;
@@ -351,39 +368,332 @@ export default function Registro  ({ navigation }) {
 
   const handleChoosePhoto = () => {
     launchImageLibrary({ noData: true }, (response) => {
-      console.log(response);
+      console.log('carregaFoto',response);
       if (response) {
         setPhoto(response);
       }
     });
   };
 
+  const handlePhotoServico1 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoS1(response);
+      }
+    });
+  };
+
+  const handlePhotoServico2 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoS2(response);
+      }
+    });
+  };
+
+  const handlePhotoServico3 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoS3(response);
+      }
+    });
+  };
+
+  const handlePhotoServico4 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoS4(response);
+      }
+    });
+  };
+
+  const handlePhotoServico5 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoS5(response);
+      }
+    });
+  };
+
+  const handlePhotoNF1 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoNf1(response);
+      }
+    });
+  };
+
+  const handlePhotoNF2 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoNf2(response);
+      }
+    });
+  };
+
+  const handlePhotoNF3 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoNf3(response);
+      }
+    });
+  };
+
+  const handlePhotoNF4 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoNf4(response);
+      }
+    });
+  };
+
+  const handlePhotoNF5 = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhotoNf5(response);
+      }
+    });
+  };
+
   async function handleUploadPhoto  () {
 
-    /*console.log('foto',createFormData(photo) );*/
-    var foto =  new FormData();
-    foto.append('file', {
-    name: photo.assets.fileName,
-    type: photo.assets.type,
-    uri: photo.assets.uri,
-  })
-    console.log('foto', foto);
     
-	  await ManutencaoDataService.cadastrarImagem(foto)
-	  /*
-   fetch(`${SERVER_URL}/api/veiculosmanutencoes/files`, {
-      method: 'POST',
-      body: createFormData(photo.assets[0]),
-    })*/
-      //.then((response) => response.json())
-      .then((response) => {
-        console.log('response', response);
-        setFotoKm(response.name)
-      })
-      .catch((error) => {
-        console.log('error', error);
-        setFotoKm(error.name)
-      });
+
+    if (photo) {
+      
+      let formdata = photo.assets[0];
+
+      console.log('fotoKm', photo.assets)
+
+      let envio = {
+        name: formdata.fileName,
+        type: formdata.type,
+        uri: formdata.uri
+      }
+
+      const enviofoto = new FormData();
+
+      enviofoto.append('file', envio )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofoto,
+       }).then(response => response.json())
+        .then(res => setFotoKm(res.name))
+        .catch(err => console.log("err", err))
+    }
+    
+    if (photos1) {
+      
+      let temps1 = photos1.assets[0];
+
+      console.log('Serviço1', photos1.assets[0])
+
+      let envios1 = {
+        name: temps1.fileName,
+        type: temps1.type,
+        uri: temps1.uri
+      }
+
+      const enviofotos1 = new FormData();
+
+      enviofotos1.append('file', envios1 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotos1,
+       }).then(response => response.json())
+        .then(res => setServico1(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+    if (photos2) {
+      
+      let temps2 = photos2.assets[0];
+
+      console.log('Serviço2', photos2.assets[0])
+
+      let envios2 = {
+        name: temps2.fileName,
+        type: temps2.type,
+        uri: temps2.uri
+      }
+
+      const enviofotos2 = new FormData();
+
+      enviofotos2.append('file', envios2 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotos2,
+       }).then(response => response.json())
+        .then(res => setServico2(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+    if (photos3) {
+      
+      let temps3 = photos3.assets[0];
+
+      console.log('Serviço3', photos3.assets[0])
+
+      let envios3 = {
+        name: temps3.fileName,
+        type: temps3.type,
+        uri: temps3.uri
+      }
+
+      const enviofotos3 = new FormData();
+
+      enviofotos3.append('file', envios3 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotos3,
+       }).then(response => response.json())
+        .then(res => setServico3(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+    if (photos4) {
+      
+      let temps4 = photos4.assets[0];
+
+      console.log('Serviço4', photos4.assets[0])
+
+      let envios4 = {
+        name: temps4.fileName,
+        type: temps4.type,
+        uri: temps4.uri
+      }
+
+      const enviofotos4 = new FormData();
+
+      enviofotos4.append('file', envios4 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotos4,
+       }).then(response => response.json())
+        .then(res => setServico4(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+    if (photos5) {
+      
+      let temps5 = photos5.assets[0];
+
+      console.log('Serviço5', photos5.assets[0])
+
+      let envios5 = {
+        name: temps5.fileName,
+        type: temps5.type,
+        uri: temps5.uri
+      }
+
+      const enviofotos5 = new FormData();
+
+      enviofotos5.append('file', envios5 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotos5,
+       }).then(response => response.json())
+        .then(res => setServico5(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+    if (photonf1) {
+      
+      let tempnf1 = photonf1.assets[0];
+
+      console.log('NF1', tempnf1)
+
+      let envionf1 = {
+        name: tempnf1.fileName,
+        type: tempnf1.type,
+        uri: tempnf1.uri
+      }
+
+      const enviofotonf1 = new FormData();
+
+      enviofotonf1.append('file', envionf1 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotonf1,
+       }).then(response => response.json())
+        .then(res => setNf1(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+    if (photonf2) {
+      
+      let tempnf2 = photonf2.assets[0];
+
+      console.log('Nf2', tempnf2)
+
+      let envionf2 = {
+        name: tempnf2.fileName,
+        type: tempnf2.type,
+        uri: tempnf2.uri
+      }
+
+      const enviofotonf2 = new FormData();
+
+      enviofotonf2.append('file', envionf2 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotonf2,
+       }).then(response => response.json())
+        .then(res => setNf2(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+
+
+
   };
 
   return (
@@ -547,9 +857,10 @@ export default function Registro  ({ navigation }) {
 
 
             <View style={styles.upload}>
-                <Text> <Entypo name='camera' size={30}   onPress={handleChoosePhoto}/> </Text>
+                <Text> <Entypo name='camera' size={30} onPress={handleChoosePhoto} /> </Text>
                 <Text style={styles.item}  onPress={handleChoosePhoto}> Foto painel</Text>
             </View>
+
             <View style={{ flex: 1,  justifyContent: 'space-evenly',  alignSelf: 'center', }}>
               {photo && (
                 <>
@@ -557,16 +868,28 @@ export default function Registro  ({ navigation }) {
                     source={{ uri: photo.assets[0].uri }}
                     style={{ width: 100, height: 100 }}
                   />
-                  
-				  
+                  <Text style={styles.remover} onPress={ () => setPhoto(false) } > Remover &times; </Text>
                 </>
               )}
               
             </View>
             <View style={styles.upload}>
-                <Text> <Entypo name='camera' size={30} /> </Text>
-                <Text style={styles.item}> Foto serviço</Text>
+                <Text> <Entypo name='camera' size={30} onPress={handlePhotoServico1} /> </Text>
+                <Text style={styles.item} onPress={handlePhotoServico1} > Foto serviço</Text>
             </View>
+
+            {photos1 && (
+              <>
+                <Image
+                  source={{ uri: photos1.assets[0].uri }}
+                  style={{ width: 100, height: 100 }}
+                />  
+                <Text style={styles.remover} onPress={ () => setPhotoS1(false) } > Remover &times; </Text>      
+              </>
+            )}
+
+
+
             <View style={styles.upload}>
                 <Text> <Entypo name='camera' size={30} /> </Text>
                 <Text style={styles.item}> Foto nota fiscal</Text>

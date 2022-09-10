@@ -145,17 +145,19 @@ exports.editar = (req, res) => {
 };
 
 exports.cadastrarImagem = (req, res) => {
+
+  console.log('req.file', req.file)
   
-   /* if (!req.file.originalname) {
+   if (!req.file) {
         res.status(400).send({ message: "A imagem deve ser enviada"})
         return
-    }*/
+    }
    
   
     Image.create({
-          type: req.file.type,
-          name: req.file.name,
-          url: path.resolve(__dirname +   '/uploads/' + req.file.name)
+          type: req.file.mimetype,
+          name: req.file.filename,
+          url: path.resolve(__dirname +   '/uploads/' + req.file.filename)
       }).then(image => {
           try{
               fs.writeFileSync(__dirname  + '/uploads/' + image.name,image.url,  image.type);		

@@ -119,10 +119,8 @@ export default function Veiculos  ({ navigation }) {
   const [loading, setLoading] = useState(false);
   
 
-   useEffect( () => { 
-     console.log('userId', userId);  
+   useEffect( () => {   
       PegaCliente();
-      
                 
   }, []);      
 
@@ -138,7 +136,6 @@ export default function Veiculos  ({ navigation }) {
     respcliente = await respcliente;   
     
     let idcliente = temp[0];
-    console.log('idcliente', idcliente);
     
     cliente = idcliente;      
             
@@ -146,9 +143,7 @@ export default function Veiculos  ({ navigation }) {
   }
 
   async function pegaVeiculos () {
-    
-    console.log('cliente', cliente)
-   
+     
 
     if (cliente) {
       setLoading(true);
@@ -224,7 +219,7 @@ export default function Veiculos  ({ navigation }) {
               <Text style={styles.titulo}>Veículos com baixa</Text>
               <View style={styles.inativo}>
                 <Text style={styles.titulo} key={index+'b'} onPress={() => Detalhes(item.id)}>  {item.veiculo.modelo} - {item.veiculo.ano} </Text> 
-                <Text style={styles.titulo} key={item.id+'bx'} onPress={() => navigation.navigate('Detalhes')} > <Entypo name="text-document" size={30} /> </Text>
+                <Text style={styles.titulo} key={item.id+'bx'} onPress={() => Detalhes(item.id)} > <Entypo name="text-document" size={30} /> </Text>
               </View>
             </View>
             )
