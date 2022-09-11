@@ -12,7 +12,9 @@ import MyDate from '../../components/datepicker';
 import TextArea from '../../components/TextArea';
 import CadastroClienteDataService from '../../services/cadastrocliente';
 import VeiculoDataService from '../../services/veiculo';
+import EmailDataService from '../../services/email';
 import Feather from 'react-native-vector-icons/Feather';
+import moment from 'moment';
 Feather.loadFont()
 
 const styles = StyleSheet.create({
@@ -126,8 +128,17 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: Dimensions.get('window').width,
     height: 200
+  },
+  remover: {
+    color: '#ff2010',
+    borderBottomColor: '#ff2000',
+    borderBottomWidth: 3,
+    fontWeight: 'bold',
+    width: 75,
   }
 });
+
+const SERVER_URL = 'http://10.0.2.2:5099/api/veiculosmanutencoes/files';
 
 export default function PesquisarVeiculos  ({ navigation })  {
 
@@ -181,23 +192,7 @@ export default function PesquisarVeiculos  ({ navigation })  {
   const [cpf, setCpf] = useState('');
   const [descricao, setDescricao]  = useState('');
 
-  const createFormData = (photo, body = {}) => {
-    const data = new FormData();
   
-    data.append('photo', {
-      name: photo.fileName,
-      type: photo.type,
-      uri: photo.uri,
-    });
-  
-    Object.keys(body).forEach((key) => {
-      data.append(key, body[key]);
-    });
-  
-    return data;
-  };
-
-
   useEffect ( () => {
    
       BuscaCliente();
@@ -226,7 +221,6 @@ export default function PesquisarVeiculos  ({ navigation })  {
         setLoadingDados(true) ;
         if (response.data) {
           let tempdados = response.data;
-          console.log('tempdados', tempdados);
           setDados(tempdados);
           carregaDados();
         } else {
@@ -255,8 +249,7 @@ export default function PesquisarVeiculos  ({ navigation })  {
 	  tempcpf = response.data[0].cliente.cpf;
 	  setNome(tempnome);	  
 	  setCpf(tempcpf);
-      setCliente(tempcliente);
-      console.log('tempcliente', tempcliente);     
+    setCliente(tempcliente);    
       
     })
     .catch(e => {
@@ -266,7 +259,6 @@ export default function PesquisarVeiculos  ({ navigation })  {
 
   async function carregaDados () {
     if (dados) {
-      console.log('dados', dados);
       setLoadingDados(true);
       let placatemp = await dados.veiculos_placas.map(item => { return item.placa });
 
@@ -295,39 +287,42 @@ export default function PesquisarVeiculos  ({ navigation })  {
 
   const handleChoosePhoto = () => {
     launchImageLibrary({ noData: true }, (response) => {
-      console.log(response);
       if (response) {
         setPhoto(response);
       }
     });
   };
 
+  
   async function handleUploadPhoto  () {
 
-    /*console.log('foto',createFormData(photo) );*/
-    var foto =  new FormData();
-    foto.append('file', {
-    name: photo.assets.fileName,
-    type: photo.assets.type,
-    uri: photo.assets.uri,
-  })
-    console.log('foto', foto);
+    if (photo) {
+      
+      let formdata = photo.assets[0];
+
+      let envio = {
+        name: formdata.fileName,
+        type: formdata.type,
+        uri: formdata.uri
+      }
+
+      const enviofoto = new FormData();
+
+      enviofoto.append('file', envio )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofoto,
+       }).then(response => response.json())
+        .then(res => setCrv(res.name))
+        .catch(err => console.log("err", err))
+    }
     
-	  await ManutencaoDataService.cadastrarImagem(foto)
-	  /*
-   fetch(`${SERVER_URL}/api/veiculosmanutencoes/files`, {
-      method: 'POST',
-      body: createFormData(photo.assets[0]),
-    })*/
-      //.then((response) => response.json())
-      .then((response) => {
-        console.log('response', response);
-        setFotoKm(response.name)
-      })
-      .catch((error) => {
-        console.log('error', error);
-        setFotoKm(error.name)
-      });
   };
 
   let mostraloading = null;
@@ -339,6 +334,8 @@ export default function PesquisarVeiculos  ({ navigation })  {
   
 
   async function handleSubmit () {
+
+
     var data = {
 
       situacao: 1,      
@@ -354,7 +351,6 @@ export default function PesquisarVeiculos  ({ navigation })  {
 
     await VeiculoDataService.novocliente(dados.id, data)
     .then(response => {
-      console.log('novocliente',response.data);
     })
     .catch(e => {
       console.error(e)
@@ -371,24 +367,43 @@ export default function PesquisarVeiculos  ({ navigation })  {
 
   async function SolicitarTransferencia () {
 
-    if (!foto ) {
-      Alert.alert('É obrigatório o envio da foto do CRV')
+    if (!photo ) {
+      Alert.alert('É obrigatório o envio da foto do CRV');
+      return false;
     }
 
-    /*Envio de e-mail com o texto e a foto
-
+    handleUploadPhoto();
+    
     var data = {
-      foto,
-      descricao
+      datasolicitacao: moment.now(),
+      fotocrv: crv ,
+      descricao: descricao,
+      situacao: 1,
+      veiculoId: dados.id,
+      clienteId: idCliente  
     }
-    await VeiculoDataService.enviar(id, data)
+
+    var acao = 'transferencia';    
+
+
+    await EmailDataService.transferir(userId, dados.id, idCliente, acao)
     .then(response => {
-      console.log('resposta do email',response.data);
+
     })
     .catch(e => {
       console.error(e)
     })
-    */
+
+
+    await VeiculoDataService.transferir(data)
+    .then(response => {
+      setBuscado(false);
+      setTransferencia(false);
+    })
+    .catch(e => {
+      console.error(e)
+    })  
+    
   }
 
   
@@ -537,6 +552,7 @@ export default function PesquisarVeiculos  ({ navigation })  {
                           source={{ uri: photo.assets ? photo.assets[0].uri : null}}
                           style={{ width: 150, height: 200 }}
                         />
+                        <Text style={styles.remover} onPress={ () => setPhoto(false) } > Remover &times; </Text>
                       </>
                     )}
                   

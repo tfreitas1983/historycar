@@ -50,6 +50,10 @@ class VeiculoDataService {
         return http.get(`/veiculosseguros?veiculo=${id}`)
     }
 
+    transferir (data) {
+        return http.post("/clientestransferencia", data)
+    }
+
 
 }
 

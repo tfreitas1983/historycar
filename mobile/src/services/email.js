@@ -23,6 +23,10 @@ class EmailDataService {
         return http.get(`/email?email=${email}&acao=${acao}`)
     }
 
+    transferir(user,veiculo,cliente,acao) {
+        return http.get(`/email?user=${user}&veiculo=${veiculo}&cliente=${cliente}&acao=${acao}`)
+    }
+
     cadastrar(data) {
         return http.post("/veiculosmanutencoes", data)
     }
@@ -31,9 +35,7 @@ class EmailDataService {
         return http.put(`/veiculosmanutencoes/${id}`, data)
     }
 	
-	cadastrarImagem(file) {
-        return http.post("/veiculosmanutencoes/files", file)
-    } 
+	
 
 
 }
