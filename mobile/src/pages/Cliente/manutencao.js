@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import VeiculoDataService from '../../services/veiculo';
-import {Text, View, StyleSheet, Dimensions, ScrollView, Image} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ScrollView, Image,} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Button from '../../components/Button';
 import Entypo from 'react-native-vector-icons/Entypo';
 import TimeLine from '../../components/timeline';
 import { useSelector } from "react-redux";
@@ -133,6 +134,7 @@ export default function Manutencao  ({ navigation }) {
   const [veiculo, setVeiculo] = useState('');
   const [detalhes, setDetalhes] = useState(false);
   const [lista, setLista] = useState('');
+  const URL = 'http://10.0.2.2:5099/files/'
 
   let veiculodados = null;
   let manutencoes = '';
@@ -199,32 +201,92 @@ export default function Manutencao  ({ navigation }) {
     <View style={styles.bordado}>
       <View style={styles.linha}>
         <Text style={styles.item}>Oficina: </Text>
-        <Text style={styles.item}>{item.mecanica.toUpperCase()}  </Text>
+        <Text style={styles.item}>{item.mecanica.toUpperCase()}  </Text>        
       </View>
       <Text style={styles.item}>
         {item.endereco.toUpperCase()} - {item.numero} - {item.bairro.toUpperCase()} - {item.cidade.toUpperCase()}
       </Text>
     </View>
+    <Text style={{marginBottom:20}}> </Text>
     {(lista && item.fotokm)  && <>
-      <Image source={{ uri:'http://10.1.1.26:5099/files/'+item.fotokm}}
-      style={{height:200, margin: 20}}
+      <Image source={{ uri: URL+item.fotokm}}
+      style={{height:200, marginBottom:30}}
       resizeMode="cover" />
       </>
     }
     {(lista && item.fotonf)  && <>
-      <Image source={{ uri:'http://10.1.1.26:5099/files/'+item.fotonf}}
-      style={{height:200}}
+      <Image source={{ uri:URL+item.fotonf}}
+      style={{height:200, marginBottom:30}}
       resizeMode="cover" />
      </>
     }
+
+    {(lista && item.fotonf2)  && <>
+      <Image source={{ uri:URL+item.fotonf2}}
+      style={{height:200, marginBottom:30}}
+      resizeMode="cover" />
+     </>
+    }
+
+    {(lista && item.fotonf3)  && <>
+      <Image source={{ uri:URL+item.fotonf3}}
+      style={{height:200, marginBottom:30}}
+      resizeMode="cover" />
+     </>
+    }
+
+    {(lista && item.fotonf4)  && <>
+      <Image source={{ uri:URL+item.fotonf4}}
+      style={{height:200, marginBottom:30}}
+      resizeMode="cover" />
+     </>
+    }
+
+    {(lista && item.fotonf5)  && <>
+      <Image source={{ uri:URL+item.fotonf5}}
+      style={{height:200, marginBottom:30}}
+      resizeMode="cover" />
+     </>
+    }
+
     {(lista && item.fotoservico)  && <>
-      <Image source={{ uri:'http://10.1.1.26:5099/files/'+item.fotoservico}}
-      style={{height:200}}
+      <Image source={{ uri:URL+item.fotoservico}}
+      style={{height:200, marginBottom:30}}
       resizeMode="cover" />
       </>
     }
     
-    <View style={{borderBottomColor: '#fff', borderBottomWidth: 3, marginTop: 20, marginBottom: 20}}>
+    {(lista && item.fotoservico2)  && <>
+      <Image source={{ uri:URL+item.fotoservico2}}
+      style={{height:200, marginBottom:30}}
+      resizeMode="cover" />
+      </>
+    }
+
+    {(lista && item.fotoservico3)  && <>
+      <Image source={{ uri:URL+item.fotoservico3}}
+      style={{height:200, marginBottom:30}}
+      resizeMode="cover" />
+      </>
+    }
+
+
+    {(lista && item.fotoservico4)  && <>
+      <Image source={{ uri:URL+item.fotoservico4}}
+      style={{height:200, marginBottom:30}}
+      resizeMode="cover" />
+      </>
+    }
+
+
+    {(lista && item.fotoservico5)  && <>
+      <Image source={{ uri:URL+item.fotoservico5}}
+      style={{height:200, marginBottom:30}}
+      resizeMode="cover" />
+      </>
+    }
+    <View style={{borderBottomColor: '#fff', borderBottomWidth: 10, marginTop: 20, marginBottom: 20}}>
+    <Text style={styles.titulo}> ***************************** </Text>
     </View>
     
     </>
@@ -240,11 +302,14 @@ export default function Manutencao  ({ navigation }) {
           <Text onPress={() => setDetalhes(true)} style={styles.item}> Ver mais...</Text>
           <TimeLine />
           <Text onPress={() => navigation.navigate('Registro')} style={styles.entrar}> <Entypo name="level-down" size={30} /> Novo registro</Text>
+          <Text style={{marginBottom: 150}}></Text>
           </>
         }
         {detalhes === true  && <>
-          <Text  style={styles.item}>Manutenções</Text>
+          <Text  style={styles.titulo}>Manutenções</Text>
+          <Text  style={{marginBottom: 20}}></Text>
           {mostrar}
+          <Button  style={{marginBottom: 80}} onPress={() => setDetalhes(false)}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Voltar </Button>
           <View style={{borderBottomColor: '#fff', borderBottomWidth: 3, marginTop: 20, marginBottom: 20}}>
           </View>
         </>

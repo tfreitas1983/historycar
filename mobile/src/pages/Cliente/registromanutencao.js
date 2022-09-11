@@ -337,12 +337,9 @@ export default function Registro  ({ navigation }) {
       fotoservico5: servico5,
     }
 
-    console.log('vetor', vetor);
-
     ManutencaoDataService.cadastrar(vetor)
-    .then( response => {
-      console.log("resposta do backend",response.data);
-      //navigation.navigate('Manutencao')
+    .then( response => {      
+      navigation.navigate('Manutencao')
     })
     .catch(e=> {
       console.error(e);
@@ -381,7 +378,6 @@ export default function Registro  ({ navigation }) {
 
   const handleChoosePhoto = () => {
     launchImageLibrary({ noData: true }, (response) => {
-      console.log('carregaFoto',response);
       if (response) {
         setPhoto(response);
       }
@@ -474,8 +470,6 @@ export default function Registro  ({ navigation }) {
       
       let formdata = photo.assets[0];
 
-      console.log('fotoKm', photo.assets)
-
       let envio = {
         name: formdata.fileName,
         type: formdata.type,
@@ -502,8 +496,6 @@ export default function Registro  ({ navigation }) {
     if (photos1) {
       
       let temps1 = photos1.assets[0];
-
-      console.log('Serviço1', photos1.assets[0])
 
       let envios1 = {
         name: temps1.fileName,
@@ -532,8 +524,6 @@ export default function Registro  ({ navigation }) {
       
       let temps2 = photos2.assets[0];
 
-      console.log('Serviço2', photos2.assets[0])
-
       let envios2 = {
         name: temps2.fileName,
         type: temps2.type,
@@ -560,9 +550,6 @@ export default function Registro  ({ navigation }) {
     if (photos3) {
       
       let temps3 = photos3.assets[0];
-
-      console.log('Serviço3', photos3.assets[0])
-
       let envios3 = {
         name: temps3.fileName,
         type: temps3.type,
@@ -590,8 +577,6 @@ export default function Registro  ({ navigation }) {
       
       let temps4 = photos4.assets[0];
 
-      console.log('Serviço4', photos4.assets[0])
-
       let envios4 = {
         name: temps4.fileName,
         type: temps4.type,
@@ -618,9 +603,6 @@ export default function Registro  ({ navigation }) {
     if (photos5) {
       
       let temps5 = photos5.assets[0];
-
-      console.log('Serviço5', photos5.assets[0])
-
       let envios5 = {
         name: temps5.fileName,
         type: temps5.type,
@@ -648,8 +630,6 @@ export default function Registro  ({ navigation }) {
       
       let tempnf1 = photonf1.assets[0];
 
-      console.log('NF1', tempnf1)
-
       let envionf1 = {
         name: tempnf1.fileName,
         type: tempnf1.type,
@@ -676,8 +656,6 @@ export default function Registro  ({ navigation }) {
     if (photonf2) {
       
       let tempnf2 = photonf2.assets[0];
-
-      console.log('Nf2', tempnf2)
 
       let envionf2 = {
         name: tempnf2.fileName,
@@ -707,8 +685,6 @@ export default function Registro  ({ navigation }) {
       
       let tempnf3 = photonf3.assets[0];
 
-      console.log('Nf3', tempnf3)
-
       let envionf3 = {
         name: tempnf3.fileName,
         type: tempnf3.type,
@@ -737,8 +713,6 @@ export default function Registro  ({ navigation }) {
       
       let tempnf4 = photonf4.assets[0];
 
-      console.log('Nf4', tempnf4)
-
       let envionf4 = {
         name: tempnf4.fileName,
         type: tempnf4.type,
@@ -766,8 +740,6 @@ export default function Registro  ({ navigation }) {
       
       let tempnf5 = photonf5.assets[0];
 
-      console.log('Nf5', tempnf5)
-
       let envionf5 = {
         name: tempnf5.fileName,
         type: tempnf5.type,
@@ -790,8 +762,6 @@ export default function Registro  ({ navigation }) {
         .then(res => setNf5(res.name))
         .catch(err => console.log("err", err))
     }
-
-
 
   };
 
