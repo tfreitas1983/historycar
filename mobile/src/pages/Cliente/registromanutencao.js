@@ -133,6 +133,19 @@ const styles = StyleSheet.create({
     padding:8,
     width: Dimensions.get('window').width,
   },
+  blocoupload: {      
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'flex-start',
+    fontFamily: 'Open Sans',
+    color: '#fafafa',
+    fontSize: 25,
+    fontWeight: 'bold',       
+    marginTop: 10,
+    padding:8,
+    width: Dimensions.get('window').width,
+  },
   resumo: {
     fontFamily: 'Open Sans',
     color: '#b2b2b2',
@@ -152,7 +165,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ff2000',
     borderBottomWidth: 3,
     fontWeight: 'bold',
-    width: 100,
+    width: 75,
   }
 });
 
@@ -324,17 +337,17 @@ export default function Registro  ({ navigation }) {
       fotoservico5: servico5,
     }
 
-   // console.log('vetor', vetor);
-/*
+    console.log('vetor', vetor);
+
     ManutencaoDataService.cadastrar(vetor)
     .then( response => {
-      console.log(response.data);
+      console.log("resposta do backend",response.data);
       //navigation.navigate('Manutencao')
     })
     .catch(e=> {
       console.error(e);
     })
-*/
+
   }
 
   mostraloading = null;
@@ -455,9 +468,7 @@ export default function Registro  ({ navigation }) {
     });
   };
 
-  async function handleUploadPhoto  () {
-
-    
+  async function handleUploadPhoto  () {    
 
     if (photo) {
       
@@ -692,6 +703,94 @@ export default function Registro  ({ navigation }) {
     }
 
 
+    if (photonf3) {
+      
+      let tempnf3 = photonf3.assets[0];
+
+      console.log('Nf3', tempnf3)
+
+      let envionf3 = {
+        name: tempnf3.fileName,
+        type: tempnf3.type,
+        uri: tempnf3.uri
+      }
+
+      const enviofotonf3 = new FormData();
+
+      enviofotonf3.append('file', envionf3 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotonf3,
+       }).then(response => response.json())
+        .then(res => setNf3(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+
+    if (photonf4) {
+      
+      let tempnf4 = photonf4.assets[0];
+
+      console.log('Nf4', tempnf4)
+
+      let envionf4 = {
+        name: tempnf4.fileName,
+        type: tempnf4.type,
+        uri: tempnf4.uri
+      }
+
+      const enviofotonf4 = new FormData();
+
+      enviofotonf4.append('file', envionf4 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotonf4,
+       }).then(response => response.json())
+        .then(res => setNf4(res.name))
+        .catch(err => console.log("err", err))
+    }
+
+    if (photonf5) {
+      
+      let tempnf5 = photonf5.assets[0];
+
+      console.log('Nf5', tempnf5)
+
+      let envionf5 = {
+        name: tempnf5.fileName,
+        type: tempnf5.type,
+        uri: tempnf5.uri
+      }
+
+      const enviofotonf5 = new FormData();
+
+      enviofotonf5.append('file', envionf5 )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofotonf5,
+       }).then(response => response.json())
+        .then(res => setNf5(res.name))
+        .catch(err => console.log("err", err))
+    }
+
 
 
   };
@@ -873,26 +972,165 @@ export default function Registro  ({ navigation }) {
               )}
               
             </View>
-            <View style={styles.upload}>
-                <Text> <Entypo name='camera' size={30} onPress={handlePhotoServico1} /> </Text>
-                <Text style={styles.item} onPress={handlePhotoServico1} > Foto serviço</Text>
+
+            <Text style={styles.item}> Fotos do serviço </Text>
+            <View style={styles.blocoupload}>
+
+              {!photos1 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoServico1} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoServico1}>  Serviço1 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photos1.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoS1(false) } > Remover &times; </Text>      
+                </View>
+              )}
+
+              {!photos2 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoServico2} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoServico2}>  Serviço2 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photos2.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoS2(false) } > Remover &times; </Text>      
+                </View>
+              )}
+
+              {!photos3 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoServico3} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoServico3}>  Serviço3 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photos3.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoS3(false) } > Remover &times; </Text>      
+                </View>
+              )}
+
+              {!photos4 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoServico4} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoServico4}>  Serviço4 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photos4.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoS4(false) } > Remover &times; </Text>      
+                </View>
+              )}
+
+              {!photos5 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoServico5} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoServico5}>  Serviço5 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photos5.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoS5(false) } > Remover &times; </Text>      
+                </View>
+              )}
+
             </View>
+             
+            <Text style={styles.item}> Fotos de notas </Text>
+            <View style={styles.blocoupload}>
 
-            {photos1 && (
-              <>
-                <Image
-                  source={{ uri: photos1.assets[0].uri }}
-                  style={{ width: 100, height: 100 }}
-                />  
-                <Text style={styles.remover} onPress={ () => setPhotoS1(false) } > Remover &times; </Text>      
-              </>
-            )}
+              {!photonf1 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoNF1} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoNF1}>  NF 1 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photonf1.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoNf1(false) } > Remover &times; </Text>      
+                </View>
+              )}
 
+              {!photonf2 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoNF2} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoNF2}>  NF2 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photonf2.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoNf2(false) } > Remover &times; </Text>      
+                </View>
+              )}
 
+              {!photonf3 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoNF3} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoNF3}>  NF3 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photonf3.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoNf3(false) } > Remover &times; </Text>      
+                </View>
+              )}
 
-            <View style={styles.upload}>
-                <Text> <Entypo name='camera' size={30} /> </Text>
-                <Text style={styles.item}> Foto nota fiscal</Text>
+              {!photonf4 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoNF4} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoNF4}>  NF4 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photonf4.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoNf4(false) } > Remover &times; </Text>      
+                </View>
+              )}
+
+              {!photonf5 ? (
+                <View>
+                  <Text style={{color: '#fff'}} > <Entypo name='camera' color="#694000" size={30} onPress={handlePhotoNF5} /> </Text>
+                  <Text style={{color: '#fff'}} onPress={handlePhotoNF5}>  NF5 </Text>
+                </View>
+                ) : (
+                <View>
+                  <Image
+                    source={{ uri: photonf5.assets[0].uri }}
+                    style={{ width: 70, height: 70 }}
+                  />  
+                  <Text style={styles.remover} onPress={ () => setPhotoNf5(false) } > Remover &times; </Text>      
+                </View>
+              )}
+
             </View>
 
             <Button  style={{marginBottom: 80}} onPress={() => handleSubmit()}>  <Entypo name="level-down" size={30} color="#d2d2d2" /> Salvar </Button>
