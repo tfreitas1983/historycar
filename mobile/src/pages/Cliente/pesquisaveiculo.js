@@ -165,7 +165,7 @@ export default function PesquisarVeiculos  ({ navigation })  {
   const descricaoRef = useRef('');
   const fotoRef = useRef('');
 
-  const [renavam, setRenavam] = useState('332838594');
+  const [renavam, setRenavam] = useState('');
   const [fabricante, setFabricante] = useState([]);
   const [modelo, setModelo] = useState([]);
   const [modeloSelecionado, setModeloSelecionado] = useState('');
@@ -388,10 +388,10 @@ export default function PesquisarVeiculos  ({ navigation })  {
 
     await EmailDataService.transferir(userId, dados.id, idCliente, acao)
     .then(response => {
-
+      Alert.alert('Solicitação efetuada!');
     })
     .catch(e => {
-      console.error(e)
+      Alert.alert(e);
     })
 
 

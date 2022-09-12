@@ -1,11 +1,14 @@
 import React, {useRef, useState} from 'react';
 import { useSelector } from "react-redux";
-import {Text, TextInput, View, StyleSheet, Dimensions, StatusBar, ScrollView, KeyboardAvoidingView} from 'react-native';
+import {Text, TextInput, View, StyleSheet, Dimensions, StatusBar, Image, ScrollView, KeyboardAvoidingView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import SuporteDataService from '../../services/suporte';
+import EmailDataService from '../../services/email';
+import ManutencaoDataService from '../../services/manutencoes';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const styles = StyleSheet.create({
   container: {
@@ -101,36 +104,99 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: 200
   },
+  remover: {
+    color: '#ff2010',
+    borderBottomColor: '#ff2000',
+    borderBottomWidth: 3,
+    fontWeight: 'bold',
+    width: 75,
+  }
 });
 
-
-
 export default function Suporte  ({ navigation }) {
+
+  const SERVER_URL = 'http://10.0.2.2:5099/api/veiculosmanutencoes/files';
 
   const userId = useSelector(state => state.auth.id);
   const [descricao, setDescricao] = useState('');
   const [assunto, setAssunto] = useState('');
+  const [photo, setPhoto] = useState(null)
   const [foto, setFoto] = useState('');
+  const [msg, setMsg] = useState('');
+  const [suporteId, setSuporteId] = useState('');
   const descricaoRef = useRef(); 
   const assuntoRef = useRef(); 
 
   
   async function handleSubmit() {
+
+    if (photo) {
+      handleUploadPhoto();      
+    }
+
     var data = {
       assunto: assunto,
       descricao: descricao,
+      foto: foto,
       userId: userId,
       situacao: 1      
     } 
 
+    var acao = 'suporte';
 
     await SuporteDataService.cadastrar(data)
     .then( response  =>  {  
-      console.log('cadastrar', response.data)
+      setSuporteId(response.data.id)
+      console.log('resp suporte', response.data)
     })
     .catch(e => {
       console.error(e)
     })  
+
+    await EmailDataService.suporte(userId, suporteId, acao)
+    .then( response  =>  {  
+      setMsg('Solicitação enviada com sucesso.')
+    })
+    .catch(e => {
+      console.error(e)
+    })  
+  }
+
+  const handleChoosePhoto = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhoto(response);
+      }
+    });
+  };
+
+  async function handleUploadPhoto  () {    
+
+    if (photo) {
+      
+      let formdata = photo.assets[0];
+      let envio = {
+        name: formdata.fileName,
+        type: formdata.type,
+        uri: formdata.uri
+      }
+
+      const enviofoto = new FormData();
+
+      enviofoto.append('file', envio )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofoto,
+       }).then(response => response.json())
+        .then(res => setFoto(res.name))
+        .catch(err => console.log("err", err))
+    }
   }
 
   return (
@@ -138,45 +204,67 @@ export default function Suporte  ({ navigation }) {
       <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>     
         <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>  
           <ScrollView>
-              <Text style={styles.titulo}> Envie sua dúvida ou solicitação </Text>
-              <Input
-              autoCorrect={false}
-              autoCapitalize="none"
-              style={{marginTop: 10, color: '#fff'}} 
-              placeholder="Assunto"
-              returnKeyType="next"
-              onSubmitEditing={() => descricaoRef.current.focus()}
-              value={assunto.toUpperCase()}
-              ref={assuntoRef}
-              onChangeText={setAssunto} />
+              {!msg ? (
+                <>
+                <Text style={styles.titulo}> Envie sua dúvida ou solicitação </Text>
+                <Input
+                autoCorrect={false}
+                autoCapitalize="none"
+                style={{marginTop: 10, color: '#fff'}} 
+                placeholder="Assunto"
+                returnKeyType="next"
+                onSubmitEditing={() => descricaoRef.current.focus()}
+                value={assunto.toUpperCase()}
+                ref={assuntoRef}
+                onChangeText={setAssunto} />
 
 
-              <TextInput 
-              style={{
-                backgroundColor: 'transparent', 
-                borderWidth: 2,
-                borderRadius: 5,
-                borderColor: '#dfdfdf', 
-                color: '#FFFFFF',
-                fontSize: 20,
-                marginTop: 10
-              }}
-              autoCorrect={false}
-              value={descricao} 
-              onChangeText={setDescricao} 
-              multiline={true}
-              numberOfLines={5}
-              ref={descricaoRef}
-              placeholder='Descreva sua solicitação' 
-              placeholderTextColor="#f2f2f2" 
-              /> 
-              
-              <View style={styles.toogle}>
-              <Text> <Entypo name='upload' size={30} /> </Text>
-              <Text style={styles.titulo}> Upload de arquivo</Text>
+                <TextInput 
+                style={{
+                  backgroundColor: 'transparent', 
+                  borderWidth: 2,
+                  borderRadius: 5,
+                  borderColor: '#dfdfdf', 
+                  color: '#FFFFFF',
+                  fontSize: 20,
+                  marginTop: 10
+                }}
+                autoCorrect={false}
+                value={descricao} 
+                onChangeText={setDescricao} 
+                multiline={true}
+                numberOfLines={5}
+                ref={descricaoRef}
+                placeholder='Descreva sua solicitação' 
+                placeholderTextColor="#f2f2f2" 
+                /> 
+                
+                <View style={styles.toogle}>
+                  <Text onPress={() => handleChoosePhoto()} > <Entypo name='upload' size={30} /> </Text>
+                  <Text style={styles.titulo} onPress={() => handleChoosePhoto()} > Upload de foto</Text>
+                </View>
+
+                <View style={{ flex: 1,  justifyContent: 'space-evenly',  alignSelf: 'center', }}>
+                {photo && (
+                  <>
+                    <Image
+                      source={{ uri: photo.assets[0].uri }}
+                      style={{ width: 100, height: 100 }}
+                    />
+                    <Text style={styles.remover} onPress={ () => setPhoto(false) } > Remover &times; </Text>
+                  </>
+                )}
+                
               </View>
 
-              <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Enviar </Button>
+                <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Enviar </Button>
+
+                </>
+              ) : (
+                <View>
+                  <Text style={styles.titulo}>  {msg} </Text>
+                </View>
+              )}
           </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>

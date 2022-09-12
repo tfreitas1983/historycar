@@ -4,6 +4,7 @@ const authemail = require('./authemail.json')
 const User = db.user;
 const Cliente = db.cliente;
 const Veiculo = db.veiculo;
+const Suporte = db.suporte;
 const Role = db.role;
 const Op = db.Sequelize.Op;
 var nodemailer = require("nodemailer");
@@ -131,7 +132,7 @@ exports.email = (req, res) => {
 				if (error) {
 					console.log(error);
 				} else {
-					console.log('Email enviado com sucesso!');
+					res.send('Email enviado com sucesso!');
 				}
 			});
 	      
@@ -139,6 +140,59 @@ exports.email = (req, res) => {
 
 	    pegaDados();
 	    
+	}
+
+	if (acao === 'suporte') {
+		const userId = parseInt(req.query.user);
+		const suporteId =  parseInt(req.query.suporte);
+
+		async function chamado () {
+
+			let usuario = await User.findByPk(userId)  
+		      .then(data => {
+		      	return data.dataValues		       	
+		       })
+		      .catch(err => {
+		          console.log("erro usuario", err)
+		      })  
+
+		    let suporte = await Suporte.findByPk(suporteId)  
+		      .then(data => {
+		      	return data.dataValues		       	
+		       })
+		      .catch(err => {
+		          console.log("erro usuario", err)
+		      }) 
+
+		 	var emailASerEnviado = {
+				from: 'autohistorysuporte@hotmail.com',
+				to: 'tfreitas1983@gmail.com',
+				subject: 'Auto History - Solicitação de suporte',
+				html: `<p>Olá!</p> 
+				<p>Você solicitou nossa ajuda com o tema: <b>${suporte.assunto.toUpperCase()}</b> </p>
+				<p>Com o seguinte conteúdo: ${suporte.descricao.toUpperCase()}</p>
+				<p>Em breve retornaremos com um novo e-mail com mais informações. </p>
+				
+				<pre>
+
+
+				</pre>
+				<p> Atenciosamente,</p>
+				<p> Equipe Auto History</p>
+				 `,
+			};	
+
+			remetente.sendMail(emailASerEnviado, function(error){
+				if (error) {
+					console.log(error);
+				} else {
+					res.send('Email enviado com sucesso!');
+				}
+			});
+
+		}   
+		chamado();
+
 	}
 	
 

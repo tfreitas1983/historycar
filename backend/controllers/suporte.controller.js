@@ -14,6 +14,7 @@ exports.cadastrar = (req, res) => {
       const dados = {
         assunto: req.body.assunto,
         descricao: req.body.descricao,
+        foto: req.body.foto,
         situacao: req.body.situacao,
         userId: req.body.userId
       };
@@ -72,6 +73,7 @@ exports.editar = (req, res) => {
   Suporte.update({
     assunto: req.body.assunto,
     descricao: req.body.descricao,
+    foto: req.body.foto,
     situacao: req.body.situacao,
     userId: req.body.userId
   }, {where: {id: id}})    
