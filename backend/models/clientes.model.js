@@ -14,6 +14,7 @@ module.exports = (sequelize, Sequelize) => {
       cidade: { type: Sequelize.STRING },
       uf: { type: Sequelize.STRING },
       celular: { type: Sequelize.STRING },
+      foto: { type: Sequelize.STRING },
       situacao: { type: Sequelize.BOOLEAN }
     });
   

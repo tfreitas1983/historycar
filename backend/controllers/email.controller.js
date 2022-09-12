@@ -166,7 +166,7 @@ exports.email = (req, res) => {
 
 		 	var emailASerEnviado = {
 				from: 'autohistorysuporte@hotmail.com',
-				to: 'tfreitas1983@gmail.com',
+				to: usuario.email,
 				subject: 'Auto History - Solicitação de suporte',
 				html: `<p>Olá!</p> 
 				<p>Você solicitou nossa ajuda com o tema: <b>${suporte.assunto.toUpperCase()}</b> </p>
@@ -193,6 +193,11 @@ exports.email = (req, res) => {
 		}   
 		chamado();
 
+	}
+
+	if (acao === 'registro') {
+
+		
 	}
 	
 

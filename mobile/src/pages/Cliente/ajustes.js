@@ -1,6 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { useSelector } from "react-redux";
-import {Text, View, StyleSheet, Dimensions, StatusBar, ScrollView,KeyboardAvoidingView} from 'react-native';
+import {Text, View, Image, StyleSheet, Dimensions, StatusBar, ScrollView,KeyboardAvoidingView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Input from '../../components/Input';
@@ -8,6 +8,8 @@ import Button from '../../components/Button';
 import SelectDropdown from 'react-native-select-dropdown'
 import { celMask, cepMask, cpfMask, cnpjMask } from '../../components/masks';
 import CadastroClienteDataService from '../../services/cadastrocliente';
+import ManutencaoDataService from '../../services/manutencoes';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const styles = StyleSheet.create({
   container: {
@@ -121,10 +123,20 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: 200
   },
+  remover: {
+    color: '#ff2010',
+    borderBottomColor: '#ff2000',
+    borderBottomWidth: 3,
+    fontWeight: 'bold',
+    width: 75,
+  }
 });
 
 
 export default function Ajustes  ({ navigation }) {
+
+  const SERVER_URL = 'http://10.0.2.2:5099/api/veiculosmanutencoes/files';
+  const URL = 'http://10.0.2.2:5099/files/'
 
   const userId = useSelector(state => state.auth.id);
   const [cliente, setCliente] = useState('');
@@ -143,7 +155,7 @@ export default function Ajustes  ({ navigation }) {
   const cidadeRef = useRef();
   const ufRef = useRef();
 
-
+  const [clienteId, setClienteId] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [tipo, setTipo] = useState('');
@@ -159,7 +171,10 @@ export default function Ajustes  ({ navigation }) {
   const [complemento, setComplemento] = useState('');
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
-  const [uf, setUf] = useState('');
+  const [uf, setUf] = useState('');  
+  const [photo, setPhoto] = useState(null)
+  const [foto, setFoto] = useState('');
+  const [novafoto, setNovaFoto] = useState('');
 
   const dados = ["Feminino", "Masculino"];
 
@@ -176,7 +191,7 @@ export default function Ajustes  ({ navigation }) {
     .then( response => {
       let temp = response.data
       setCliente(temp[0])      
-      console.log('cliente', cliente)
+      setClienteId(temp[0].id)      
       setNome(temp[0].nome);
       setCpf(temp[0].cpf);
       setApelido(temp[0].apelido);
@@ -190,6 +205,7 @@ export default function Ajustes  ({ navigation }) {
       setUf(temp[0].uf);
       setCnpj(temp[0].cnpj);
       setSexo(temp[0].sexo);
+      setFoto(temp[0].foto);
 
     })    
     .catch( e =>  {
@@ -522,8 +538,6 @@ export default function Ajustes  ({ navigation }) {
         cidade: cidade,
         uf: uf
       }
-
-      console.log('submit', data);
       
 
       await CadastroClienteDataService.editar(cliente.id, data)
@@ -534,7 +548,74 @@ export default function Ajustes  ({ navigation }) {
         console.error(e)
       }) 
     }
+
+  async function handleFoto () {
+
+     if (photo) {
+      handleUploadPhoto();      
+    }
+  }
   
+
+  const handleChoosePhoto = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhoto(response);
+      }
+    });
+  };
+
+  async function handleUploadPhoto  () {    
+
+    if (photo) {
+      
+      let formdata = photo.assets[0];
+      let envio = {
+        name: formdata.fileName,
+        type: formdata.type,
+        uri: formdata.uri
+      }
+
+      const enviofoto = new FormData();
+
+      enviofoto.append('file', envio )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofoto,
+       }).then(response => response.json())
+        .then(res => {
+          setNovaFoto(res.name);
+          alterar();
+          setFoto(res.name);
+
+        })
+        .catch(err => console.log("err", err))
+    }
+  }
+
+  async function alterar () {
+    var data = {
+      foto: novafoto
+    }
+
+    await CadastroClienteDataService.editar(clienteId, data)
+    .then( response  =>  {       
+      
+    })
+    .catch(e => {
+      console.error(e)
+    }) 
+
+    setPhoto(false)
+    
+  }
+
 
   return (
     <View>
@@ -543,6 +624,48 @@ export default function Ajustes  ({ navigation }) {
         <ScrollView>
             <View>
             <Text style={styles.titulo}> Meus dados </Text>
+            {foto !== '' ? (
+              <>
+              <Image
+                source={{ uri: URL+foto }}
+                style={{ width: 150, height: 150, alignSelf: 'center' }}
+              />
+              </>
+              ) : (
+              <>
+                <Image
+                source={require('../../img/avatar.png')}
+                style={{ width: 100, height: 100, alignSelf: 'center' }}
+                resizeMode="cover"
+                />
+              </>
+              )
+            }
+
+
+            <View style={styles.toogle}>
+                  <Text onPress={() => handleChoosePhoto()} > <Entypo name='user' size={30} /> </Text>
+                  <Text style={styles.titulo} onPress={() => handleChoosePhoto()} > Upload de foto</Text>
+                </View>
+
+                
+                {photo && (
+                  <>
+                  <View style={{ flex: 1,  justifyContent: 'space-evenly',  alignSelf: 'center', }}>
+                    <Image
+                      source={{ uri: photo.assets[0].uri }}
+                      style={{ width: 100, height: 100, marginTop: 30 }}
+                    />
+                    <Text style={styles.remover} onPress={ () => setPhoto(false) } > Remover &times; </Text>
+
+                  </View>
+                  <Text style={styles.entrar} onPress={ () => handleUploadPhoto() } > Enviar </Text>
+                  
+                  </>
+                )}
+            
+              
+
             {cliente !== '' && alterado === false && <View>
               <View style={styles.bordado}>
                 <Text style={styles.titulo}>Nome: {nome} </Text>

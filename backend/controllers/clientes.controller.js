@@ -105,6 +105,7 @@ exports.editar = (req, res) => {
     bairro: req.body.bairro,
     cidade: req.body.cidade,
     uf: req.body.uf,
+    foto: req.body.foto,
     situacao: req.body.situacao
   }, {where: {id: id}})    
   .then(data => {

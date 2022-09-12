@@ -31,6 +31,10 @@ class EmailDataService {
         return http.get(`/email?user=${user}&suporte=${suporte}&acao=${acao}`)
     }
 
+    registro(email, acao){
+        return http.get(`/email?email=${email}&acao=${acao}`)
+    }
+
     cadastrar(data) {
         return http.post("/veiculosmanutencoes", data)
     }
