@@ -1,6 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { useSelector } from "react-redux";
-import {Text, View, TextInput, StyleSheet, Dimensions, StatusBar, ActivityIndicator,ScrollView,KeyboardAvoidingView, Switch} from 'react-native';
+import {Text, View, TextInput, Image, StyleSheet, Dimensions, StatusBar, ActivityIndicator,ScrollView,KeyboardAvoidingView, Switch} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Input from '../../components/Input';
@@ -9,6 +9,8 @@ import SelectDropdown from 'react-native-select-dropdown'
 import { celMask, cepMask, cpfMask, cnpjMask, moedaMask} from '../../components/masks';
 import CadastroParceiroDataService from '../../services/cadastroparceiro';
 import ParceiroPrecoDataService from '../../services/parceiropreco';
+import ManutencaoDataService from '../../services/manutencoes';
+import { launchImageLibrary } from 'react-native-image-picker';
 import moment from 'moment';
 import Feather from 'react-native-vector-icons/Feather'
 Feather.loadFont()
@@ -125,10 +127,20 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: 200
   },
+  remover: {
+    color: '#ff2010',
+    borderBottomColor: '#ff2000',
+    borderBottomWidth: 3,
+    fontWeight: 'bold',
+    width: 75,
+  }
 });
 
 
 export default function AjustesParceiro  ({ navigation }) {
+
+  const SERVER_URL = 'http://10.0.2.2:5099/api/veiculosmanutencoes/files';
+  const URL = 'http://10.0.2.2:5099/files/'
 
   const userId = useSelector(state => state.auth.id);
   const [parceiro, setParceiro] = useState('');
@@ -150,7 +162,7 @@ export default function AjustesParceiro  ({ navigation }) {
   const presencialRef = useRef();
   const remotaRef = useRef();
 
-
+  const [parceiroId, setParceiroId] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [tipo, setTipo] = useState('');
@@ -167,7 +179,10 @@ export default function AjustesParceiro  ({ navigation }) {
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
   const [uf, setUf] = useState('');
+   
+  const [photo, setPhoto] = useState(null);
   const [foto, setFoto] = useState('');
+  const [novafoto, setNovaFoto] = useState('');
 
   const dados = ["Feminino", "Masculino"];
   const ramos = ["Caçador de veículos", "Despachante", "Ambos"];
@@ -201,8 +216,8 @@ export default function AjustesParceiro  ({ navigation }) {
     let respparceiro = await CadastroParceiroDataService.buscarusuario(userId)
     .then( response => {
       let temp = response.data;
-      console.log('parceiro', parceiro);
       setParceiro(temp[0]);
+      setParceiroId(temp[0].id);
       setNome(temp[0].nome);
       setCpf(temp[0].cpf);
       setApelido(temp[0].apelido);
@@ -394,8 +409,8 @@ export default function AjustesParceiro  ({ navigation }) {
         value={uf.toUpperCase()}
         onChangeText={setUf} />        
             
-      <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
- 
+      <Button onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
+      <Button style={{marginBottom: 200}} onPress={() => setAlterar(false)}> <Entypo name="back" size={30} color="#d2d2d2" /> Voltar </Button>
     </>
   }
 
@@ -538,20 +553,21 @@ export default function AjustesParceiro  ({ navigation }) {
               value={uf.toUpperCase()}
               onChangeText={setUf} />        
             
-            <Button style={{marginBottom: 150}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
- 
+            <Button onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
+            <Button style={{marginBottom: 200}} onPress={() => setAlterar(false)}> <Entypo name="back" size={30} color="#d2d2d2" /> Voltar </Button>
     </>
   }
 
   if (parceiro && atividades === true) {
     mostrar = <>
-      <Text style={styles.titulo}> Meus atividades </Text>
-      <Text style={styles.toggle}> Conhecimento em mecânica <Switch value={mecanica} onValueChange={setMecanica} /> </Text> 
-                
-      <Text style={styles.toggle}> Conhecimento em funilaria  <Switch value={funilaria} onValueChange={setFunilaria} /> </Text> 
-      <Text style={styles.toggle}> Realiza vistoria   <Switch value={vistoria} onValueChange={setVistoria} /> </Text> 
-      <Text style={styles.toggle}> Pré compra   <Switch value={precompra} onValueChange={setPrecompra} /> </Text> 
-      <Text style={styles.toggle}> Equipamentos   <Switch value={equipamentos} onValueChange={setEquipamentos} /> </Text> 
+      <Text style={styles.titulo}> Habilidades </Text>
+      <View style={styles.toggle}>
+        <Text style={styles.titulo}> Conhecimento em mecânica <Switch value={mecanica} onValueChange={setMecanica}  /> </Text>                   
+        <Text style={styles.titulo}> Conhecimento em funilaria  <Switch value={funilaria} onValueChange={setFunilaria} /> </Text> 
+        <Text style={styles.titulo}> Realiza vistoria   <Switch value={vistoria} onValueChange={setVistoria} /> </Text> 
+        <Text style={styles.titulo}> Pré compra   <Switch value={precompra} onValueChange={setPrecompra} /> </Text> 
+        <Text style={styles.titulo}> Equipamentos   <Switch value={equipamentos} onValueChange={setEquipamentos} /> </Text> 
+      </View>
       <TextInput 
       style={{
         backgroundColor: 'transparent', 
@@ -591,7 +607,8 @@ export default function AjustesParceiro  ({ navigation }) {
       placeholder='Consulta remota R$'
       onSubmitEditing={() => handleSubmit()}  /> 
 
-      <Button style={{marginBottom: 200}} onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
+      <Button onPress={() => handleSubmit()}> <Entypo name="paper-plane" size={30} color="#d2d2d2" /> Alterar </Button>
+      <Button style={{marginBottom: 200}} onPress={() => setAtividades(false)}> <Entypo name="back" size={30} color="#d2d2d2" /> Voltar </Button>
     </>
   }
 
@@ -686,76 +703,180 @@ export default function AjustesParceiro  ({ navigation }) {
         textoramo = 'Caçador e Despachante'
       }
     }
+
+  async function handleFoto () {
+     if (photo) {
+      handleUploadPhoto();      
+    }
+  }
+  
+  const handleChoosePhoto = () => {
+    launchImageLibrary({ noData: true }, (response) => {
+      if (response) {
+        setPhoto(response);
+      }
+    });
+  };
+
+  async function handleUploadPhoto  () {    
+
+    if (photo) {
+      
+      let formdata = photo.assets[0];
+      let envio = {
+        name: formdata.fileName,
+        type: formdata.type,
+        uri: formdata.uri
+      }
+
+      const enviofoto = new FormData();
+
+      enviofoto.append('file', envio )
+      const header = {
+       'Accept': 'application/json',
+       'content-type': 'multipart/form-data',
+      }
+
+      await fetch(SERVER_URL, {
+           method: 'POST',
+           headers: header,
+           body:enviofoto,
+       }).then(response => response.json())
+        .then(res => {
+          setNovaFoto(res.name);
+          alterar();
+          setFoto(res.name);
+          PegaParceiro();
+
+        })
+        .catch(err => console.log("err", err))
+    }
+  }
+
+  async function alterar () {
+    var data = {
+      foto: novafoto
+    }
+
+    await CadastroParceiroDataService.editar(parceiroId, data)
+    .then( response  =>  {       
+      
+    })
+    .catch(e => {
+      console.error(e)
+    }) 
+
+    setPhoto(false);    
+  }
   
 
   return (
     <View>
       <LinearGradient  colors={['#ffad26', '#ff9900', '#ff5011']} style={styles.linearGradient}>   
         <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>  
-          <ScrollView>
-          
+          <ScrollView>          
             <View>
+              {foto !== '' ? (
+                <>
+                <Image
+                  source={{ uri: URL+foto }}
+                  style={{ width: 150, height: 150, alignSelf: 'center' }}
+                />
+                </>
+                ) : (
+                <>
+                  <Image
+                  source={require('../../img/avatar.png')}
+                  style={{ width: 100, height: 100, alignSelf: 'center' }}
+                  resizeMode="cover"
+                  />
+                </>
+                )
+              }
+
+              <View style={styles.toogle}>
+                <Text onPress={() => handleChoosePhoto()} > <Entypo name='user' size={30} /> </Text>
+                <Text style={styles.titulo} onPress={() => handleChoosePhoto()} > Upload de foto</Text>
+              </View>
+
+                
+              {photo && (
+                <>
+                <View style={{ flex: 1,  justifyContent: 'space-evenly',  alignSelf: 'center', }}>
+                  <Image
+                    source={{ uri: photo.assets[0].uri }}
+                    style={{ width: 100, height: 100, marginTop: 30 }}
+                  />
+                  <Text style={styles.remover} onPress={ () => setPhoto(false) } > Remover &times; </Text>
+
+                </View>
+                <Text style={styles.entrar} onPress={ () => handleUploadPhoto() } > Enviar </Text>
+                
+                </>
+              )}
+
             
-            {parceiro !== '' && alterado === false && atividades === false &&
-            <>
-              <Text style={styles.titulo}> Meus dados </Text>
-              <View>
-                <View style={styles.bordado}>
-                  <Text style={styles.titulo}>Nome: {nome} </Text>
-                  <Text style={styles.titulo}>Celular: {celular} </Text>
-                  <Text style={styles.titulo}>{endereco} - {numero} - {bairro} </Text>
-                  <Text style={styles.titulo}>{cidade} - {uf} </Text>
-                  <Text style={styles.titulo}>Nota: {reputacao} </Text>
-                </View>
-                <Text style={{textAlign: 'right', color: '#fff', fontSize: 20, marginBottom: 10}} onPress={() => setAlterar(true)}> 
-                <Entypo name="pencil" size={20} /> Alterar dados 
-                </Text>
-              </View>
-
-              <View>
-                <Text style={styles.titulo}> Minhas atividades </Text>
-              
-                <View style={styles.bordado}>
-                  <Text style={styles.titulo}>Ramo: {textoramo} </Text>
-                  <Text style={styles.titulo}>Mecânica: {mecanica === true ? 'Sim' : 'Não'} </Text>
-                  <Text style={styles.titulo}>Funilaria: {funilaria === true ? 'Sim' : 'Não'}  </Text>
-                  <Text style={styles.titulo}>Equipamentos: {equipamentos === true ? 'Sim' : 'Não'} </Text>
-                  <Text style={styles.titulo}>Vistoria: {vistoria === true ? 'Sim' : 'Não'} </Text>
-                  <Text style={styles.titulo}>Consulta remota: R$ {remotomoeda}</Text>
-                  <Text style={styles.titulo}>Consulta presencial: R$  {presencialmoeda}</Text>
-                </View>
-                <Text style={{textAlign: 'right', color: '#fff', fontSize: 20, marginBottom: 80}} onPress={() => setAtividades(true)}> 
-                <Entypo name="pencil" size={20} /> Alterar atividades </Text>
-              </View>
-            </>
-            }
-
-            {parceiro !== '' && alterado === false && atividades === true && <>
-              <View>                
-                {mostrar}
-              </View>
-            </>
-            }
-
-            {parceiro !== '' && alterado === true && <>
-              <View>                
-                {mostrar}
-              </View>
-            </>
-            }
-
-            {loading === true && <>
-              <View>                
-                {mostrar}
-              </View>
-            </>
-            }
-
-            {loading === false && parceiro === '' && 
+              {parceiro !== '' && alterado === false && atividades === false &&
               <>
-                <Text style={styles.titulo}> Sem informações </Text>
+                <Text style={styles.titulo}> Meus dados </Text>
+                <View>
+                  <View style={styles.bordado}>
+                    <Text style={styles.titulo}>Nome: {nome} </Text>
+                    <Text style={styles.titulo}>Celular: {celular} </Text>
+                    <Text style={styles.titulo}>{endereco} - {numero} - {bairro} </Text>
+                    <Text style={styles.titulo}>{cidade} - {uf} </Text>
+                    <Text style={styles.titulo}>Nota: {reputacao === 0 ? 'Sem notas' : reputacao} </Text>
+                  </View>
+                  <Text style={{textAlign: 'right', color: '#fff', fontSize: 20, marginBottom: 10}} onPress={() => setAlterar(true)}> 
+                  <Entypo name="pencil" size={20} /> Alterar dados 
+                  </Text>
+                </View>
+
+                <View>
+                  <Text style={styles.titulo}> Habilidades </Text>
+                
+                  <View style={styles.bordado}>
+                    <Text style={styles.titulo}>Ramo: {textoramo} </Text>
+                    <Text style={styles.titulo}>Mecânica: {mecanica === true ? 'Sim' : 'Não'} </Text>
+                    <Text style={styles.titulo}>Funilaria: {funilaria === true ? 'Sim' : 'Não'}  </Text>
+                    <Text style={styles.titulo}>Equipamentos: {equipamentos === true ? 'Sim' : 'Não'} </Text>
+                    <Text style={styles.titulo}>Vistoria: {vistoria === true ? 'Sim' : 'Não'} </Text>
+                    <Text style={styles.titulo}>Consulta remota: R$ {remotomoeda}</Text>
+                    <Text style={styles.titulo}>Consulta presencial: R$  {presencialmoeda}</Text>
+                  </View>
+                  <Text style={{textAlign: 'right', color: '#fff', fontSize: 20, marginBottom: 80}} onPress={() => setAtividades(true)}> 
+                  <Entypo name="pencil" size={20} /> Alterar atividades </Text>
+                  <Text style={{marginBottom:150}}></Text>
+                </View>
               </>
-            }
+              }
+
+              {parceiro !== '' && alterado === false && atividades === true && <>
+                <View>                
+                  {mostrar}
+                </View>
+              </>
+              }
+
+              {parceiro !== '' && alterado === true && <>
+                <View>                
+                  {mostrar}
+                </View>
+              </>
+              }
+
+              {loading === true && <>
+                <View>                
+                  {mostrar}
+                </View>
+              </>
+              }
+
+              {loading === false && parceiro === '' && 
+                <>
+                  <Text style={styles.titulo}> Sem informações </Text>
+                </>
+              }
             </View>
           </ScrollView>
         </KeyboardAvoidingView>

@@ -763,7 +763,8 @@ export default function CadastrarParceiro  ({ navigation }) {
         equipamentos: isEquipamentosOn,
         vistoria: isVistoriaOn,
         precompra: isPreCompraOn,
-        resumo: descricao
+        resumo: descricao,
+        reputacao: 0
       }
 
       

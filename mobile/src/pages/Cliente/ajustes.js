@@ -172,7 +172,7 @@ export default function Ajustes  ({ navigation }) {
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
   const [uf, setUf] = useState('');  
-  const [photo, setPhoto] = useState(null)
+  const [photo, setPhoto] = useState(null);
   const [foto, setFoto] = useState('');
   const [novafoto, setNovaFoto] = useState('');
 
@@ -642,29 +642,26 @@ export default function Ajustes  ({ navigation }) {
               )
             }
 
-
             <View style={styles.toogle}>
-                  <Text onPress={() => handleChoosePhoto()} > <Entypo name='user' size={30} /> </Text>
-                  <Text style={styles.titulo} onPress={() => handleChoosePhoto()} > Upload de foto</Text>
-                </View>
+              <Text onPress={() => handleChoosePhoto()} > <Entypo name='user' size={30} /> </Text>
+              <Text style={styles.titulo} onPress={() => handleChoosePhoto()} > Upload de foto</Text>
+            </View>
 
                 
-                {photo && (
-                  <>
-                  <View style={{ flex: 1,  justifyContent: 'space-evenly',  alignSelf: 'center', }}>
-                    <Image
-                      source={{ uri: photo.assets[0].uri }}
-                      style={{ width: 100, height: 100, marginTop: 30 }}
-                    />
-                    <Text style={styles.remover} onPress={ () => setPhoto(false) } > Remover &times; </Text>
+            {photo && (
+              <>
+              <View style={{ flex: 1,  justifyContent: 'space-evenly',  alignSelf: 'center', }}>
+                <Image
+                  source={{ uri: photo.assets[0].uri }}
+                  style={{ width: 100, height: 100, marginTop: 30 }}
+                />
+                <Text style={styles.remover} onPress={ () => setPhoto(false) } > Remover &times; </Text>
 
-                  </View>
-                  <Text style={styles.entrar} onPress={ () => handleUploadPhoto() } > Enviar </Text>
-                  
-                  </>
-                )}
-            
+              </View>
+              <Text style={styles.entrar} onPress={ () => handleUploadPhoto() } > Enviar </Text>
               
+              </>
+            )}
 
             {cliente !== '' && alterado === false && <View>
               <View style={styles.bordado}>
