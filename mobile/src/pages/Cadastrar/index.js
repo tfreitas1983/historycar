@@ -195,7 +195,6 @@ export default function Cadastrar  ({ navigation }) {
         buttonStyle={styles.bordado}
         buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
         onSelect={(selectedItem, index) => {
-          console.log(selectedItem, index)
           setSexo(selectedItem)
         }}
         buttonTextAfterSelection={(selectedItem, index) => {

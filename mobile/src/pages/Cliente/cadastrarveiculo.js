@@ -170,7 +170,7 @@ export default function CadastrarVeiculos  ({ navigation }) {
   const aquisicaoRef = useRef('');
   const gnvRef = useRef('');
 
-  const [renavam, setRenavam] = useState('332838594');
+  const [renavam, setRenavam] = useState('');
   const [fabricante, setFabricante] = useState([]);
   const [modelo, setModelo] = useState([]);
   const [modeloSelecionado, setModeloSelecionado] = useState('');
@@ -344,7 +344,6 @@ export default function CadastrarVeiculos  ({ navigation }) {
         setLoadingDados(true) ;
         if (response.data) {
           let tempdados = response.data;
-          console.log('tempdados', tempdados);
           setDados(tempdados);
           carregaDados();
         } else {
@@ -363,7 +362,6 @@ export default function CadastrarVeiculos  ({ navigation }) {
 
   async function carregaDados () {
     if (dados) {
-      console.log('dados', dados);
       setLoadingDados(true);
       let placatemp = await dados.veiculos_placas.map(item => { return item.placa });
 

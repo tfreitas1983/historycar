@@ -132,8 +132,7 @@ export default function Detalhes ({navigation}){
         return item.tipo === 2
       })
       setRecall(todas);
-      console.log('recall', todas);
-       setManutencoes(tempmanutencao);
+      setManutencoes(tempmanutencao);
     })
     .catch(e => {
       console.error(e);
@@ -167,15 +166,10 @@ export default function Detalhes ({navigation}){
 
     if (dados !== '') {
       setLoading(true);
-      console.log('fabricante', dados.veiculo.idfabricante);
-      console.log('modelo', dados.veiculo.idmodelo);
-      console.log('ano', dados.veiculo.idano);
-   
       
       await axios.get('https://parallelum.com.br/fipe/api/v1/carros/marcas/'+dados.veiculo.idfabricante+'/modelos/'+dados.veiculo.idmodelo+'/anos/'+dados.veiculo.idano)
       .then(response => {
-        let tempvalor = response.data.Valor
-        console.log('tempvalor', tempvalor);
+        let tempvalor = response.data.Valor;
         setValor(tempvalor);
 
         setLoading(false)
@@ -184,39 +178,29 @@ export default function Detalhes ({navigation}){
         console.error(e);
       })
     } else {
-      console.log('Sem dados');
       setLoading(true)
 
       let resp = await VeiculoDataService.veiculocliente(id) 
       .then( response  =>  {   
-        let tempdados = response.data  
-        console.log('tempdadoselse',tempdados);       
+        let tempdados = response.data;
         setDados(tempdados);
       })
       .catch(e => {
         console.error(e);
       })
       resp = await resp;
-      console.log('dadoselse', dados);
-
-     
         
-        PegaValor2();
+      PegaValor2();
 
     }
     
   }
 
   async function PegaValor2() {
-    console.log('fabricante2', dados.veiculo.idfabricante);
-    console.log('modelo2', dados.veiculo.idmodelo);
-    console.log('ano2', dados.veiculo.idano);
-  
     
     await axios.get('https://parallelum.com.br/fipe/api/v1/carros/marcas/'+dados.veiculo.idfabricante+'/modelos/'+dados.veiculo.idmodelo+'/anos/'+dados.veiculo.idano)
     .then(response => {
       let temp = response.data;
-      console.log('temp', temp);
       setValor(temp);
 
       setLoading(false)

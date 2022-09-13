@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     id: null,
     signed: false,
     loading: false,
+    fail: false,
 };
 
 export default function auth(state = INITIAL_STATE, action) {
@@ -14,6 +15,7 @@ export default function auth(state = INITIAL_STATE, action) {
         switch (action.type) {
             case '@auth/SIGN_IN_REQUEST': {
                 draft.loading = true;
+                fail: false;
                 break;
             }
             case '@auth/SIGN_IN_SUCESS': {
@@ -23,11 +25,13 @@ export default function auth(state = INITIAL_STATE, action) {
                 draft.situacao = action.payload.situacao;
                 draft.signed = true;
                 draft.loading = false;
+                draft.fail = false;
                 break;
             }
             case '@auth/SIGN_FAILURE': {
                 draft.loading = false;
                 draft.signed = false;
+                draft.fail = true;
                 break;
             }
             case '@auth/SIGN_OUT': {
@@ -37,6 +41,7 @@ export default function auth(state = INITIAL_STATE, action) {
                 draft.situacao = null;
                 draft.id = null;
                 draft.loading = false;
+                draft.fail = false;
                 break;
             }
             default:

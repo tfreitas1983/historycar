@@ -149,8 +149,7 @@ export default function Venda  ({ navigation }) {
     let respcliente = await VeiculoDataService.veiculocliente(veiculoclienteid)
     .then( response => {
       let temp = response.data;
-      setDados(temp) ;   
-      console.log('temp', temp);
+      setDados(temp) ; 
     })    
     .catch( e =>  {
       console.error(e);
@@ -187,7 +186,6 @@ export default function Venda  ({ navigation }) {
     if (veiculoclienteid) {
       await VeiculoDataService.editarrelacao(veiculoclienteid, data)
       .then(response => {
-        console.log(response.data);
         navigation.navigate('Veiculos')
       })
       .catch(e => {

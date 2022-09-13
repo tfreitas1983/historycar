@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
 
 export default function Esqueci () {
 
-  const [email, setEmail] = useState('cliente7@gmail.com');
+  const [email, setEmail] = useState('');
   const [msg, setMsg] = useState('');
   const [msgSucesso, setMsgSucesso] = useState('');
 

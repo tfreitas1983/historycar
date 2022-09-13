@@ -141,8 +141,7 @@ export default function SeguroDetalhe ({ navigation }) {
       let respcliente = await VeiculoDataService.veiculocliente(id)
     .then( response => {
       let temp = response.data;
-      setDados(temp) ;   
-      console.log('temp', temp);
+      setDados(temp) ; 
     })    
     .catch( e =>  {
       console.error(e);

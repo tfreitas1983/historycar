@@ -149,8 +149,7 @@ export default function Veiculos  ({ navigation }) {
       setLoading(true);
       let resp = await VeiculoDataService.buscaveiculocliente(cliente)
       .then(response => {            
-          setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
-          console.log('veiculos', response.data)
+          setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))));
       })
       .catch(e => {
         console.error(e);
@@ -170,16 +169,12 @@ export default function Veiculos  ({ navigation }) {
       })     
       respcliente = await respcliente;   
       
-      let idcliente = temp[0];
-      console.log('idcliente', idcliente);
-      
+      let idcliente = temp[0];      
       cliente = idcliente;  
-      console.log('clienteelse', cliente);
 
       let resp = await VeiculoDataService.buscaveiculocliente(cliente)
       .then(response => {            
-          setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))))
-          console.log('veiculos', response.data)
+          setVeiculos(response.data.map((item => ({id: item.id, situacao: item.situacao, veiculo:item.veiculo}))));
       })
       .catch(e => {
         console.error(e);

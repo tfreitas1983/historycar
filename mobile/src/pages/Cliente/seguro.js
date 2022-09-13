@@ -226,8 +226,7 @@ export default function Seguro  ({ navigation }) {
     
     
     await SeguroDataService.cadastrar(data)
-    .then( response  =>  {               
-      console.log('response',response.data); 
+    .then( response  =>  {
       navigation.navigate('SeguroLista')
     })
     .catch(e => {
@@ -251,7 +250,6 @@ export default function Seguro  ({ navigation }) {
                 buttonStyle={styles.bordado}
                 buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
                 onSelect={(selectedItem, index) => {
-                 console.log(selectedItem, index)
                   setSelecionada(selectedItem)
                 }}
                 buttonTextAfterSelection={(selectedItem, index) => {

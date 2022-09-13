@@ -76,12 +76,15 @@ const styles = StyleSheet.create({
 export default function ParceiroLogin  ({ navigation }) {
   const passwordRef = useRef();
   const dispatch = useDispatch();
+  let mostra = null;
+  let fail = false;
 
-  const [email, setEmail] = useState('juvenal@gmail.com');
-  const [password, setPassword] = useState('123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const signed = useSelector(state => state.auth.signed);
   const tipo = useSelector(state => state.auth.tipo);
   const situacao = useSelector(state => state.auth.situacao);
+  fail = useSelector(state => state.auth.fail);
 
   async function handleSubmit () {
 
@@ -91,19 +94,28 @@ export default function ParceiroLogin  ({ navigation }) {
     }
     
     await dispatch(signInRequest(email, password));
-
-    if (situacao === 0) {
-      Alert.alert('Seu login está inativo')
-    }
-
-    if (signed === true && tipo === 1 && situacao === true) {
-      navigation.navigate('HomeParceiro')
-    } else {
-      Alert.alert('Suas credenciais são inválidas ou seu acesso é de cliente')
-      return
-    }
-   
   }
+
+  if (fail === true )  { 
+    mostra = <Text style={{color: '#ff0000', fontWeight: 'bold', fontSize: 20}}> Login e/ou senha incorretos. </Text>
+  } 
+
+  if (signed === true) {
+
+    if (situacao === false) {        
+      Alert.alert('Seu login está inativo');
+    }
+
+    if (tipo === 1 && situacao === true) {        
+      navigation.navigate('HomeParceiro');
+    } 
+  }
+
+  if (tipo === 2) { 
+    Alert.alert('O seu acesso é de cliente. Volte à tela inicial.');
+  }
+   
+  
 
   return (
     <View>            
@@ -123,7 +135,8 @@ export default function ParceiroLogin  ({ navigation }) {
               returnKeyType="next"
               onSubmitEditing={() => passwordRef.current.focus()}
               value={email}
-              onChangeText={setEmail} />
+              onChangeText={setEmail} 
+            />
 
             <Input 
             style={{marginTop: 30, color: '#fff'}} 
@@ -135,8 +148,8 @@ export default function ParceiroLogin  ({ navigation }) {
             value={password}
             onChangeText={setPassword}
             onSubmitEditing={() => handleSubmit()}
-              />
-            
+            />
+            {mostra}
             <Button  onPress={() => handleSubmit()}>  Entrar </Button>
            
             <Text style={styles.cadastrar}  onPress={() => navigation.navigate('CadastrarParceiro')}> <Entypo name="add-user" size={45} color="#000" /> Cadastrar-me</Text>

@@ -114,8 +114,6 @@ export default function SeguroLista  ({ navigation }) {
   let veiculo = null;
   let veiculosdados = null;
 
-console.log('useSelector', id);
-
   useEffect( () => { 
     
     PegaVeiculo();  
@@ -127,17 +125,13 @@ console.log('useSelector', id);
     let respcliente = await VeiculoDataService.veiculocliente(id)
     .then( response => {
       let veiculotemp = response.data.veiculo.id;
-      console.log('veiculotemp', veiculotemp);
       veiculo = veiculotemp;
-      console.log('veiculo', veiculo);
     })    
     .catch( e =>  {
       console.error(e);
     })
     respcliente = await respcliente;
-    setVeiculo(veiculo) ;
-    console.log('veiculoId', veiculoId);
-    
+    setVeiculo(veiculo) ;    
     PegaSeguros(); 
   }   
 
@@ -152,34 +146,24 @@ console.log('useSelector', id);
         .then( response => {
           let tempseguro = response.data;
           veiculosdados = tempseguro;
-          
-          console.log('dados', dadosVeiculo);
         })    
         .catch( e =>  {
           console.error(e);
         })
 
-        setDados(veiculosdados) ;   
-
+      setDados(veiculosdados) ; 
       respseguro = await respseguro;
-      console.log('seguros', dadosVeiculo)
-
     } else {
       await VeiculoDataService.veiculocliente(id)
-    .then( response => {
-      let temp = response.data.veiculo.id;
-      setVeiculo(temp) ;
-    })
-    .catch( e =>  {
-      console.error(e);
-    })
-
-    console.log('veiculoIdselse', veiculoId);
-
-    }    
+      .then( response => {
+        let temp = response.data.veiculo.id;
+        setVeiculo(temp) ;
+      })
+      .catch( e =>  {
+        console.error(e);
+      })
+    }
   }
-
-
 
   if (dadosVeiculo) {
     lista = dadosVeiculo.map(item => {

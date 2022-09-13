@@ -7,11 +7,13 @@ export function* signIn({ payload }) {
     try {
         const { email, password } = payload;
         const response = yield call(api.post, 'signin', { email, password });              
-        const { accessToken, tipo, situacao, id } = response.data;            
+        const { accessToken, tipo, situacao, id } = response.data;    
+        const {fail} = false;
         api.defaults.headers.Authorization = `Barear ${accessToken}`;
 
-        yield put(AuthActions.signInSucess(accessToken, email, tipo, situacao, id)); 
+        yield put(AuthActions.signInSucess(accessToken, email, tipo, situacao, id, fail)); 
     } catch (error) {
+        
         yield put(AuthActions.signFailure()); 
     }
 }

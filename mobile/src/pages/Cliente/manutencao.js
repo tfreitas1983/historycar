@@ -147,7 +147,6 @@ export default function Manutencao  ({ navigation }) {
       await VeiculoDataService.veiculocliente(id) 
         .then( response  =>  {  
           veiculodados = response.data;
-          console.log('veiculodados',veiculodados);
           setVeiculo(veiculodados.veiculo)
           
         })
@@ -167,8 +166,7 @@ export default function Manutencao  ({ navigation }) {
     if (veiculo !== '') {
       await ManutencaoDataService.buscaveiculo(veiculo.id) 
       .then( response  =>  {  
-        let tempdados = response.data
-        console.log('tempdados', tempdados);
+        let tempdados = response.data;
         manutencoes = tempdados;
        
       })
@@ -176,9 +174,7 @@ export default function Manutencao  ({ navigation }) {
         console.error(e);
       })
      
-      setLista(manutencoes);
-      console.log('manutencoes', lista);
-      
+      setLista(manutencoes);      
     }
     
   }

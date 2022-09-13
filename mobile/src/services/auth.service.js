@@ -1,7 +1,6 @@
 import axios from "axios"
 import http from './api'
 
- //const API_URL = "http://chamadosrj.ddns.net:8089/api/auth/";
 const API_URL = "http://10.1.1.26:5099/api/auth/";
 const FORGOT_URL = "http://10.1.1.26:5099/api/email";
 

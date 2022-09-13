@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import { Text, View, StyleSheet, Dimensions, StatusBar, Alert} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LinearGradient from 'react-native-linear-gradient';
@@ -69,41 +69,55 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: '30%'
   },
-});
-
+})
 
 export default function Cliente  ({ navigation }) {
   const passwordRef = useRef();
   const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  let mostra = null;
+  let fail = false;
 
-  const [email, setEmail] = useState('cliente7@gmail.com');
-  const [password, setPassword] = useState('2052');
   const signed = useSelector(state => state.auth.signed);
-  const tipo = useSelector(state => state.auth.tipo);
+  const tipo = parseInt(useSelector(state => state.auth.tipo));
   const situacao = useSelector(state => state.auth.situacao);
+  fail = useSelector(state => state.auth.fail);
 
   
-  async function handleSubmit () {
+  async function handleSubmit () {    
 
     if (email === '' || password === '') {
       Alert.alert('Digite um e-mail e/ou senha válidos')
       return
     }
-    
-    await dispatch(signInRequest(email, password));
 
-    if (situacao === 0) {
-      Alert.alert('Seu login está inativo')
-    }
-
-    if (signed === true && tipo === 2 && situacao === true) {
-      navigation.navigate('HomeCliente')
-    } else {
-      Alert.alert('Suas credenciais são inválidas ou seu acesso é de parceiro')
-      return
-    }
-   
+    await dispatch(signInRequest(email, password))  
   }
+
+  
+  if (fail === true )  { 
+    mostra = <Text style={{color: '#ff0000', fontWeight: 'bold', fontSize: 20}}> Login e/ou senha incorretos. </Text>
+  } 
+  
+
+  if (signed === true) {
+
+    if (situacao === false) {        
+      Alert.alert('Seu login está inativo');
+    }
+
+    if (tipo === 2 && situacao === true) {        
+      navigation.navigate('HomeCliente');
+    } 
+  }
+
+  if (tipo === 1) { 
+    Alert.alert('O seu acesso é de parceiro. Volte à tela inicial.');
+  }
+
+
 
   return (
     <View>            
@@ -138,10 +152,13 @@ export default function Cliente  ({ navigation }) {
             onSubmitEditing={() => handleSubmit()}
               />
             
-            <Button  onPress={() => handleSubmit()}>  Entrar </Button>
-           
+            {mostra}
+
+            <Button  onPress={() => handleSubmit()}> Entrar </Button>
+            
             <Text style={styles.cadastrar}  onPress={() => navigation.navigate('Cadastrar')}> <Entypo name="add-user" size={45} color="#000" /> Cadastrar-me</Text>
             <Text style={styles.forgot} onPress={() => navigation.navigate('Esqueci')}> Esqueci minha senha</Text>
         </LinearGradient>
   </View>
-  )}
+  )
+}

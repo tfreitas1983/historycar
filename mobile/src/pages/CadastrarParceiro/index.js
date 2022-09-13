@@ -244,7 +244,6 @@ export default function CadastrarParceiro  ({ navigation }) {
         buttonStyle={styles.bordado}
         buttonTextStyle={{color: '#fff', fontWeight: 'bold'}}
         onSelect={(selectedItem, index) => {
-          console.log(selectedItem, index)
           setSexo(selectedItem)
         }}
         buttonTextAfterSelection={(selectedItem, index) => {
@@ -652,7 +651,6 @@ export default function CadastrarParceiro  ({ navigation }) {
   }
   
   if (selecionada !== '') {
-    console.log(selecionada)
     if ("Caçador de veículos" === selecionada) {
       setIdSelecionada(1);
       setSelecionada('');
@@ -665,9 +663,7 @@ export default function CadastrarParceiro  ({ navigation }) {
     if ("Ambos" === selecionada) {
       setIdSelecionada(3);
       setSelecionada('');
-    } 
-
-    console.log(idSelecionada)
+    }    
   }
   
   async function pegaCEP () {
@@ -804,9 +800,6 @@ export default function CadastrarParceiro  ({ navigation }) {
       Alert.alert('Sem preços')
     }
     
-    
-
-    console.log('preco', precos)
     ParceiroPrecoDataService.cadastrar(precos)
     .then( response  =>  {
       Alert.alert('Parceiro cadastrado');

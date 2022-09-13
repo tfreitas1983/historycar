@@ -146,8 +146,7 @@ export default function Suporte  ({ navigation }) {
 
     await SuporteDataService.cadastrar(data)
     .then( response  =>  {  
-      setSuporteId(response.data.id)
-      console.log('resp suporte', response.data)
+      setSuporteId(response.data.id);
     })
     .catch(e => {
       console.error(e)
