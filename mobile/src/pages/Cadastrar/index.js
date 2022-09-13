@@ -615,6 +615,7 @@ export default function Cadastrar  ({ navigation }) {
         bairro: bairro,
         cidade: cidade,
         uf: uf,
+        foto: 'download.png',
         situacao: 1,
         userId: userId
       }

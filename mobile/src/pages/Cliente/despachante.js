@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
   }, 
   logo: {
+    width: Dimensions.get('window').height * 0.128,
     height: Dimensions.get('window').height * 0.128,
     margin: 3,
     borderRadius: 90
@@ -172,6 +173,8 @@ const styles = StyleSheet.create({
 
 export default function Despachante  ({ navigation })  {
 
+  const URL = 'http://10.0.2.2:5099/files/'
+  
   const userId = useSelector(state => state.auth.id);
   const [loadingdados, setLoadingDados] = useState(false);
   const [buscado, setBuscado] = useState(false);
@@ -436,7 +439,7 @@ export default function Despachante  ({ navigation })  {
         
         <View style={styles.toogle}>
           <Image
-          source={require('../../img/parceiro.png')}
+          source={{uri: URL+item.foto}}
           style={styles.logo}
               resizeMode="cover"
           />
@@ -458,7 +461,7 @@ export default function Despachante  ({ navigation })  {
         
         <View style={styles.toogle}>
           <Image
-          source={require('../../img/parceiro.png')}
+          source={{uri: URL+parceiroEscolhido.foto}}
           style={styles.logo}
               resizeMode="cover"
           />

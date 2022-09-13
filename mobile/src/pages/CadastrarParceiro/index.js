@@ -751,6 +751,7 @@ export default function CadastrarParceiro  ({ navigation }) {
         bairro: bairro,
         cidade: cidade,
         uf: uf,
+        foto: 'download.png',
         situacao: 1,
         userId: userId,
         mecanica: isMecanicaOn,
