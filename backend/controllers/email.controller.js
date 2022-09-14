@@ -22,6 +22,7 @@ exports.email = (req, res) => {
     const id = req.params.id;
     const acao = req.query.acao;    
     const email = req.query.email;
+    const tipo = req.query.tipo;
 
 
     
@@ -197,9 +198,70 @@ exports.email = (req, res) => {
 
 	if (acao === 'registro') {
 
+		var emailASerEnviado = {
+			from: 'autohistorysuporte@hotmail.com',
+			to: email,
+			subject: 'Auto History - Boas vindas',
+			html: `<p>Olá!</p> 
+			<p>Seja muito bem vindo(a)! </p>
+			<p>O Auto History é uma ferramenta que registra o dia a dia do seu veículo.</p>
+			<p>Nosso desejo é te ajudar a ter o controle das manutenções, seguros, busca de profissionais para compra e venda, </p>
+			<p> ou seja, você terá as mãos no volante!</p> 
+			<p> Qualquer dúvida passe na área de suporte e conte conosco. </p>
+			
+			<pre>
+
+
+			</pre>
+			<p> Atenciosamente,</p>
+			<p> Equipe Auto History</p>
+			 `,
+		};	
+
+		remetente.sendMail(emailASerEnviado, function(error){
+			if (error) {
+				console.log(error);
+			} else {
+				res.send('Email enviado com sucesso!');
+			}
+		});
+
 		
 	}
 	
+
+	if (acao === 'registroparceiro') {
+
+		var emailASerEnviado = {
+			from: 'autohistorysuporte@hotmail.com',
+			to: email,
+			subject: 'Auto History - Boas vindas',
+			html: `<p>Olá!</p> 
+			<p>Seja muito bem vindo(a)! </p>
+			<p>O Auto History é uma ferramenta que registra o dia a dia do veículo.</p>
+			<p>Nosso desejo é te ajudar a encontrar clientes, que queiram um profissional, para ajudar na compra e venda dos veículos,</p>
+			<p> ou seja, você terá as mãos no volante!</p> 
+			<p> Qualquer dúvida passe na área de suporte e conte conosco. </p>
+			
+			<pre>
+
+
+			</pre>
+			<p> Atenciosamente,</p>
+			<p> Equipe Auto History</p>
+			 `,
+		};	
+
+		remetente.sendMail(emailASerEnviado, function(error){
+			if (error) {
+				console.log(error);
+			} else {
+				res.send('Email enviado com sucesso!');
+			}
+		});
+
+		
+	}
 
 }
 

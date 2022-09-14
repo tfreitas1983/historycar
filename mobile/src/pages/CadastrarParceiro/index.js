@@ -10,6 +10,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import Auth from '../../services/auth.service'
 import CadastroParceiroDataService from '../../services/cadastroparceiro';
 import ParceiroPrecoDataService from '../../services/parceiropreco';
+import EmailDataService from '../../services/email';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -808,7 +809,18 @@ export default function CadastrarParceiro  ({ navigation }) {
     })
     .catch(e => {
       console.error(e)
-    })        
+    })  
+
+    var acao = "registroparceiro";
+    var tipo = "parceiro";
+
+    await EmailDataService.registroparceiro(email, tipo, acao)
+      .then( response => {
+        
+      })
+      .catch(e=> {
+        console.error(e)
+      })      
     
   }
   

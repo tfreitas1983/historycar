@@ -7,6 +7,7 @@ import Button from '../../components/Button';
 import SelectDropdown from 'react-native-select-dropdown'
 import { celMask, cepMask, cpfMask, cnpjMask } from '../../components/masks';
 import CadastroClienteDataService from '../../services/cadastrocliente'
+import EmailDataService from '../../services/email'
 import Auth from '../../services/auth.service';
 import axios from 'axios';
 
@@ -627,6 +628,17 @@ export default function Cadastrar  ({ navigation }) {
         navigation.navigate('Cliente')
       })
       .catch(e => {
+        console.error(e)
+      })
+
+      var acao = "registro";
+      var tipo = "cliente";
+
+      await EmailDataService.registro(email, tipo, acao)
+      .then( response => {
+        
+      })
+      .catch(e=> {
         console.error(e)
       })
     }
